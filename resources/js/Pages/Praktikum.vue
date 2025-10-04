@@ -1,5 +1,5 @@
 <template>
-  <div class="main_container bg-green-900 w-full h-full overflow-hidden">
+  <div class="w-full h-full overflow-hidden">
     
     <!-- Sound Part -->
     <div id="sound"></div>
@@ -468,7 +468,7 @@
     </div>
 
     <!-- Praktikum Layout (No praktikum exist || "i am the PJ") -->
-    <div class="relative h-full w-120full animation-enable"
+    <div class="relative h-screen w-120full animation-enable"
         :class="[{ 'left-0': currentPage},
                 { 'left-minFull': !currentPage}]"
         @mouseover="isMenuShown = false;">

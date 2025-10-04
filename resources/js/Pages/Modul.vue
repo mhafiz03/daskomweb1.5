@@ -1,5 +1,5 @@
 <template>
-  <div class="main_container bg-green-900 w-full h-full overflow-hidden">
+  <div class="w-full h-full overflow-hidden">
 
     <!-- Main Menu -->
     <div class="absolute w-120 z-20 h-48full bottom-0 right-0 animation-enable"

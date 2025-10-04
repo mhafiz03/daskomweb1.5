@@ -22,6 +22,6 @@ RENAME TABLE temp__jawabantps TO temp_jawabantps;
 RENAME TABLE soal__jurnals TO soal_jurnals;
 RENAME TABLE soal__fitbs TO soal_fitbs;
 RENAME TABLE feedback__aslabs TO feedback_aslabs;
-RENAME TABLE foto__asistens TO foto__asistens;
+RENAME TABLE foto__asistens TO foto_asistens;
 RENAME TABLE history__izins TO history_izins;
 RENAME TABLE history__pikets TO history_pikets;

@@ -215,19 +215,17 @@
                   maintainAspectRatio: false,
 
                   scales: {
-                    yAxes: [{
-                      ticks: {
-                        beginAtZero: true
+                    y: {
+                      beginAtZero: true,
+                      grid: {
+                        display: false,
                       },
-                      gridLines: {
-                        display: false
-                      }
-                    }],
-                    xAxes: [ {
-                      gridLines: {
-                        display: false
+                    },
+                    x: {
+                      grid: {
+                        display: false,
                       },
-                    }]
+                    },
                   }
                 }">
             </chart>
@@ -410,7 +408,7 @@
                 </div>
                 <div v-if="programmingQuote !== 'nothing'" class="w-full h-24 flex">
                   <div class="font-overpass-mono-thin text-sm m-auto flex">
-                    <div class="w-3/4 h-full flex m-auto text-center">" {{ programmingQuote }} " [by {{ quoteAuthor }}]</div>
+                    <div class="m-auto text-center">"{{ programmingQuote }}"<br>by {{ quoteAuthor }}</div>
                   </div>
                 </div>
               </div>
@@ -1771,8 +1769,8 @@ export default {
               // http://quotes.stormconsultancy.co.uk/random.json 
               // (API for random programming quote)
               if(globe.current_praktikum.status === 0)
-                globe.$axios.get('http://quotes.stormconsultancy.co.uk/random.json').then(response => {
-                  globe.programmingQuote = response.data.quote;
+                globe.$axios.get('http://api.quotable.io/random').then(response => {
+                  globe.programmingQuote = response.data.content;
                   globe.quoteAuthor = response.data.author;
                 }); 
             }

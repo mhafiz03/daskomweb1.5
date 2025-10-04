@@ -8,7 +8,7 @@ use App\Models\SoalJurnal;
 use App\Models\SoalFitb;
 use App\Models\TempSoaljurnal;
 use App\Models\Kelas;
-use App\Events\praktikumStatusUpdated;
+use App\Events\PraktikumStatusUpdated;
 use Illuminate\Http\Request;
 
 class CurrentPraktikumController extends Controller
@@ -54,7 +54,7 @@ class CurrentPraktikumController extends Controller
             'allFitb_id' => "",
         ]);
 
-        broadcast(new praktikumStatusUpdated($praktikum));
+        broadcast(new PraktikumStatusUpdated($praktikum));
 
         return '{"message": "success"}';
     }
@@ -123,7 +123,7 @@ class CurrentPraktikumController extends Controller
             'allFitb_id' => $all_soalFitbID,
         ]);
 
-        broadcast(new praktikumStatusUpdated($praktikum));
+        broadcast(new PraktikumStatusUpdated($praktikum));
 
         return '{"message": "success"}';
     }
@@ -165,7 +165,7 @@ class CurrentPraktikumController extends Controller
         $praktikum->status = $status;
         $praktikum->save();
 
-        broadcast(new praktikumStatusUpdated($praktikum));
+        broadcast(new PraktikumStatusUpdated($praktikum));
 
         return '{"message": "success"}';
     }
@@ -180,7 +180,7 @@ class CurrentPraktikumController extends Controller
         $praktikum = CurrentPraktikum::all()->first();
         $praktikum->status = 777; //lucky but nooo, cause praktikum just deleted :v
         $praktikum->save();
-        broadcast(new praktikumStatusUpdated($praktikum));
+        broadcast(new PraktikumStatusUpdated($praktikum));
 
         DB::table('current_praktikums')->truncate();
     }
