@@ -13,7 +13,7 @@ class CreateSoalFitbsTable extends Migration
      */
     public function up()
     {
-        Schema::create('soal__fitbs', function (Blueprint $table) {
+        Schema::create('soal_fitbs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('modul_id');
             $table->text('soal');
@@ -33,6 +33,6 @@ class CreateSoalFitbsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('soal__fitbs');
+        Schema::dropIfExists('soal_fitbs');
     }
 }

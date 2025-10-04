@@ -37,7 +37,7 @@ class SoalFitbController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'soal'        => 'required|unique:soal__fitbs|string',
+            'soal'        => 'required|unique:soal_fitbs|string',
             'modul_id'    => 'required',
         ]);
 

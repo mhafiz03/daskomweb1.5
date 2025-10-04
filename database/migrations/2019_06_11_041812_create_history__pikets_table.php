@@ -13,7 +13,7 @@ class CreateHistoryPiketsTable extends Migration
      */
     public function up()
     {
-        Schema::create('history__pikets', function (Blueprint $table) {
+        Schema::create('history_pikets', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('hari');
             $table->integer('shift');
@@ -35,6 +35,6 @@ class CreateHistoryPiketsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('history__pikets');
+        Schema::dropIfExists('history_pikets');
     }
 }

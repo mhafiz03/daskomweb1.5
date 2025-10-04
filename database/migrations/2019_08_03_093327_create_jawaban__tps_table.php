@@ -13,7 +13,7 @@ class CreateJawabanTpsTable extends Migration
      */
     public function up()
     {
-        Schema::create('jawaban__tps', function (Blueprint $table) {
+        Schema::create('jawaban_tps', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('praktikan_id');
             $table->unsignedBigInteger('soal_id');
@@ -33,7 +33,7 @@ class CreateJawabanTpsTable extends Migration
             
             $table->foreign('soal_id')
                 ->references('id')
-                ->on('soal__tps')
+                ->on('soal_tps')
                 ->onDelete('cascade');
         });
     }
@@ -45,6 +45,6 @@ class CreateJawabanTpsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jawaban__tps');
+        Schema::dropIfExists('jawaban_tps');
     }
 }

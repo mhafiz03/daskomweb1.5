@@ -38,7 +38,7 @@ class CreatePraktikumsTable extends Migration
 
             $table->foreign('laporan_id')
                 ->references('id')
-                ->on('laporan__pjs')
+                ->on('laporan_pjs')
                 ->onDelete('cascade');
         });
     }

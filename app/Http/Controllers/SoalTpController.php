@@ -40,7 +40,7 @@ class SoalTpController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'soal'        => 'required|unique:soal__tps|string',
+            'soal'        => 'required|unique:soal_tps|string',
             'isEssay'     => 'required',
             'isProgram'   => 'required',
             'modul_id'    => 'required',
@@ -77,9 +77,9 @@ class SoalTpController extends Controller
                 ->exists()){
 
                 $allJawabanTP = JawabanTp::where('praktikan_id', $praktikan_id)
-                ->where('jawaban__tps.modul_id', $value->modul_id)
-                ->join('soal__tps', 'jawaban__tps.soal_id', '=', 'soal__tps.id')
-                ->select('jawaban__tps.*', 'soal__tps.soal', 'soal__tps.isEssay', 'soal__tps.isProgram')
+                ->where('jawaban_tps.modul_id', $value->modul_id)
+                ->join('soal_tps', 'jawaban_tps.soal_id', '=', 'soal_tps.id')
+                ->select('jawaban_tps.*', 'soal_tps.soal', 'soal_tps.isEssay', 'soal_tps.isProgram')
                 ->get();
 
                 $all_soalEssay=[];

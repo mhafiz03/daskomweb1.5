@@ -13,7 +13,7 @@ class CreateJenisPollingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('jenis__pollings', function (Blueprint $table) {
+        Schema::create('jenis_pollings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('judul');
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreateJenisPollingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jenis__pollings');
+        Schema::dropIfExists('jenis_pollings');
     }
 }

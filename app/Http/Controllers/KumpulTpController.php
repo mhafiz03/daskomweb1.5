@@ -134,10 +134,10 @@ class KumpulTpController extends Controller
      */
     public function show($kelas_id, $modul_id)
     {
-        $allKumpulTP = KumpulTp::where('kumpul__tps.kelas_id', $kelas_id)
-            ->where('kumpul__tps.modul_id', $modul_id)
-            ->leftJoin('moduls', 'kumpul__tps.modul_id', '=', 'moduls.id')
-            ->leftJoin('praktikans', 'kumpul__tps.praktikan_id', '=', 'praktikans.id')
+        $allKumpulTP = KumpulTp::where('kumpul_tps.kelas_id', $kelas_id)
+            ->where('kumpul_tps.modul_id', $modul_id)
+            ->leftJoin('moduls', 'kumpul_tps.modul_id', '=', 'moduls.id')
+            ->leftJoin('praktikans', 'kumpul_tps.praktikan_id', '=', 'praktikans.id')
             ->get();
 
         return response()->json([

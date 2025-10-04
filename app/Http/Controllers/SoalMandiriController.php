@@ -37,7 +37,7 @@ class SoalMandiriController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'soal'        => 'required|unique:soal__mandiris|string',
+            'soal'        => 'required|unique:soal_mandiris|string',
             'modul_id'    => 'required',
         ]);
 

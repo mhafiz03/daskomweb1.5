@@ -13,7 +13,7 @@ class CreateLaporanPraktikansTable extends Migration
      */
     public function up()
     {
-        Schema::create('laporan__praktikans', function (Blueprint $table) {
+        Schema::create('laporan_praktikans', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('pesan');
             $table->float('rating_asisten');
@@ -47,6 +47,6 @@ class CreateLaporanPraktikansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('laporan__praktikans');
+        Schema::dropIfExists('laporan_praktikans');
     }
 }

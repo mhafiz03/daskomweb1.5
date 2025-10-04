@@ -21,7 +21,7 @@ class CreatePelanggaransTable extends Migration
 
             $table->foreign('pelanggaran_id')
                 ->references('id')
-                ->on('kode__pelanggarans')
+                ->on('kode_pelanggarans')
                 ->onDelete('cascade');
 
             $table->foreign('asisten_id')

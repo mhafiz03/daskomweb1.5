@@ -1598,16 +1598,19 @@ export default {
       });
     } 
 
-    Echo.channel(`daskom_database_praktikum.${globe.currentUser.kelas_id}`)
+    if (window.Echo) {
+      globe.echoChannel = window.Echo.channel(`daskom_database_praktikum.${globe.currentUser.kelas_id}`)
         .listen('praktikumStatusUpdated', (data) => {
-      globe.setCurrentPraktikumState(data.current_praktikum, true);
-    });
+          globe.setCurrentPraktikumState(data.current_praktikum, true);
+        });
+    }
   },
 
-  beforeDestroy() {
-
+  beforeUnmount() {
     const globe = this;
-    Echo.leave(`daskom_database_praktikum.${globe.currentUser.kelas_id}`);
+    if (window.Echo) {
+      window.Echo.leave(`daskom_database_praktikum.${globe.currentUser.kelas_id}`);
+    }
   },
 
   methods: {

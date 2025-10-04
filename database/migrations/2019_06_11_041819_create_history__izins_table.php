@@ -13,7 +13,7 @@ class CreateHistoryIzinsTable extends Migration
      */
     public function up()
     {
-        Schema::create('history__izins', function (Blueprint $table) {
+        Schema::create('history_izins', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('hari');
             $table->integer('shift');
@@ -48,6 +48,6 @@ class CreateHistoryIzinsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('history__izins');
+        Schema::dropIfExists('history_izins');
     }
 }

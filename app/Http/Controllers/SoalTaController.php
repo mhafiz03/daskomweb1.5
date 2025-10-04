@@ -37,7 +37,7 @@ class SoalTaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'pertanyaan'       => 'required|unique:soal__tas|string',
+            'pertanyaan'       => 'required|unique:soal_tas|string',
             'modul_id'         => 'required',
             'jawaban_benar'    => 'required',
             'jawaban_salah1'   => 'required',

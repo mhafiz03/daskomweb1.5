@@ -13,7 +13,7 @@ class CreateJadwalJagasTable extends Migration
      */
     public function up()
     {
-        Schema::create('jadwal__jagas', function (Blueprint $table) {
+        Schema::create('jadwal_jagas', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('kelas_id');
             $table->unsignedBigInteger('asisten_id');
@@ -38,6 +38,6 @@ class CreateJadwalJagasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jadwal__jagas');
+        Schema::dropIfExists('jadwal_jagas');
     }
 }

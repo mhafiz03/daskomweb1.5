@@ -13,7 +13,7 @@ class CreateFeedbackAslabsTable extends Migration
      */
     public function up()
     {
-        Schema::create('feedback__aslabs', function (Blueprint $table) {
+        Schema::create('feedback_aslabs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('pesan');
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreateFeedbackAslabsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('feedback__aslabs');
+        Schema::dropIfExists('feedback_aslabs');
     }
 }

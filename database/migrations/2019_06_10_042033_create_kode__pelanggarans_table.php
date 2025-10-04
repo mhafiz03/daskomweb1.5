@@ -13,7 +13,7 @@ class CreateKodePelanggaransTable extends Migration
      */
     public function up()
     {
-        Schema::create('kode__pelanggarans', function (Blueprint $table) {
+        Schema::create('kode_pelanggarans', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('pelanggaran');
             $table->integer('denda');
@@ -28,6 +28,6 @@ class CreateKodePelanggaransTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kode__pelanggarans');
+        Schema::dropIfExists('kode_pelanggarans');
     }
 }

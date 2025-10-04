@@ -92,24 +92,24 @@ class NilaiController extends Controller
         $allJawabanJurnal = [];
 
         $jawabans = JawabanFitb::where('praktikan_id', $praktikan_id)
-            ->where('jawaban__fitbs.modul_id', $modul_id)
-            ->leftJoin('soal__fitbs', 'jawaban__fitbs.soal_id', '=', 'soal__fitbs.id')
+            ->where('jawaban_fitbs.modul_id', $modul_id)
+            ->leftJoin('soal_fitbs', 'jawaban_fitbs.soal_id', '=', 'soal_fitbs.id')
             ->get();
             
         foreach ($jawabans as $jawaban => $value)
             array_push($allJawabanJurnal, $value);  
             
         $jawabans = JawabanJurnal::where('praktikan_id', $praktikan_id)
-            ->where('jawaban__jurnals.modul_id', $modul_id)
-            ->leftJoin('soal__jurnals', 'jawaban__jurnals.soal_id', '=', 'soal__jurnals.id')
+            ->where('jawaban_jurnals.modul_id', $modul_id)
+            ->leftJoin('soal_jurnals', 'jawaban_jurnals.soal_id', '=', 'soal_jurnals.id')
             ->get();
             
         foreach ($jawabans as $jawaban => $value)
             array_push($allJawabanJurnal, $value);  
             
         $jawabans = JawabanMandiri::where('praktikan_id', $praktikan_id)
-            ->where('jawaban__mandiris.modul_id', $modul_id)
-            ->leftJoin('soal__mandiris', 'jawaban__mandiris.soal_id', '=', 'soal__mandiris.id')
+            ->where('jawaban_mandiris.modul_id', $modul_id)
+            ->leftJoin('soal_mandiris', 'jawaban_mandiris.soal_id', '=', 'soal_mandiris.id')
             ->get();
             
         foreach ($jawabans as $jawaban => $value)
@@ -123,8 +123,8 @@ class NilaiController extends Controller
             
             $allJawabanTp = [];
             $jawabans = JawabanTp::where('praktikan_id', $praktikan_id)
-                ->where('jawaban__tps.modul_id', $modul_id)
-                ->leftJoin('soal__tps', 'jawaban__tps.soal_id', '=', 'soal__tps.id')
+                ->where('jawaban_tps.modul_id', $modul_id)
+                ->leftJoin('soal_tps', 'jawaban_tps.soal_id', '=', 'soal_tps.id')
                 ->get();
                 
             foreach ($jawabans as $jawaban => $value)

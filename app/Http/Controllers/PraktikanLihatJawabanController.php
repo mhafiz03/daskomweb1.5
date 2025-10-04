@@ -40,33 +40,33 @@ class PraktikanLihatJawabanController extends Controller
         $allJawabanJurnal = [];
 
         $jawabans = JawabanFitb::where('praktikan_id', $praktikan_id)
-            ->where('jawaban__fitbs.modul_id', $modul_id)
-            ->leftJoin('soal__fitbs', 'jawaban__fitbs.soal_id', '=', 'soal__fitbs.id')
-            ->join('moduls', 'jawaban__fitbs.modul_id', '=', 'moduls.id')
+            ->where('jawaban_fitbs.modul_id', $modul_id)
+            ->leftJoin('soal_fitbs', 'jawaban_fitbs.soal_id', '=', 'soal_fitbs.id')
+            ->join('moduls', 'jawaban_fitbs.modul_id', '=', 'moduls.id')
             ->where('moduls.isUnlocked', 1)
-            ->select('jawaban__fitbs.jawaban', 'soal__fitbs.soal')
+            ->select('jawaban_fitbs.jawaban', 'soal_fitbs.soal')
             ->get();
             
         foreach ($jawabans as $jawaban => $value)
             array_push($allJawabanJurnal, $value);  
             
         $jawabans = JawabanJurnal::where('praktikan_id', $praktikan_id)
-            ->where('jawaban__jurnals.modul_id', $modul_id)
-            ->leftJoin('soal__jurnals', 'jawaban__jurnals.soal_id', '=', 'soal__jurnals.id')
-            ->join('moduls', 'jawaban__jurnals.modul_id', '=', 'moduls.id')
+            ->where('jawaban_jurnals.modul_id', $modul_id)
+            ->leftJoin('soal_jurnals', 'jawaban_jurnals.soal_id', '=', 'soal_jurnals.id')
+            ->join('moduls', 'jawaban_jurnals.modul_id', '=', 'moduls.id')
             ->where('moduls.isUnlocked', 1)
-            ->select('jawaban__jurnals.jawaban', 'soal__jurnals.soal')
+            ->select('jawaban_jurnals.jawaban', 'soal_jurnals.soal')
             ->get();
             
         foreach ($jawabans as $jawaban => $value)
             array_push($allJawabanJurnal, $value);  
             
         $jawabans = JawabanMandiri::where('praktikan_id', $praktikan_id)
-            ->where('jawaban__mandiris.modul_id', $modul_id)
-            ->leftJoin('soal__mandiris', 'jawaban__mandiris.soal_id', '=', 'soal__mandiris.id')
-            ->join('moduls', 'jawaban__mandiris.modul_id', '=', 'moduls.id')
+            ->where('jawaban_mandiris.modul_id', $modul_id)
+            ->leftJoin('soal_mandiris', 'jawaban_mandiris.soal_id', '=', 'soal_mandiris.id')
+            ->join('moduls', 'jawaban_mandiris.modul_id', '=', 'moduls.id')
             ->where('moduls.isUnlocked', 1)
-            ->select('jawaban__mandiris.jawaban', 'soal__mandiris.soal')
+            ->select('jawaban_mandiris.jawaban', 'soal_mandiris.soal')
             ->get();
             
         foreach ($jawabans as $jawaban => $value)

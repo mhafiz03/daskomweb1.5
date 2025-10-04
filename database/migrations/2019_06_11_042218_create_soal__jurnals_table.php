@@ -13,7 +13,7 @@ class CreateSoalJurnalsTable extends Migration
      */
     public function up()
     {
-        Schema::create('soal__jurnals', function (Blueprint $table) {
+        Schema::create('soal_jurnals', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('modul_id');
             $table->text('soal');
@@ -33,6 +33,6 @@ class CreateSoalJurnalsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('soal__jurnals');
+        Schema::dropIfExists('soal_jurnals');
     }
 }

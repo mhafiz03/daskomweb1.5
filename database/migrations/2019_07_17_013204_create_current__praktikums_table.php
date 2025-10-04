@@ -13,7 +13,7 @@ class CreateCurrentPraktikumsTable extends Migration
      */
     public function up()
     {
-        Schema::create('current__praktikums', function (Blueprint $table) {
+        Schema::create('current_praktikums', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('asisten_id');
             $table->unsignedBigInteger('kelas_id');
@@ -45,6 +45,6 @@ class CreateCurrentPraktikumsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('current__praktikums');
+        Schema::dropIfExists('current_praktikums');
     }
 }

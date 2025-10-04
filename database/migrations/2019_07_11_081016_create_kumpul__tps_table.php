@@ -13,7 +13,7 @@ class CreateKumpulTpsTable extends Migration
      */
     public function up()
     {
-        Schema::create('kumpul__tps', function (Blueprint $table) {
+        Schema::create('kumpul_tps', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('modul_id');
             $table->unsignedBigInteger('kelas_id');
@@ -44,6 +44,6 @@ class CreateKumpulTpsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kumpul__tps');
+        Schema::dropIfExists('kumpul_tps');
     }
 }

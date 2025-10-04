@@ -65,7 +65,7 @@ class LaporanPjController extends Controller
     {
         return response()->json([
             'message' => 'success',
-            'latestLaporanID' => DB::table('laporan__pjs')->orderBy('created_at', 'desc')->first()->id,
+            'latestLaporanID' => DB::table('laporan_pjs')->orderBy('created_at', 'desc')->first()->id,
         ], 200);
     }
 

@@ -37,7 +37,7 @@ class SoalJurnalController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'soal'        => 'required|unique:soal__jurnals|string',
+            'soal'        => 'required|unique:soal_jurnals|string',
             'modul_id'    => 'required',
             'isSulit'     => 'required',
         ]);

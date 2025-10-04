@@ -13,7 +13,7 @@ class CreateSoalTpsTable extends Migration
      */
     public function up()
     {
-        Schema::create('soal__tps', function (Blueprint $table) {
+        Schema::create('soal_tps', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('modul_id');
             $table->text('soal');
@@ -35,6 +35,6 @@ class CreateSoalTpsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('soal__tps');
+        Schema::dropIfExists('soal_tps');
     }
 }

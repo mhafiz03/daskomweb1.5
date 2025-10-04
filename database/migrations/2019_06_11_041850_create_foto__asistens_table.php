@@ -13,7 +13,7 @@ class CreateFotoAsistensTable extends Migration
      */
     public function up()
     {
-        Schema::create('foto__asistens', function (Blueprint $table) {
+        Schema::create('foto_asistens', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->char('kode', 3);
             $table->text('foto');
@@ -33,6 +33,6 @@ class CreateFotoAsistensTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('foto__asistens');
+        Schema::dropIfExists('foto_asistens');
     }
 }

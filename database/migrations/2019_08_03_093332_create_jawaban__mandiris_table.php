@@ -13,7 +13,7 @@ class CreateJawabanMandirisTable extends Migration
      */
     public function up()
     {
-        Schema::create('jawaban__mandiris', function (Blueprint $table) {
+        Schema::create('jawaban_mandiris', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('praktikan_id');
             $table->unsignedBigInteger('soal_id');
@@ -33,7 +33,7 @@ class CreateJawabanMandirisTable extends Migration
             
             $table->foreign('soal_id')
                 ->references('id')
-                ->on('soal__mandiris')
+                ->on('soal_mandiris')
                 ->onDelete('cascade');
         });
     }
@@ -45,6 +45,6 @@ class CreateJawabanMandirisTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jawaban__mandiris');
+        Schema::dropIfExists('jawaban_mandiris');
     }
 }

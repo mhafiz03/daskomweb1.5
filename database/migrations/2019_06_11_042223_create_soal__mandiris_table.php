@@ -13,7 +13,7 @@ class CreateSoalMandirisTable extends Migration
      */
     public function up()
     {
-        Schema::create('soal__mandiris', function (Blueprint $table) {
+        Schema::create('soal_mandiris', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('modul_id');
             $table->text('soal');
@@ -33,6 +33,6 @@ class CreateSoalMandirisTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('soal__mandiris');
+        Schema::dropIfExists('soal_mandiris');
     }
 }

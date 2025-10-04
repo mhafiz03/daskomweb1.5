@@ -13,7 +13,7 @@ class CreateJawabanTksTable extends Migration
      */
     public function up()
     {
-        Schema::create('jawaban__tks', function (Blueprint $table) {
+        Schema::create('jawaban_tks', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('praktikan_id');
             $table->unsignedBigInteger('soal_id');
@@ -33,7 +33,7 @@ class CreateJawabanTksTable extends Migration
             
             $table->foreign('soal_id')
                 ->references('id')
-                ->on('soal__tks')
+                ->on('soal_tks')
                 ->onDelete('cascade');
         });
     }
@@ -45,6 +45,6 @@ class CreateJawabanTksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jawaban__tks');
+        Schema::dropIfExists('jawaban_tks');
     }
 }

@@ -32,7 +32,7 @@ class CurrentPraktikumController extends Controller
     // FOR RUNMOD ONLY
     public function create(Request $request)
     {
-        DB::table('current__praktikums')->truncate();
+        DB::table('current_praktikums')->truncate();
 
         $praktikum = CurrentPraktikum::create([
             'asisten_id' => $request->asisten_id,
@@ -68,7 +68,7 @@ class CurrentPraktikumController extends Controller
     // FOR USUAL PRAKTIKUM
     public function store(Request $request)
     {
-        DB::table('current__praktikums')->truncate();
+        DB::table('current_praktikums')->truncate();
 
         $praktikum = CurrentPraktikum::create([
             'asisten_id' => $request->asisten_id,
@@ -182,6 +182,6 @@ class CurrentPraktikumController extends Controller
         $praktikum->save();
         broadcast(new praktikumStatusUpdated($praktikum));
 
-        DB::table('current__praktikums')->truncate();
+        DB::table('current_praktikums')->truncate();
     }
 }

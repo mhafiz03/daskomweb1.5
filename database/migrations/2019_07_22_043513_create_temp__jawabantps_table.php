@@ -13,7 +13,7 @@ class CreateTempJawabantpsTable extends Migration
      */
     public function up()
     {
-        Schema::create('temp__jawabantps', function (Blueprint $table) {
+        Schema::create('temp_jawabantps', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('praktikan_id');
             $table->unsignedBigInteger('soal_id');
@@ -33,7 +33,7 @@ class CreateTempJawabantpsTable extends Migration
             
             $table->foreign('soal_id')
                 ->references('id')
-                ->on('soal__tps')
+                ->on('soal_tps')
                 ->onDelete('cascade');
         });
     }
@@ -45,6 +45,6 @@ class CreateTempJawabantpsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('temp__jawabantps');
+        Schema::dropIfExists('temp_jawabantps');
     }
 }

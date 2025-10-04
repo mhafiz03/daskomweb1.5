@@ -13,7 +13,7 @@ class CreateJawabanTasTable extends Migration
      */
     public function up()
     {
-        Schema::create('jawaban__tas', function (Blueprint $table) {
+        Schema::create('jawaban_tas', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('praktikan_id');
             $table->unsignedBigInteger('soal_id');
@@ -33,7 +33,7 @@ class CreateJawabanTasTable extends Migration
             
             $table->foreign('soal_id')
                 ->references('id')
-                ->on('soal__tas')
+                ->on('soal_tas')
                 ->onDelete('cascade');
         });
     }
@@ -45,6 +45,6 @@ class CreateJawabanTasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jawaban__tas');
+        Schema::dropIfExists('jawaban_tas');
     }
 }

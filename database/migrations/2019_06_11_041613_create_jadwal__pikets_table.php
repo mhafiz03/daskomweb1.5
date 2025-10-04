@@ -13,7 +13,7 @@ class CreateJadwalPiketsTable extends Migration
      */
     public function up()
     {
-        Schema::create('jadwal__pikets', function (Blueprint $table) {
+        Schema::create('jadwal_pikets', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('hari');
             $table->integer('shift');
@@ -35,6 +35,6 @@ class CreateJadwalPiketsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jadwal__pikets');
+        Schema::dropIfExists('jadwal_pikets');
     }
 }

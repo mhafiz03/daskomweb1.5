@@ -13,7 +13,7 @@ class AddSulitStateToSoalJurnals extends Migration
      */
     public function up()
     {
-        Schema::table('soal__jurnals', function (Blueprint $table) {
+        Schema::table('soal_jurnals', function (Blueprint $table) {
             $table->boolean('isSulit')->nullable()->default(false);
         });
     }
@@ -25,7 +25,7 @@ class AddSulitStateToSoalJurnals extends Migration
      */
     public function down()
     {
-        Schema::table('soal__jurnals', function (Blueprint $table) {
+        Schema::table('soal_jurnals', function (Blueprint $table) {
             //
         });
     }

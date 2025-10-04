@@ -13,7 +13,7 @@ class CreateTempSoaljurnalsTable extends Migration
      */
     public function up()
     {
-        Schema::create('temp__soaljurnals', function (Blueprint $table) {
+        Schema::create('temp_soaljurnals', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('allJurnal_id');
             $table->string('allFitb_id');
@@ -28,6 +28,6 @@ class CreateTempSoaljurnalsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('temp__soaljurnals');
+        Schema::dropIfExists('temp_soaljurnals');
     }
 }

@@ -13,7 +13,7 @@ class CreateLaporanPjsTable extends Migration
      */
     public function up()
     {
-        Schema::create('laporan__pjs', function (Blueprint $table) {
+        Schema::create('laporan_pjs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('allasisten_id');
             $table->text('laporan');
@@ -36,6 +36,6 @@ class CreateLaporanPjsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('laporan__pjs');
+        Schema::dropIfExists('laporan_pjs');
     }
 }

@@ -125,7 +125,7 @@ class JadwalJagaController extends Controller
      */
     public function destroy()
     {
-        DB::table('jadwal__jagas')->delete();
+        DB::table('jadwal_jagas')->delete();
 
         return '{"message": "success"}';
     }

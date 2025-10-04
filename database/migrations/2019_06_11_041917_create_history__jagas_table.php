@@ -13,7 +13,7 @@ class CreateHistoryJagasTable extends Migration
      */
     public function up()
     {
-        Schema::create('history__jagas', function (Blueprint $table) {
+        Schema::create('history_jagas', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('hari');
             $table->integer('shift');
@@ -41,6 +41,6 @@ class CreateHistoryJagasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('history__jagas');
+        Schema::dropIfExists('history_jagas');
     }
 }

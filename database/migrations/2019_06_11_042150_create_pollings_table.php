@@ -22,7 +22,7 @@ class CreatePollingsTable extends Migration
 
             $table->foreign('polling_id')
                 ->references('id')
-                ->on('jenis__pollings')
+                ->on('jenis_pollings')
                 ->onDelete('cascade');
 
             $table->foreign('asisten_id')

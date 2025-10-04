@@ -13,7 +13,7 @@ class CreateJawabanFitbsTable extends Migration
      */
     public function up()
     {
-        Schema::create('jawaban__fitbs', function (Blueprint $table) {
+        Schema::create('jawaban_fitbs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('praktikan_id');
             $table->unsignedBigInteger('soal_id');
@@ -33,7 +33,7 @@ class CreateJawabanFitbsTable extends Migration
             
             $table->foreign('soal_id')
                 ->references('id')
-                ->on('soal__fitbs')
+                ->on('soal_fitbs')
                 ->onDelete('cascade');
         });
     }
@@ -45,6 +45,6 @@ class CreateJawabanFitbsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jawaban__fitbs');
+        Schema::dropIfExists('jawaban_fitbs');
     }
 }
