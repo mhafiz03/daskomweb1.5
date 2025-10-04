@@ -638,7 +638,9 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.replace('/'+ $whereTo +'?comingFrom=modul&position='+globe.$refs.menu.scrollTop);
+          globe.$inertia.get('/' + $whereTo + '?comingFrom=modul&position=' + globe.$refs.menu.scrollTop, {}, {
+            replace: true,
+          });
         }, 501); 
     },
 
@@ -889,7 +891,9 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.replace('/logoutAsisten')
+          globe.$inertia.get('/logoutAsisten', {}, {
+            replace: true,
+          });
         }, 1010); 
     },
   }

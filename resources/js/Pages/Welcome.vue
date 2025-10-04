@@ -237,12 +237,12 @@ export default {
   methods: {
     
     travel: function(destination) {
-      this.$inertia.replace('/'+destination, {
+      this.$inertia.get('/' + destination, {
+        comingFrom: 'welcome',
+      }, {
+        replace: true,
         preserveScroll: true,
-        data: {
-          'comingFrom': 'welcome',
-        }
-      })
+      });
     },
 
     openDaskom: function(event){

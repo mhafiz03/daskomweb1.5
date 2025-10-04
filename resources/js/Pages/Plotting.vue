@@ -658,7 +658,9 @@
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.replace('/'+ $whereTo +'?comingFrom=plotting&position='+globe.$refs.menu.scrollTop);
+          globe.$inertia.get('/' + $whereTo + '?comingFrom=plotting&position=' + globe.$refs.menu.scrollTop, {}, {
+            replace: true,
+          });
         }, 501); 
     },
 
@@ -870,7 +872,9 @@
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.replace('/logoutAsisten')
+          globe.$inertia.get('/logoutAsisten', {}, {
+            replace: true,
+          });
         }, 1010); 
     },
   }

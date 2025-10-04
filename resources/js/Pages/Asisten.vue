@@ -722,7 +722,9 @@ export default {
             message: "Deskripsi berhasil diperbaharui"   
           });
 
-          globe.$inertia.replace('/asisten');
+          globe.$inertia.get('/asisten', {}, {
+            replace: true,
+          });
           globe.editDescription(false);
 
         } else {
@@ -762,7 +764,9 @@ export default {
       this.changePage = true;
       setTimeout(
         function() {
-          globe.$inertia.replace('/'+ $whereTo +'?comingFrom=asisten&position='+globe.$refs.menu.scrollTop);
+          globe.$inertia.get('/' + $whereTo + '?comingFrom=asisten&position=' + globe.$refs.menu.scrollTop, {}, {
+            replace: true,
+          });
         }, 501); 
     },
 
@@ -818,7 +822,9 @@ export default {
       this.pageActive = false;
       setTimeout(
         function() {
-          globe.$inertia.replace('/logoutAsisten')
+          globe.$inertia.get('/logoutAsisten', {}, {
+            replace: true,
+          });
         }, 1010); 
     }
   }

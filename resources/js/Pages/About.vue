@@ -166,20 +166,20 @@ export default {
             opacity: [1,0],
             easing: "easeInSine",
             complete: function(anim){
-              globe.$inertia.replace('/'+destination,{
-                data: {
-                  'comingFrom': 'about',
-                }
-              })
+              globe.$inertia.get('/' + destination, {
+                comingFrom: 'about',
+              }, {
+                replace: true,
+              });
             }
           });
       } else {
 
-        this.$inertia.replace('/'+destination,{
-          data: {
-            'comingFrom': 'about',
-          }
-        })
+        this.$inertia.get('/' + destination, {
+          comingFrom: 'about',
+        }, {
+          replace: true,
+        });
       }
     },
     

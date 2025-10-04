@@ -25,7 +25,7 @@
           </span>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="inline-full-name">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="inline-full-name">
                 Nim
               </label>
             </div>
@@ -35,7 +35,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="inline-username">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="inline-username">
                 Password
               </label>
             </div>
@@ -79,7 +79,7 @@
           </span>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="Nama">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="Nama">
                 Nama
               </label>
             </div>
@@ -89,7 +89,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="Email">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="Email">
                 Email
               </label>
             </div>
@@ -99,7 +99,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="NomorTelepon">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="NomorTelepon">
                 Nomor Telepon
               </label>
             </div>
@@ -109,7 +109,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="Alamat">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="Alamat">
                 Alamat
               </label>
             </div>
@@ -119,7 +119,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="Alamat">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="Alamat">
                 Kelas
               </label>
             </div>
@@ -129,7 +129,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="Nim">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="Nim">
                 Nim
               </label>
             </div>
@@ -139,7 +139,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="Password">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="Password">
                 Password
               </label>
             </div>
@@ -183,7 +183,7 @@
           </span>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="inline-full-name">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="inline-full-name">
                 Kode
               </label>
             </div>
@@ -193,7 +193,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="inline-username">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="inline-username">
                 Password
               </label>
             </div>
@@ -237,7 +237,7 @@
           </span>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="Nama">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="Nama">
                 Nama
               </label>
             </div>
@@ -247,7 +247,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="Deskripsi">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="Deskripsi">
                 Deskripsi
               </label>
             </div>
@@ -257,7 +257,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="Nomor_telepon">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="Nomor_telepon">
                 Nomor Telepon
               </label>
             </div>
@@ -267,7 +267,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="LineID">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="LineID">
                 Line ID
               </label>
             </div>
@@ -277,7 +277,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="Instagram">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="Instagram">
                 Instagram
               </label>
             </div>
@@ -287,7 +287,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="Role">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="Role">
                 Role
               </label>
             </div>
@@ -297,7 +297,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="Kode">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="Kode">
                 Kode
               </label>
             </div>
@@ -307,7 +307,7 @@
           </div>
           <div class="flex items-center mb-6">
             <div class="w-1/3">
-              <label class="block text-gray-600 font-bold text-right mb-1 mb-0 pr-4" for="Password">
+              <label class="block text-gray-600 font-bold text-right mb-1 pr-4" for="Password">
                 Password
               </label>
             </div>
@@ -790,11 +790,11 @@ export default {
 
             setTimeout(
               function() {
-                globe.$inertia.replace('/'+whereTo, {
-                  data: {
-                    'comingFrom': 'login',
-                  }
-                })
+                globe.$inertia.get('/' + whereTo, {
+                  comingFrom: 'login',
+                }, {
+                  replace: true,
+                });
               }, 1100);
           }
         })
@@ -913,12 +913,12 @@ export default {
 
             setTimeout(
               function() {
-                globe.$inertia.replace('/'+destination, {
+                globe.$inertia.get('/' + destination, {
+                  comingFrom: 'login',
+                }, {
+                  replace: true,
                   preserveScroll: true,
-                  data: {
-                    'comingFrom': 'login',
-                  }
-                })
+                });
               }, 1010); 
           }
         });

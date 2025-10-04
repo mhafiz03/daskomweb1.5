@@ -219,11 +219,11 @@ export default {
       this.pageActive = false;
   
       setTimeout(() => {
-        globe.$inertia.replace('/'+destination,{
-          data: {
-            'comingFrom': 'contact',
-          }
-        })
+        globe.$inertia.get('/' + destination, {
+          comingFrom: 'contact',
+        }, {
+          replace: true,
+        });
       }, 300);
     },
     

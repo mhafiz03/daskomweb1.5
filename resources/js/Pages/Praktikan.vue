@@ -2327,7 +2327,9 @@ export default {
       const globe = this;
       setTimeout(
         function() {
-          globe.$inertia.replace('/' + $whereTo);
+          globe.$inertia.get('/' + $whereTo, {}, {
+            replace: true,
+          });
         }, 500); 
     },
 
@@ -2338,7 +2340,9 @@ export default {
       this.isMenuShown = false;
       setTimeout(
         function() {
-          globe.$inertia.replace('/logoutPraktikan')
+          globe.$inertia.get('/logoutPraktikan', {}, {
+            replace: true,
+          });
         }, 1010); 
     },
 

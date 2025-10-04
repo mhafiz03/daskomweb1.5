@@ -98,7 +98,6 @@ Route::get('/praktikan', function () {
         'isRunmod' => $isRunmod,
         'pollingComplete' => $pollingComplete,
         'allPolling' => $allPolling,
-
         'allModul' => $allModul,
         'allJurnal' => $allJurnal,
     ]);

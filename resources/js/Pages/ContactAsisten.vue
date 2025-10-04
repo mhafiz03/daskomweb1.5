@@ -41,8 +41,8 @@
                       <img class="fas fa-phone w-6 h-6">
                     </div>
                     <div class="text-lg">
-                      <span v-if="asisten.nomor_telepon==NULL || asisten.nomor_telepon=='' ||asisten.nomor_telepon=='-'">Not Available</span>
-                      <span v-if="asisten.nomor_telepon!='-'">{{asisten.nomor_telepon}}</span>
+                      <span v-if="!asisten.nomor_telepon || asisten.nomor_telepon === '-'">Not Available</span>
+                      <span v-else>{{ asisten.nomor_telepon }}</span>
                     </div>
                   </div>
 
@@ -51,8 +51,8 @@
                       <img class="fab fa-line w-6 h-6">
                     </div>
                     <div class="text-lg">
-                      <span v-if="asisten.id_line==NULL || asisten.id_line=='' ||asisten.id_line=='-'">Not Available</span>
-                      <span v-if="asisten.id_line!='-'">{{asisten.id_line}}</span>
+                      <span v-if="!asisten.id_line || asisten.id_line === '-'">Not Available</span>
+                      <span v-else>{{ asisten.id_line }}</span>
                     </div>
                   </div>
 
@@ -61,8 +61,8 @@
                       <img class="fab fa-instagram w-6 h-6">
                     </div>
                     <div class="text-lg">
-                      <span v-if="asisten.instagram==NULL || asisten.instagram=='' ||asisten.instagram=='-'">Not Available</span>
-                      <span v-if="asisten.instagram!='-'">{{asisten.instagram}}</span>
+                      <span v-if="!asisten.instagram || asisten.instagram === '-'">Not Available</span>
+                      <span v-else>{{ asisten.instagram }}</span>
                     </div>
                   </div>
 
@@ -91,9 +91,13 @@ export default {
 
   mounted() {
 
-    $('body').addClass('closed');
+    document.body.classList.add('closed');
     this.$refs.menu.scrollTop = this.position;
 
+  },
+  
+  beforeUnmount() {
+    document.body.classList.remove('closed');
   },
 
   methods: {
@@ -102,7 +106,9 @@ export default {
       const globe = this;
       setTimeout(
         function() {
-          globe.$inertia.replace('/' + $whereTo);
+          globe.$inertia.get('/' + $whereTo, {}, {
+            replace: true,
+          });
         }, 501); 
     },
 
@@ -113,7 +119,9 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.replace('/logoutAsisten')
+          globe.$inertia.get('/logoutAsisten', {}, {
+            replace: true,
+          });
         }, 1010); 
     },
   }
