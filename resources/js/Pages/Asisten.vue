@@ -14,21 +14,24 @@
             <div class="bg-yellow-800 rounded-t-lg w-full h-full flex-col overflow-y-auto">
               <!-- EDIT desc assistant -->
               <div class="pt-16 px-8 w-full h-auto text-center">
-                <span class="p-3 bg-green-800 font-merri-bold text-xl cursor-pointer text-yellow-200 rounded-lg hover:bg-green-900 animation-enable editDescBtn"
+                <span class="p-3 bg-green-800 font-merri-bold text-xl cursor-pointer text-yellow-200 rounded-lg hover:bg-green-900 animation-enable"
+                      v-if="!showEditForm"
                       v-on:click="editDescription(true)">Edit Description <img class="p-1 fas fa-pen fa-lg">
                 </span>
-                <span class="hidden p-3 px-4 bg-red-600 font-merri-bold text-xl cursor-pointer text-white rounded-lg hover:bg-red-700 animation-enable editDescClose"
+                <span class="p-3 px-4 bg-red-600 font-merri-bold text-xl cursor-pointer text-white rounded-lg hover:bg-red-700 animation-enable"
+                      v-if="showEditForm"
                       v-on:click="editDescription(false)">
                       <img class="p-1 fas fa-times fa-lg">
                 </span>
-                <span class="hidden p-3 bg-green-600 font-merri-bold text-xl cursor-pointer text-white rounded-lg hover:bg-green-700 animation-enable updateDescBtn"
+                <span class="p-3 bg-green-600 font-merri-bold text-xl cursor-pointer text-white rounded-lg hover:bg-green-700 animation-enable"
+                      v-if="showEditForm"
                       v-on:click="updateDeskripsi">
                       <img class="p-1 fas fa-check fa-lg">
                 </span>
               </div>
               <!-- desc form -->
-              <form id="descForm" class="hidden animation-enable"
-                    :class="'descEdit'">
+              <form id="descForm" class="animation-enable"
+                    :class="{ hidden: !showEditForm, visible: showEditForm }">
                     <div class="pt-5">
                       <label class="block text-yellow-400 font-bold text-center" for="deskripsi">
                         Nomor HP:
@@ -72,8 +75,8 @@
                       <img class="fas fa-phone w-8 h-8">
                     </div>
                     <div class="text-xl">
-                      <span v-if="currentUser.nomor_telepon==NULL || currentUser.nomor_telepon=='' ||currentUser.nomor_telepon=='-'">Not Available</span>
-                      <span v-if="currentUser.nomor_telepon!='-'">{{currentUser.nomor_telepon}}</span>
+                      <span v-if="!currentUser.nomor_telepon || currentUser.nomor_telepon === '-'">Not Available</span>
+                      <span v-else>{{ currentUser.nomor_telepon }}</span>
                     </div>
                 </div>
 
@@ -82,8 +85,8 @@
                       <img class="fab fa-line w-8 h-8">
                     </div>
                     <div class="text-xl">
-                      <span v-if="currentUser.id_line==NULL || currentUser.id_line=='' ||currentUser.id_line=='-'">Not Available</span>
-                      <span v-if="currentUser.id_line!='-'">{{currentUser.id_line}}</span>
+                      <span v-if="!currentUser.id_line || currentUser.id_line === '-'">Not Available</span>
+                      <span v-else>{{ currentUser.id_line }}</span>
                     </div>
                 </div>
 
@@ -92,8 +95,8 @@
                       <img class="fab fa-instagram w-8 h-8">
                     </div>
                     <div class="text-xl">
-                      <span v-if="currentUser.instagram==NULL || currentUser.instagram=='' ||currentUser.instagram=='-'">Not Available</span>
-                      <span v-if="currentUser.instagram!='-'">{{currentUser.instagram}}</span>
+                      <span v-if="!currentUser.instagram || currentUser.instagram === '-'">Not Available</span>
+                      <span v-else>{{ currentUser.instagram }}</span>
                     </div>
                 </div>
 
@@ -565,6 +568,8 @@ export default {
       menuRanking: false,
       menuAllLaporan: false,
       menuJawaban: false,
+      showEditForm: false,
+      taxRate: 0,
 
       formDesc: {
         id: '',
@@ -597,7 +602,7 @@ export default {
 
   mounted() {
 
-    $('body').addClass('closed');
+    document.body.classList.add('closed');
 
     const globe = this;
 
@@ -654,6 +659,10 @@ export default {
     
   },
 
+  beforeUnmount() {
+    document.body.classList.remove('closed');
+  },
+
   methods: {
 
     setCurrentMenu: function($whereTo, $bool){
@@ -693,28 +702,13 @@ export default {
     },
 
     editDescription: function($bool){
-      if ($bool) {
-        $(".descEdit").removeClass("hidden");
-        $(".descEdit").addClass("visible");
-        $(".editDescBtn").removeClass("visible");
-        $(".editDescBtn").addClass("hidden");
-        $(".editDescClose").removeClass("hidden");
-        $(".editDescClose").addClass("visible");
-        $(".updateDescBtn").removeClass("hidden");
-        $(".updateDescBtn").addClass("visible");
-        this.formDesc.deskripsi = this.currentUser.deskripsi;
-        this.formDesc.nomor_telepon = this.currentUser.nomor_telepon;
-        this.formDesc.id_line = this.currentUser.id_line;
-        this.formDesc.instagram = this.currentUser.instagram;
-      }else{
-        $(".descEdit").removeClass("visible");
-        $(".descEdit").addClass("hidden");
-        $(".editDescBtn").removeClass("hidden");
-        $(".editDescBtn").addClass("visible");
-        $(".editDescClose").removeClass("visible");
-        $(".editDescClose").addClass("hidden");
-        $(".updateDescBtn").removeClass("visible");
-        $(".updateDescBtn").addClass("hidden");
+      this.showEditForm = !!$bool;
+
+      if (this.showEditForm) {
+        this.formDesc.deskripsi = this.currentUser.deskripsi ?? '';
+        this.formDesc.nomor_telepon = this.currentUser.nomor_telepon ?? '';
+        this.formDesc.id_line = this.currentUser.id_line ?? '';
+        this.formDesc.instagram = this.currentUser.instagram ?? '';
       }
     },
 

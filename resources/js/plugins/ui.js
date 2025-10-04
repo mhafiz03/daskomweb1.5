@@ -1,4 +1,5 @@
 import anime from 'animejs/lib/anime.es.js';
+import jQuery from 'jquery';
 import Toast, { POSITION } from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
 
@@ -196,6 +197,8 @@ function registerScrollDirective(app) {
 }
 
 export default function installUi(app) {
+    window.$ = window.jQuery = jQuery;
+
     app.use(Toast, toastOptions);
     registerToastHelpers(app);
     registerScrollbarDirective(app);

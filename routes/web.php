@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Models\Role;
 use App\Models\Kelas;
@@ -16,6 +17,7 @@ use App\Models\Nilai;
 use App\Models\Praktikan;
 use App\Models\Polling;
 use App\Models\JenisPolling;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
