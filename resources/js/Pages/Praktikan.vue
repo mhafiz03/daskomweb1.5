@@ -1597,8 +1597,8 @@ export default {
     } 
 
     if (window.Echo) {
-      globe.echoChannel = window.Echo.channel(`daskom_database_praktikum.${globe.currentUser.kelas_id}`)
-        .listen('praktikumStatusUpdated', (data) => {
+      globe.echoChannel = window.Echo.channel(`praktikum.${globe.currentUser.kelas_id}`)
+        .listen('.PraktikumStatusUpdated', (data) => {
           globe.setCurrentPraktikumState(data.current_praktikum, true);
         });
     }
@@ -1607,7 +1607,7 @@ export default {
   beforeUnmount() {
     const globe = this;
     if (window.Echo) {
-      window.Echo.leave(`daskom_database_praktikum.${globe.currentUser.kelas_id}`);
+      window.Echo.leave(`praktikum.${globe.currentUser.kelas_id}`);
     }
   },
 

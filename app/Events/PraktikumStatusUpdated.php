@@ -2,16 +2,16 @@
 
 namespace App\Events;
 
+use App\Models\CurrentPraktikum;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Models\CurrentPraktikum;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class PraktikumStatusUpdated implements ShouldBroadcast
+
+class PraktikumStatusUpdated implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -33,6 +33,11 @@ class PraktikumStatusUpdated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('praktikum.'.$this->current_praktikum->kelas_id);
+        return new Channel('praktikum.' . $this->current_praktikum->kelas_id);
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'PraktikumStatusUpdated';
     }
 }
