@@ -1,0 +1,212 @@
+import anime from 'animejs/lib/anime.es.js';
+import Toast, { POSITION } from 'vue-toastification';
+import 'vue-toastification/dist/index.css';
+
+import { library, dom } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import {
+    faExclamationCircle,
+    faCheckCircle,
+    faUserEdit,
+    faSignOutAlt,
+    faCode,
+    faFileCode,
+    faListAlt,
+    faHistory,
+    faChartArea,
+    faEnvelopeOpen,
+    faArrowCircleDown,
+    faEnvelope,
+    faWindowMaximize,
+    faWindowClose,
+    faPaperPlane,
+    faPhone,
+    faAddressCard,
+    faAt,
+    faChalkboardTeacher,
+    faPlus,
+    faTrash,
+    faPen,
+    faBook,
+    faCaretDown,
+    faCaretUp,
+    faCheck,
+    faTimes,
+    faCaretLeft,
+    faCaretRight,
+    faCalendarAlt,
+    faCog,
+    faBookOpen,
+    faQrcode,
+    faClipboardCheck,
+    faRadiationAlt,
+    faUsers,
+    faHome,
+    faStar,
+    faFileMedicalAlt,
+    faLock,
+    faUnlock,
+    faUnlockAlt,
+    faTasks,
+    faSort,
+    faWindowMinimize,
+    faArrowLeft,
+    faArrowRight,
+    faArrowUp,
+    faArrowDown,
+} from '@fortawesome/free-solid-svg-icons';
+import { faLine, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons';
+
+import StarRating from '../components/StarRating.vue';
+import ToggleSwitch from '../components/ToggleSwitch.vue';
+import ChartView from '../components/ChartView.vue';
+import QrcodeVue from 'qrcode.vue';
+import { QrcodeStream } from 'vue-qrcode-reader';
+
+library.add(
+    faExclamationCircle,
+    faCheckCircle,
+    faUserEdit,
+    faSignOutAlt,
+    faCode,
+    faFileCode,
+    faListAlt,
+    faHistory,
+    faChartArea,
+    faEnvelopeOpen,
+    faArrowCircleDown,
+    faEnvelope,
+    faWindowMaximize,
+    faWindowClose,
+    faPaperPlane,
+    faPhone,
+    faAddressCard,
+    faUsers,
+    faAt,
+    faChalkboardTeacher,
+    faPlus,
+    faTrash,
+    faPen,
+    faBook,
+    faCaretDown,
+    faCaretUp,
+    faCheck,
+    faTimes,
+    faCaretLeft,
+    faCaretRight,
+    faCalendarAlt,
+    faCog,
+    faBookOpen,
+    faClipboardCheck,
+    faRadiationAlt,
+    faQrcode,
+    faHome,
+    faStar,
+    faFileMedicalAlt,
+    faLock,
+    faUnlock,
+    faUnlockAlt,
+    faTasks,
+    faSort,
+    faWindowMinimize,
+    faArrowLeft,
+    faArrowRight,
+    faArrowUp,
+    faArrowDown,
+    faLine,
+    faInstagram,
+    faYoutube,
+);
+
+dom.watch();
+
+const toastOptions = {
+    position: POSITION.BOTTOM_CENTER,
+    timeout: 2000,
+    closeButton: false,
+    hideProgressBar: true,
+};
+
+function registerToastHelpers(app) {
+    const defaultError = "Maaf, telah terjadi sesuatu\n(Panggil CEN untuk dilihat lebih lanjut)";
+    const defaultSuccess = 'Proses telah berhasil';
+
+    /**
+     * @param {unknown} payload
+     * @param {string} fallback
+     */
+    const getMessage = (payload, fallback) => {
+        if (!payload || typeof payload !== 'object') {
+            return fallback;
+        }
+
+        if ('message' in payload && typeof payload.message === 'string') {
+            return payload.message;
+        }
+
+        return fallback;
+    };
+
+    app.config.globalProperties.$toasted = {
+        global: {
+            showError(payload = {}) {
+                app.config.globalProperties.$toast?.error(getMessage(payload, defaultError), {
+                    icon: ['fas', 'exclamation-circle'],
+                });
+            },
+            showSuccess(payload = {}) {
+                app.config.globalProperties.$toast?.success(getMessage(payload, defaultSuccess), {
+                    icon: ['fas', 'check-circle'],
+                });
+            },
+        },
+    };
+}
+
+function registerScrollbarDirective(app) {
+    app.directive('scrollbar', {
+        mounted(el) {
+            el.classList.add('overflow-y-auto');
+            el.classList.add('scrollbar-thin');
+            el.classList.add('scrollbar-track-transparent');
+            el.classList.add('scrollbar-thumb-slate-400');
+        },
+    });
+}
+
+function registerScrollDirective(app) {
+    app.directive('scroll', {
+        mounted(el, binding) {
+            const handler = (event) => {
+                if (typeof binding.value === 'function') {
+                    binding.value(event, el);
+                }
+            };
+
+            el.__scrollHandler__ = handler;
+            el.addEventListener('scroll', handler, { passive: true });
+        },
+        unmounted(el) {
+            if (el.__scrollHandler__) {
+                el.removeEventListener('scroll', el.__scrollHandler__);
+                delete el.__scrollHandler__;
+            }
+        },
+    });
+}
+
+export default function installUi(app) {
+    app.use(Toast, toastOptions);
+    registerToastHelpers(app);
+    registerScrollbarDirective(app);
+    registerScrollDirective(app);
+
+    app.config.globalProperties.$anime = anime;
+
+    app.component('FontAwesomeIcon', FontAwesomeIcon);
+    app.component('StarRating', StarRating);
+    app.component('ToggleButton', ToggleSwitch);
+    app.component('Chart', ChartView);
+    app.component('QrcodeVue', QrcodeVue);
+    app.component('QrcodeStream', QrcodeStream);
+}

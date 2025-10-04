@@ -9,3 +9,149 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+.scrollbar-thin {
+    scrollbar-width: thin;
+}
+
+.scrollbar-thumb-slate-400::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.scrollbar-thumb-slate-400::-webkit-scrollbar-thumb {
+    background-color: #94a3b8;
+    border-radius: 9999px;
+}
+
+.scrollbar-track-transparent::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Legacy layout helpers from the original SCSS build */
+body.closed {
+    overflow: hidden;
+}
+
+.animation-enable {
+    transition: all 1s cubic-bezier(.36, .84, .21, .96) 0s;
+}
+
+.animation-enable-short {
+    transition: all .3s cubic-bezier(.36, .84, .21, .96) 0s;
+}
+
+.animation-enable-medium {
+    transition: all .5s cubic-bezier(.36, .84, .21, .96) 0s;
+}
+
+.animation-enable-long {
+    transition: all 2s cubic-bezier(.36, .84, .21, .96) 0s;
+}
+
+.button {
+    transition: all 0.5s cubic-bezier(0.65, -0.25, 0.25, 1.95);
+}
+
+.button:hover,
+.button:focus,
+.button:active {
+    letter-spacing: 0.125rem;
+}
+
+a.dynamic {
+    position: relative;
+    text-decoration: none;
+}
+
+a.dynamic::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #2f855a;
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: all .5s cubic-bezier(.36, .84, .21, .96) 0s;
+}
+
+a.dynamic:hover::before {
+    visibility: visible;
+    transform: scaleX(1);
+}
+
+a.chosen {
+    position: relative;
+    text-decoration: none;
+}
+
+a.chosen::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #2f855a;
+    transform: scaleX(1);
+}
+
+a.constant {
+    position: relative;
+    text-decoration: none;
+    transition: all .5s cubic-bezier(.36, .84, .21, .96) 0s;
+}
+
+a.constant::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 4px;
+    bottom: 0;
+    left: 0;
+    background-color: #d5e72c;
+    transition: all .5s cubic-bezier(.36, .84, .21, .96) 0s;
+}
+
+a.constant:hover {
+    color: #22543d;
+}
+
+a.constant:hover::after {
+    height: 100%;
+}
+
+.w-12full { width: calc(100% - 3rem) !important; }
+.w-16full { width: calc(100% - 4rem) !important; }
+.w-24full { width: calc(100% - 6rem) !important; }
+.w-36full { width: calc(100% - 9rem) !important; }
+.w-48full { width: calc(100% - 12rem) !important; }
+.w-120full { width: calc(100% - 20rem) !important; }
+.w-120 { width: 20rem !important; }
+.w-140 { width: 25rem !important; }
+.w-200 { width: 40rem !important; }
+
+.h-12full { height: calc(100% - 3rem) !important; }
+.h-16full { height: calc(100% - 4rem) !important; }
+.h-36full { height: calc(100% - 9rem) !important; }
+.h-48full { height: calc(100% - 12rem) !important; }
+
+.top-minFull { top: -100% !important; }
+.right-minFull { right: -100% !important; }
+.bottom-minFull { bottom: -100% !important; }
+.left-minFull { left: -100% !important; }
+
+.top-36full { top: calc(100% - 9rem) !important; }
+.right-36full { right: calc(100% - 9rem) !important; }
+.bottom-36full { bottom: calc(100% - 9rem) !important; }
+.left-36full { left: calc(100% - 9rem) !important; }
+
+.top-32full { top: calc(100% - 8rem) !important; }
+.right-32full { right: calc(100% - 8rem) !important; }
+.bottom-32full { bottom: calc(100% - 8rem) !important; }
+.left-32full { left: calc(100% - 8rem) !important; }
+
+.w-120.z-20 { z-index: 20; }
