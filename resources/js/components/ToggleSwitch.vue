@@ -1,8 +1,8 @@
 <template>
     <button
         type="button"
-        class="relative inline-flex items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
-        :class="modelValue ? 'bg-emerald-500' : 'bg-gray-300'"
+        class="relative inline-flex items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+        :class="modelValue ? 'bg-green-500' : 'bg-gray-300'"
         :style="{ width: `${width}px`, height: `${height}px` }"
         @click="toggle"
     >

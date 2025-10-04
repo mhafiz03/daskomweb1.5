@@ -1,0 +1,10 @@
+RENAME TABLE laporan__pjs TO laporan_pjs;
+RENAME TABLE jenis__pollings TO jenis_pollings;
+RENAME TABLE laporan__praktikans TO laporan_praktikans;
+RENAME TABLE history__jagas TO history_jagas;
+RENAME TABLE current__praktikums TO current_praktikums;
+RENAME TABLE jawaban__tps TO jawaban_tps;
+RENAME TABLE soal__tps TO soal_tps;
+RENAME TABLE temp__soaljurnals TO temp_soaljurnals;
+RENAME TABLE soal__jurnals TO soal_jurnals;
+RENAME TABLE soal__fitbs TO soal_fitbs;

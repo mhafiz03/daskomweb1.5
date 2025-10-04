@@ -87,9 +87,9 @@ Route::get('/praktikan', function () {
     $pollingComplete = Polling::where('praktikan_id', $user->id)->exists();
     $allPolling = JenisPolling::all();
     $allModul = Modul::orderBy('isEnglish','asc')->get();
-    $allJurnal = DB::table('soal__jurnals')
-            ->join('moduls', 'soal__jurnals.modul_id', '=', 'moduls.id')
-            ->select('soal__jurnals.*', 'moduls.judul')->get();
+    $allJurnal = DB::table('soal_jurnals')
+            ->join('moduls', 'soal_jurnals.modul_id', '=', 'moduls.id')
+            ->select('soal_jurnals.*', 'moduls.judul')->get();
     return Inertia::render('Praktikan', [
         'comingFrom' => $comingFrom,
         'currentUser' => $user,
@@ -107,24 +107,24 @@ Route::get('/soal', function () {
     $user = Auth::guard('asisten')->user();
     $userRole = Role::where('id', $user->role_id)->first();
     $allModul = Modul::orderBy('isEnglish','asc')->get();
-    $allTP = DB::table('soal__tps')
-            ->join('moduls', 'soal__tps.modul_id', '=', 'moduls.id')
-            ->select('soal__tps.*', 'moduls.judul')->get();
-    $allTA = DB::table('soal__tas')
-            ->join('moduls', 'soal__tas.modul_id', '=', 'moduls.id')
-            ->select('soal__tas.*', 'moduls.judul')->get();
-    $allTK = DB::table('soal__tks')
-            ->join('moduls', 'soal__tks.modul_id', '=', 'moduls.id')
-            ->select('soal__tks.*', 'moduls.judul')->get();
-    $allJurnal = DB::table('soal__jurnals')
-            ->join('moduls', 'soal__jurnals.modul_id', '=', 'moduls.id')
-            ->select('soal__jurnals.*', 'moduls.judul')->get();
-    $allMandiri = DB::table('soal__mandiris')
-            ->join('moduls', 'soal__mandiris.modul_id', '=', 'moduls.id')
-            ->select('soal__mandiris.*', 'moduls.judul')->get();
-    $allFITB = DB::table('soal__fitbs')
-            ->join('moduls', 'soal__fitbs.modul_id', '=', 'moduls.id')
-            ->select('soal__fitbs.*', 'moduls.judul')->get();
+    $allTP = DB::table('soal_tps')
+            ->join('moduls', 'soal_tps.modul_id', '=', 'moduls.id')
+            ->select('soal_tps.*', 'moduls.judul')->get();
+    $allTA = DB::table('soal_tas')
+            ->join('moduls', 'soal_tas.modul_id', '=', 'moduls.id')
+            ->select('soal_tas.*', 'moduls.judul')->get();
+    $allTK = DB::table('soal_tks')
+            ->join('moduls', 'soal_tks.modul_id', '=', 'moduls.id')
+            ->select('soal_tks.*', 'moduls.judul')->get();
+    $allJurnal = DB::table('soal_jurnals')
+            ->join('moduls', 'soal_jurnals.modul_id', '=', 'moduls.id')
+            ->select('soal_jurnals.*', 'moduls.judul')->get();
+    $allMandiri = DB::table('soal_mandiris')
+            ->join('moduls', 'soal_mandiris.modul_id', '=', 'moduls.id')
+            ->select('soal_mandiris.*', 'moduls.judul')->get();
+    $allFITB = DB::table('soal_fitbs')
+            ->join('moduls', 'soal_fitbs.modul_id', '=', 'moduls.id')
+            ->select('soal_fitbs.*', 'moduls.judul')->get();
 
     $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
     $position = request('position') === null ? 0:request('position');
@@ -183,10 +183,10 @@ Route::get('/modul', function () {
 Route::get('/plotting', function () {
     $user = Auth::guard('asisten')->user();
     $userRole = Role::where('id', $user->role_id)->first();
-    $allJaga = DB::table('jadwal__jagas')
-            ->join('asistens', 'jadwal__jagas.asisten_id', '=', 'asistens.id')
-            ->join('kelas', 'jadwal__jagas.kelas_id', '=', 'kelas.id')
-            ->select('jadwal__jagas.*', 'asistens.kode', 'kelas.kelas', 'kelas.hari', 'kelas.shift')->get();
+    $allJaga = DB::table('jadwal_jagas')
+            ->join('asistens', 'jadwal_jagas.asisten_id', '=', 'asistens.id')
+            ->join('kelas', 'jadwal_jagas.kelas_id', '=', 'kelas.id')
+            ->select('jadwal_jagas.*', 'asistens.kode', 'kelas.kelas', 'kelas.hari', 'kelas.shift')->get();
     $allKelas = Kelas::all();
     $allAsisten = Asisten::orderBy('kode','asc')->get();
     $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
@@ -276,9 +276,9 @@ Route::get('/pelanggaran', function () {
     $allAsisten = Asisten::orderBy('kode','asc')->get();
     foreach ($allAsisten as $asisten => $asisten_val) {
 
-        $allLaporan = LaporanPraktikan::where('laporan__praktikans.asisten_id',    $asisten_val->id)
-            ->join('praktikans', 'laporan__praktikans.praktikan_id', '=', 'praktikans.id')
-            ->select('laporan__praktikans.*', 'praktikans.nama', 'praktikans.nim', 'praktikans.kelas_id')
+        $allLaporan = LaporanPraktikan::where('laporan_praktikans.asisten_id',    $asisten_val->id)
+            ->join('praktikans', 'laporan_praktikans.praktikan_id', '=', 'praktikans.id')
+            ->select('laporan_praktikans.*', 'praktikans.nama', 'praktikans.nim', 'praktikans.kelas_id')
             ->latest()
             ->get();
 
@@ -406,10 +406,10 @@ Route::get('/nilai', function () {
     $userRole = Role::where('id', $user->role_id)->first();
     $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
     $position = request('position') === null ? 0:request('position');
-    $allLaporan = LaporanPraktikan::where('laporan__praktikans.asisten_id', $user->id)
-        ->join('praktikans', 'laporan__praktikans.praktikan_id', '=', 'praktikans.id')
+    $allLaporan = LaporanPraktikan::where('laporan_praktikans.asisten_id', $user->id)
+        ->join('praktikans', 'laporan_praktikans.praktikan_id', '=', 'praktikans.id')
         ->join('kelas', 'praktikans.kelas_id', '=', 'kelas.id')
-        ->select('laporan__praktikans.*', 'praktikans.nama', 'praktikans.nim', 'praktikans.kelas_id', 'kelas', 'kelas.shift', 'kelas.hari')
+        ->select('laporan_praktikans.*', 'praktikans.nama', 'praktikans.nim', 'praktikans.kelas_id', 'kelas', 'kelas.shift', 'kelas.hari')
         ->latest()
         ->get();
     foreach ($allLaporan as $laporan => $value)
@@ -438,9 +438,9 @@ Route::get('/history', function () {
     
     $asistenExist = false;
     $allAsistenHistory = [];
-    $allHistory = DB::table('laporan__pjs')
-        ->join('moduls', 'laporan__pjs.modul_id', '=', 'moduls.id')
-        ->select('laporan__pjs.*', 'moduls.judul')->orderBy('created_at','desc')->get();
+    $allHistory = DB::table('laporan_pjs')
+        ->join('moduls', 'laporan_pjs.modul_id', '=', 'moduls.id')
+        ->select('laporan_pjs.*', 'moduls.judul')->orderBy('created_at','desc')->get();
     foreach ($allHistory as $history => $h) {
 
         $asistenExist = false;
@@ -724,9 +724,9 @@ Route::get('/allLaporan', function () {
     $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
     $position = request('position') === null ? 0:request('position');
     $allModul = Modul::orderBy('isEnglish','asc')->get();
-    $allHistory = DB::table('laporan__pjs')
-                    ->join('moduls', 'laporan__pjs.modul_id', '=', 'moduls.id')
-                    ->select('laporan__pjs.*', 'moduls.judul')->orderBy('created_at','desc')->get();
+    $allHistory = DB::table('laporan_pjs')
+                    ->join('moduls', 'laporan_pjs.modul_id', '=', 'moduls.id')
+                    ->select('laporan_pjs.*', 'moduls.judul')->orderBy('created_at','desc')->get();
 
     $allLaporanPrivilege = array(1,2,4,5,6);
     if(in_array($userRole->id,$allLaporanPrivilege,true)){
