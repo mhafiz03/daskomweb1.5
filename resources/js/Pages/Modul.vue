@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full overflow-hidden">
+  <div class="w-full h-screen overflow-hidden">
 
     <!-- Main Menu -->
     <div class="absolute w-120 z-20 h-48full bottom-0 right-0 animation-enable"
@@ -391,7 +391,7 @@
       </div>
 
       <!-- List All Modul -->
-      <div class="absolute w-full h-full animation-enable"
+      <div class="absolute w-full h-screen animation-enable"
           :class="[{ 'bottom-minFull': !currentPage },
                   { 'bottom-0': currentPage }]" v-scrollbar>
         <div>
