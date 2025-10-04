@@ -1,5 +1,5 @@
 <template>
-  <div class="main_container bg-green-900 w-full h-full overflow-hidden">
+  <div class="bg-green-900 w-full h-full overflow-hidden">
 
     <!-- Main Layout -->
     <div class="absolute my-auto z-40 h-full pointer-events-none flex animation-enable"

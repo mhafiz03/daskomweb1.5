@@ -1,5 +1,5 @@
 <template>
-  <div class="main_container w-full h-full overflow-hidden"> 
+  <div class="w-full h-full overflow-hidden"> 
 
     <!-- Main Background -->
     <div class="h-full w-full fixed top-0 bg-gray-400">

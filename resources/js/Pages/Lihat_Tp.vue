@@ -1,5 +1,5 @@
 <template>
-  <div class="main_container w-full h-full overflow-hidden">
+  <div class="w-full h-full overflow-hidden">
 
     <div class="w-full h-12 sm:flex flex-row bg-green-600 shadow-xl"
         :class="[{ 'hidden sm:hidden': !tpDataShown },

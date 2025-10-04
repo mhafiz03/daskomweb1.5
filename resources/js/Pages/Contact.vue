@@ -1,5 +1,5 @@
 <template>
-  <div class="main_container w-full h-full overflow-hidden" v-scroll="handleScroll">
+  <div class="w-full h-full overflow-hidden" v-scroll="handleScroll">
 
     <!-- Main Background -->
     <div class="w-full h-full fixed top-0 bg-gray-400"/>

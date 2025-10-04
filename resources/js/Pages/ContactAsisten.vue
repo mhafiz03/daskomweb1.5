@@ -1,5 +1,5 @@
 <template>
-  <div class="main_container bg-green-900 w-full h-full overflow-y-scroll">
+  <div class="bg-green-900 w-full h-full overflow-y-scroll">
 
       <!-- Navbar -->
       <section class="py-1 px-5 bg-green-700 w-full fixed">

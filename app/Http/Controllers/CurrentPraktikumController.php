@@ -162,7 +162,7 @@ class CurrentPraktikumController extends Controller
     public function update($status)
     {
         $praktikum = CurrentPraktikum::all()->first();
-        $praktikum->status = $status;
+        $praktikum->status = (int) $status;
         $praktikum->save();
 
         broadcast(new PraktikumStatusUpdated($praktikum));

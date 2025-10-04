@@ -1,5 +1,5 @@
 <template>
-  <div class="main_container w-full h-full overflow-hidden">
+  <div class="w-full h-full overflow-hidden">
 
     <div class="h-full w-full fixed bg-gray-400"/>
 
