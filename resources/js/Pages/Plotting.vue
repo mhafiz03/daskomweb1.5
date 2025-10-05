@@ -658,7 +658,7 @@
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/' + $whereTo + '?comingFrom=plotting&position=' + globe.$refs.menu.scrollTop, {}, {
+          globe.$inertia.get('/asisten/' + $whereTo + '?comingFrom=plotting&position=' + globe.$refs.menu.scrollTop, {}, {
             replace: true,
           });
         }, 501); 
@@ -716,7 +716,7 @@
 
     resetJadwal: function(){
       const globe = this;
-      this.$axios.post('/resetJadwalJaga').then(response => {
+      this.$axios.delete('/asisten/jadwal-jaga/reset').then(response => {
         
         if(response.data.message === "success") {
           
@@ -749,7 +749,7 @@
         });
       }
 
-      this.$axios.post('/deleteJadwalJaga', this.formJaga).then(response => {
+      this.$axios.delete('/asisten/jadwal-jaga', { data: this.formJaga }).then(response => {
 
         if(response.data.message === "success") {
 
@@ -799,7 +799,7 @@
     createJadwalJaga: function(){
 
       const globe = this;
-      this.$axios.post('/createJadwalJaga', this.formJaga).then(response => {
+      this.$axios.post('/asisten/jadwal-jaga', this.formJaga).then(response => {
 
         if(response.data.message === "success") {
 
@@ -872,7 +872,7 @@
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/logoutAsisten', {}, {
+          globe.$inertia.get('/auth/asisten/logout', {}, {
             replace: true,
           });
         }, 1010); 

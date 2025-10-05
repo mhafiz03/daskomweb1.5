@@ -1189,7 +1189,7 @@ export default {
               break;
           }
 
-          globe.$axios.post('/currentLaporanPJ').then(response => {
+          globe.$axios.post('/asisten/laporan-pj/current').then(response => {
 
             if(response.data.message === "success") {
               
@@ -1202,7 +1202,7 @@ export default {
             }
           });
 
-          globe.$axios.post('/latestPJHistory/jaga').then(response => {
+          globe.$axios.post('/asisten/history/jaga/latest-pj').then(response => {
 
             if(response.data.message === "success") {
               
@@ -1277,7 +1277,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/' + $whereTo + '?comingFrom=praktikum&position=' + globe.$refs.menu.scrollTop, {}, {
+          globe.$inertia.get('/asisten/' + $whereTo + '?comingFrom=praktikum&position=' + globe.$refs.menu.scrollTop, {}, {
             replace: true,
           });
         }, 501); 
@@ -1513,22 +1513,22 @@ export default {
 
             if(response.data.message === "success") {
 
-              globe.$axios.post('/makeHistory/izin', globe.formHistoryIzin_Izin).then(response => {
+              globe.$axios.post('/asisten/history/izin', globe.formHistoryIzin_Izin).then(response => {
 
                 if(response.data.message === "success") {
 
-                  globe.$axios.post('/makeHistory/izin', globe.formHistoryIzin_Sakit).then(response => {
+                  globe.$axios.post('/asisten/history/izin', globe.formHistoryIzin_Sakit).then(response => {
 
                     if(response.data.message === "success") {
 
-                      globe.$axios.post('/makeHistory/izin', globe.formHistoryIzin_Alfa).then(response => {
+                      globe.$axios.post('/asisten/history/izin', globe.formHistoryIzin_Alfa).then(response => {
 
                         if(response.data.message === "success") {
                           
                           if(globe.formPraktikan_Alfa.allpraktikan_nim !== '*'){
                            
                             globe.formPraktikan_Alfa.modul_id = globe.chosenModulID;
-                            globe.$axios.post('/deletePraktikanAlfa', globe.formPraktikan_Alfa).then(response => {
+                            globe.$axios.delete('/asisten/praktikan/alfa', { data: globe.formPraktikan_Alfa }).then(response => {
 
                               if(response.data.message === "success") {
                                 // Do nothing as its working as it supposed to be
@@ -1541,13 +1541,13 @@ export default {
                             });
                           }
 
-                          globe.$axios.post('/updateLaporanPJ', globe.formLaporanPj).then(response => {
+                          globe.$axios.put('/asisten/laporan-pj', globe.formLaporanPj).then(response => {
 
                             if(response.data.message === "success") {
 
                               globe.formPraktikum.pj_id = globe.currentUser.id;
                               globe.formPraktikum.laporan_id = globe.formLaporanPj.id;
-                              globe.$axios.post('/createPraktikum', globe.formPraktikum).then(response => {
+                              globe.$axios.post('/asisten/praktikum', globe.formPraktikum).then(response => {
 
                                 if(response.data.message === "success") {
 
@@ -1561,7 +1561,7 @@ export default {
                                   });
                                 }
                               });
-                              globe.$axios.post('/stopPraktikum').then(response => {
+                              globe.$axios.delete('/asisten/praktikum/stop').then(response => {
 
                                 globe.praktikumStart = false;
                                 globe.statusPraktikum = 0;
@@ -1733,9 +1733,9 @@ export default {
       globe.soundPlayed = false;
       globe.statusPraktikum = 0;
       globe.menuDisabled = false;
-      globe.$axios.post('/stopPraktikum');
-      globe.$axios.post('/deleteLaporanPJ/'+globe.formLaporanPj.id);
-      globe.$axios.post('/deleteHistory/jaga', globe.formHistoryJaga).then(response => {
+      globe.$axios.delete('/asisten/praktikum/stop');
+      globe.$axios.delete('/asisten/laporan-pj/'+globe.formLaporanPj.id);
+      globe.$axios.delete('/asisten/history/jaga', { data: globe.formHistoryJaga }).then(response => {
 
         if(response.data.message === "success") {
             //DO NOTHING (it runs as we expected)
@@ -1757,7 +1757,7 @@ export default {
         
         this.statusPraktikum = 1;
 
-        globe.$axios.post('/continuePraktikum/'+globe.statusPraktikum).then(response => {
+        globe.$axios.put('/asisten/praktikum/continue/'+globe.statusPraktikum).then(response => {
 
           if(response.data.message === "success") {
               //DO NOTHING (it runs as we expected)
@@ -1785,7 +1785,7 @@ export default {
 
       const globe = this;
 
-      globe.$axios.post('/checkPraktikum').then(response => {
+      globe.$axios.post('/praktikum/check').then(response => {
         if(response.data.message === "success") {
           if(response.data.current_praktikum != null){
             if(response.data.current_praktikum.asisten_id !== globe.currentUser.id){
@@ -1849,7 +1849,7 @@ export default {
 
       this.formPraktikum.kelas_id = this.chosenKelasID;
       this.formPraktikum.modul_id = this.chosenModulID;
-      this.$axios.post('/cekPraktikum', this.formPraktikum).then(response => {
+      this.$axios.post('/asisten/praktikum/check', this.formPraktikum).then(response => {
 
         if(response.data.message === "success") {
 
@@ -1869,7 +1869,7 @@ export default {
           }
           globe.formLaporanPj.modul_id = this.chosenModulID;
           
-          globe.$axios.post('/createLaporanPJ', globe.formLaporanPj).then(response => {
+          globe.$axios.post('/asisten/laporan-pj', globe.formLaporanPj).then(response => {
 
             if(response.data.message === "success") {
 
@@ -1886,7 +1886,7 @@ export default {
           globe.formCurrentPraktikum.kelas_id = globe.chosenKelasID;
           globe.formCurrentPraktikum.modul_id = globe.chosenModulID;
           globe.formCurrentPraktikum.asisten_id = globe.currentUser.id;
-          globe.$axios.post('/startPraktikum', globe.formCurrentPraktikum).then(response => {
+          globe.$axios.post('/asisten/praktikum/start', globe.formCurrentPraktikum).then(response => {
 
             if(response.data.message === "success") {
               globe.menuDisabled = true;
@@ -2057,7 +2057,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/logoutAsisten', {}, {
+          globe.$inertia.get('/auth/asisten/logout', {}, {
             replace: true,
           });
         }, 1010); 

@@ -500,7 +500,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/' + $whereTo + '?comingFrom=jawaban&position=' + globe.$refs.menu.scrollTop, {}, {
+          globe.$inertia.get('/asisten/' + $whereTo + '?comingFrom=jawaban&position=' + globe.$refs.menu.scrollTop, {}, {
             replace: true,
           });
         }, 501); 
@@ -509,7 +509,7 @@ export default {
     setActive: function($modul){
       const globe = this;
       console.log($modul);
-        this.$axios.post('/activateJawaban', $modul).then(response => {
+        this.$axios.post('/asisten/modul/jawaban-config', $modul).then(response => {
           if(response.data.message === "success" && $modul.isUnlocked === true) {
             globe.$toasted.global.showSuccess({
               message: "Jawaban berhasil diaktifkan"
@@ -534,7 +534,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/logoutAsisten', {}, {
+          globe.$inertia.get('/auth/asisten/logout', {}, {
             replace: true,
           });
         }, 1010); 

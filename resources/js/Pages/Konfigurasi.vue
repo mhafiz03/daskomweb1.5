@@ -597,7 +597,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/' + $whereTo + '?comingFrom=konfigurasi&position=' + globe.$refs.menu.scrollTop, {}, {
+          globe.$inertia.get('/asisten/' + $whereTo + '?comingFrom=konfigurasi&position=' + globe.$refs.menu.scrollTop, {}, {
             replace: true,
           });
         }, 501); 
@@ -610,7 +610,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/logoutAsisten', {}, {
+          globe.$inertia.get('/auth/asisten/logout', {}, {
             replace: true,
           });
         }, 1010); 
@@ -629,7 +629,7 @@ export default {
     saveConfig: function(){
 
       const globe = this;
-      globe.$axios.post('/saveConfiguration', globe.formConfig).then(response => {
+      globe.$axios.post('/asisten/konfigurasi/save', globe.formConfig).then(response => {
 
         if(response.data.message === "success") {
 

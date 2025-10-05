@@ -472,7 +472,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/' + $whereTo + '?comingFrom=history&position=' + globe.$refs.menu.scrollTop, {}, {
+          globe.$inertia.get('/asisten/' + $whereTo + '?comingFrom=history&position=' + globe.$refs.menu.scrollTop, {}, {
             replace: true,
           });
         }, 501); 
@@ -485,7 +485,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/logoutAsisten', {}, {
+          globe.$inertia.get('/auth/asisten/logout', {}, {
             replace: true,
           });
         }, 1010); 

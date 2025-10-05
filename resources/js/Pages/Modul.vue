@@ -638,7 +638,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/' + $whereTo + '?comingFrom=modul&position=' + globe.$refs.menu.scrollTop, {}, {
+          globe.$inertia.get('/asisten/' + $whereTo + '?comingFrom=modul&position=' + globe.$refs.menu.scrollTop, {}, {
             replace: true,
           });
         }, 501); 
@@ -690,7 +690,7 @@ export default {
 
       const globe = this;
 
-      this.$axios.post('/updateModul', this.formModul).then(response => {
+      this.$axios.put('/asisten/modul', this.formModul).then(response => {
 
         if(response.data.message === "success") {
 
@@ -777,7 +777,7 @@ export default {
 
         setTimeout(() => {
           
-          globe.$axios.post('/readModul').then(response => {
+          globe.$axios.post('/asisten/modul/read').then(response => {
             globe.listAllModul = response.data;
           })
 
@@ -796,7 +796,7 @@ export default {
     deleteModul: function($id){
 
       const globe = this;
-      this.$axios.post('/deleteModul/'+$id).then(response => {
+      this.$axios.delete(`/asisten/modul/${$id}`).then(response => {
 
         if(response.data.message === "success") {
 
@@ -841,7 +841,7 @@ export default {
     createModul: function(){
       
       const globe = this;
-      this.$axios.post('/createModul', this.formModul).then(response => {
+      this.$axios.post('/asisten/modul', this.formModul).then(response => {
 
         if(response.data.message === "success") {
 
@@ -891,7 +891,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/logoutAsisten', {}, {
+          globe.$inertia.get('/auth/asisten/logout', {}, {
             replace: true,
           });
         }, 1010); 

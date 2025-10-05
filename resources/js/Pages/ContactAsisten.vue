@@ -106,7 +106,7 @@ export default {
       const globe = this;
       setTimeout(
         function() {
-          globe.$inertia.get('/' + $whereTo, {}, {
+          globe.$inertia.get('/praktikan/' + $whereTo, {}, {
             replace: true,
           });
         }, 501); 
@@ -119,7 +119,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/logoutAsisten', {}, {
+          globe.$inertia.get('/auth/praktikan/logout', {}, {
             replace: true,
           });
         }, 1010); 

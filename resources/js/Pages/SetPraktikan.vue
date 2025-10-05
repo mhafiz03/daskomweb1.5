@@ -508,7 +508,7 @@ export default {
         return;
       }
 
-      globe.$axios.post('/changePraktikanPass/'+this.praktikanNimPass+'/'+this.newPass).then(response => {
+      globe.$axios.put('/asisten/praktikan/password/'+this.praktikanNimPass+'/'+this.newPass).then(response => {
 
         if(response.data.message === "success") {
           globe.$toasted.global.showSuccess({
@@ -541,7 +541,7 @@ export default {
         return;
       }
 
-      globe.$axios.post('/setThisPraktikan/'+this.praktikanNim+'/'+this.currentUser.id+'/'+this.chosenModulID).then(response => {
+      globe.$axios.post('/asisten/praktikan/set/'+this.praktikanNim+'/'+this.currentUser.id+'/'+this.chosenModulID).then(response => {
 
         if(response.data.message === "success") {
           globe.$toasted.global.showSuccess({
@@ -565,7 +565,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/' + $whereTo + '?comingFrom=setpraktikan&position=' + globe.$refs.menu.scrollTop, {}, {
+          globe.$inertia.get('/asisten/' + $whereTo + '?comingFrom=setpraktikan&position=' + globe.$refs.menu.scrollTop, {}, {
             replace: true,
           });
         }, 501); 
@@ -578,7 +578,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/logoutAsisten', {}, {
+          globe.$inertia.get('/auth/asisten/logout', {}, {
             replace: true,
           });
         }, 1010); 

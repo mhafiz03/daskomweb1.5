@@ -656,7 +656,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/' + $whereTo + '?comingFrom=kelas&position=' + globe.$refs.menu.scrollTop, {}, {
+          globe.$inertia.get('/asisten/' + $whereTo + '?comingFrom=kelas&position=' + globe.$refs.menu.scrollTop, {}, {
             replace: true,
           });
         }, 501); 
@@ -669,7 +669,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/logoutAsisten', {}, {
+          globe.$inertia.get('/auth/asisten/logout', {}, {
             replace: true,
           });
         }, 1010); 
@@ -678,7 +678,7 @@ export default {
     updateKelas: function(){
 
       const globe = this;
-      this.$axios.post('/updateKelas', this.formKelas).then(response => {
+      this.$axios.put('/asisten/kelas', this.formKelas).then(response => {
         
         console.log(response.data)
         if(response.data.message === "success") {
@@ -746,7 +746,7 @@ export default {
         });
         return;
       }
-      this.$axios.post('/deleteKelas', this.formKelas).then(response => {
+      this.$axios.delete('/asisten/kelas', { data: { id: this.formKelas.id } }).then(response => {
         
         if(response.data.message === "success") {
 
@@ -805,7 +805,7 @@ export default {
       }
 
       if(notError){
-        this.$axios.post('/createKelas', this.formKelas).then(response => {
+        this.$axios.post('/asisten/kelas', this.formKelas).then(response => {
           
           if(response.data.message === "success") {
 

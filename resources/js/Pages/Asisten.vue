@@ -642,7 +642,7 @@ export default {
         }, 10); 
     }
 
-    globe.$axios.get('/getProfilAsisten/'+globe.currentUser.id).then(response => {
+    globe.$axios.get('/asisten/profil/'+globe.currentUser.id).then(response => {
 
       if(response.data.message === "success") {
         globe.ratingAsisten = response.data.ratingAsisten;
@@ -714,7 +714,7 @@ export default {
 
     updateDeskripsi: function(){
       const globe = this;
-      this.$axios.post('/updateDesc', this.formDesc).then(response => {
+      this.$axios.post('/asisten/update-desc', this.formDesc).then(response => {
         
         if(response.data.message === "success") {
 
@@ -764,7 +764,7 @@ export default {
       this.changePage = true;
       setTimeout(
         function() {
-          globe.$inertia.get('/' + $whereTo + '?comingFrom=asisten&position=' + globe.$refs.menu.scrollTop, {}, {
+          globe.$inertia.get('/asisten/' + $whereTo + '?comingFrom=asisten&position=' + globe.$refs.menu.scrollTop, {}, {
             replace: true,
           });
         }, 501); 
@@ -795,7 +795,7 @@ export default {
 
     openMessage: function(){
 
-      this.$axios.post('/readPesan').then(response => {
+      this.$axios.post('/asisten/pesan').then(response => {
         //Do nothing 
       }).catch(function (error) {
         if (error.response) {
@@ -822,7 +822,7 @@ export default {
       this.pageActive = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/logoutAsisten', {}, {
+          globe.$inertia.get('/auth/asisten/logout', {}, {
             replace: true,
           });
         }, 1010); 

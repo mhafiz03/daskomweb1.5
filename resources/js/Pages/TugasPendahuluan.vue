@@ -510,7 +510,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/' + $whereTo + '?comingFrom=tp&position=' + globe.$refs.menu.scrollTop, {}, {
+          globe.$inertia.get('/asisten/' + $whereTo + '?comingFrom=tp&position=' + globe.$refs.menu.scrollTop, {}, {
             replace: true,
           });
         }, 501); 
@@ -528,7 +528,7 @@ export default {
               if(this.listAllTP[index].isEnglish === element.isEnglish)
                 element.isActive = false;
           });
-          this.$axios.post('/activateTP/'+this.listAllTP[index].modul_id).then(response => {
+          this.$axios.post('/asisten/tp/activate/'+this.listAllTP[index].modul_id).then(response => {
             if(response.data.message === "success") {
 
               globe.$toasted.global.showSuccess({
@@ -541,7 +541,7 @@ export default {
             }
           })
         } else
-          this.$axios.post('/deactivateTP/'+this.listAllTP[index].modul_id).then(response => {
+          this.$axios.post('/asisten/tp/deactivate/'+this.listAllTP[index].modul_id).then(response => {
             if(response.data.message === "success") {
 
               globe.$toasted.global.showSuccess({
@@ -559,7 +559,7 @@ export default {
     createTP: function(){
 
       const globe = this;
-      this.$axios.post('/addPembahasanTP', this.formTP).then(response => {
+      this.$axios.post('/asisten/tp/pembahasan', this.formTP).then(response => {
 
         if(response.data.message === "success") {
 
@@ -626,7 +626,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/logoutAsisten', {}, {
+          globe.$inertia.get('/auth/asisten/logout', {}, {
             replace: true,
           });
         }, 1010); 

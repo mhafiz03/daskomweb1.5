@@ -750,7 +750,7 @@ export default defineComponent({
             });
           }
 
-          http.get('/getSoalJURNAL').then((response) => {
+          http.get('/api/soal/jurnal').then((response) => {
             if (response.data.message === 'success' && response.data.all_soal) {
               state.soalJurnal = response.data.all_soal.filter((el) => el != null);
               state.jawabanJurnal = state.soalJurnal.map((soal) => ({
@@ -764,7 +764,7 @@ export default defineComponent({
             }
           });
 
-          http.get('/getSoalFITB').then((response) => {
+          http.get('/api/soal/fitb').then((response) => {
             if (response.data.message === 'success' && response.data.all_soal) {
               state.soalFitb = response.data.all_soal.filter((el) => el != null);
               state.jawabanFitb = state.soalFitb.map((soal) => ({
@@ -875,7 +875,7 @@ export default defineComponent({
           });
           break;
         case 123:
-          http.get('/getSoalRUNMOD').then((response) => {
+          http.get('/api/soal/runmod').then((response) => {
             if (response.data.message === 'success' && response.data.all_soal) {
               state.soalRunmod = response.data.all_soal;
               state.jawabanRunmod = state.soalRunmod.map((soal) => ({

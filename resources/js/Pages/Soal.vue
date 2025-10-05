@@ -1019,9 +1019,9 @@ export default {
       const configs = {
         TP: {
           listKey: 'listAllTP',
-          createUrl: '/createTP',
-          updateUrl: '/updateTP',
-          deleteUrl: id => `/deleteTP/${id}`,
+          createUrl: '/asisten/soal/tp',
+          updateUrl: '/asisten/soal/tp',
+          deleteUrl: id => `/asisten/soal/tp/${id}`,
           messages: {
             create: 'Soal TP berhasil ditambahkan',
             update: 'Soal TP berhasil diperbaharui',
@@ -1031,9 +1031,9 @@ export default {
         },
         TA: {
           listKey: 'listAllTA',
-          createUrl: '/createTA',
-          updateUrl: '/updateTA',
-          deleteUrl: id => `/deleteTA/${id}`,
+          createUrl: '/asisten/soal/ta',
+          updateUrl: '/asisten/soal/ta',
+          deleteUrl: id => `/asisten/soal/ta/${id}`,
           messages: {
             create: 'Soal TA berhasil ditambahkan',
             update: 'Soal TA berhasil diperbaharui',
@@ -1043,9 +1043,9 @@ export default {
         },
         TK: {
           listKey: 'listAllTK',
-          createUrl: '/createTK',
-          updateUrl: '/updateTK',
-          deleteUrl: id => `/deleteTK/${id}`,
+          createUrl: '/asisten/soal/tk',
+          updateUrl: '/asisten/soal/tk',
+          deleteUrl: id => `/asisten/soal/tk/${id}`,
           messages: {
             create: 'Soal TK berhasil ditambahkan',
             update: 'Soal TK berhasil diperbaharui',
@@ -1055,9 +1055,9 @@ export default {
         },
         Jurnal: {
           listKey: 'listAllJurnal',
-          createUrl: '/createJurnal',
-          updateUrl: '/updateJurnal',
-          deleteUrl: id => `/deleteJurnal/${id}`,
+          createUrl: '/asisten/soal/jurnal',
+          updateUrl: '/asisten/soal/jurnal',
+          deleteUrl: id => `/asisten/soal/jurnal/${id}`,
           messages: {
             create: 'Soal Jurnal berhasil ditambahkan',
             update: 'Soal Jurnal berhasil diperbaharui',
@@ -1067,9 +1067,9 @@ export default {
         },
         Mandiri: {
           listKey: 'listAllMandiri',
-          createUrl: '/createMandiri',
-          updateUrl: '/updateMandiri',
-          deleteUrl: id => `/deleteMandiri/${id}`,
+          createUrl: '/asisten/soal/mandiri',
+          updateUrl: '/asisten/soal/mandiri',
+          deleteUrl: id => `/asisten/soal/mandiri/${id}`,
           messages: {
             create: 'Soal Mandiri berhasil ditambahkan',
             update: 'Soal Mandiri berhasil diperbaharui',
@@ -1079,9 +1079,9 @@ export default {
         },
         FITB: {
           listKey: 'listAllFITB',
-          createUrl: '/createFitb',
-          updateUrl: '/updateFitb',
-          deleteUrl: id => `/deleteFitb/${id}`,
+          createUrl: '/asisten/soal/fitb',
+          updateUrl: '/asisten/soal/fitb',
+          deleteUrl: id => `/asisten/soal/fitb/${id}`,
           messages: {
             create: 'Soal FITB berhasil ditambahkan',
             update: 'Soal FITB berhasil diperbaharui',
@@ -1349,7 +1349,7 @@ export default {
 
       const form = this.getFormReference();
 
-      this.$axios.post(config.updateUrl, form).then(response => {
+      this.$axios.put(config.updateUrl, form).then(response => {
         if (response.data.message === 'success') {
           const updated = response.data.soal;
           const modulTitle = this.findModulTitle(updated.modul_id);
@@ -1376,7 +1376,7 @@ export default {
         return;
       }
 
-      this.$axios.post(config.deleteUrl(id)).then(response => {
+      this.$axios.delete(config.deleteUrl(id)).then(response => {
         if (response.data.message === 'success') {
           this.$toasted.global.showSuccess({
             message: config.messages.delete,
@@ -1407,7 +1407,7 @@ export default {
       const position = this.$refs.menu ? this.$refs.menu.scrollTop : 0;
 
       setTimeout(() => {
-        this.$inertia.get(`/${whereTo}?comingFrom=soal&position=${position}`, {}, {
+        this.$inertia.get(`/asisten/${whereTo}?comingFrom=soal&position=${position}`, {}, {
           replace: true,
         });
       }, 501);
@@ -1417,7 +1417,7 @@ export default {
       this.pageActive = false;
       this.currentPage = false;
       setTimeout(() => {
-        this.$inertia.get('/logoutAsisten', {}, {
+        this.$inertia.get('/auth/asisten/logout', {}, {
           replace: true,
         });
       }, 1010);

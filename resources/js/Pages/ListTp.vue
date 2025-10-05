@@ -571,7 +571,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/' + $whereTo + '?comingFrom=listTp&position=' + globe.$refs.menu.scrollTop, {}, {
+          globe.$inertia.get('/asisten/' + $whereTo + '?comingFrom=listTp&position=' + globe.$refs.menu.scrollTop, {}, {
             replace: true,
           });
         }, 501); 
@@ -584,7 +584,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/logoutAsisten', {}, {
+          globe.$inertia.get('/auth/asisten/logout', {}, {
             replace: true,
           });
         }, 1010); 
@@ -623,7 +623,7 @@ export default {
 
       this.currentKelasID = this.chosenKelasID;
       this.currentModulID = this.chosenModulID;
-      globe.$axios.post('/getKumpulTp/'+this.chosenKelasID+"/"+this.chosenModulID).then(response => {
+      globe.$axios.post('/asisten/tp/kumpul/'+this.chosenKelasID+'/'+this.chosenModulID).then(response => {
 
         if(response.data.message === "success"){
 
@@ -667,7 +667,7 @@ export default {
 
           this.isValid = true;
   
-          globe.$axios.post('/kumpulTp', this.decodedQrcode).then(response => {
+          globe.$axios.post('/asisten/tp/kumpul', this.decodedQrcode).then(response => {
 
             if(response.data.success === "yes")
               this.isSuccess = true;

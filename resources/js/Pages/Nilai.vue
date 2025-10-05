@@ -816,7 +816,7 @@ export default {
       this.nilaiShown = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/' + $whereTo + '?comingFrom=konfigurasi&position=' + globe.$refs.menu.scrollTop, {}, {
+          globe.$inertia.get('/asisten/' + $whereTo + '?comingFrom=konfigurasi&position=' + globe.$refs.menu.scrollTop, {}, {
             replace: true,
           });
         }, 501); 
@@ -829,7 +829,7 @@ export default {
       this.currentPage = false;
       setTimeout(
         function() {
-          globe.$inertia.get('/logoutAsisten', {}, {
+          globe.$inertia.get('/auth/asisten/logout', {}, {
             replace: true,
           });
         }, 1010); 
@@ -857,7 +857,7 @@ export default {
 
       if(this.listAllLaporan[$index].nilaiExists === true){
 
-        globe.$axios.post('/getCurrentNilai/'+$praktikan_id+"/"+$modul_id).then(response => {
+        globe.$axios.post('/asisten/nilai/'+$praktikan_id+'/'+$modul_id).then(response => {
 
           if(response.data.message === "success"){
 
@@ -883,7 +883,7 @@ export default {
           this.formNilai.skill = 100;
         }
 
-        globe.$axios.post('/createFormNilai/'+$praktikan_id+"/"+$modul_id).then(response => {
+        globe.$axios.post('/asisten/nilai/form/'+$praktikan_id+'/'+$modul_id).then(response => {
 
           if(response.data.message === "success"){
 
@@ -897,7 +897,7 @@ export default {
         });
       }
       
-      globe.$axios.post('/getAllJawaban/'+$praktikan_id+"/"+$modul_id).then(response => {
+      globe.$axios.post('/asisten/nilai/jawaban/'+$praktikan_id+'/'+$modul_id).then(response => {
 
         if(response.data.message === "success"){
 
@@ -954,7 +954,7 @@ export default {
       globe.formNilai.kelas_id = globe.chosenKelasID;
       globe.formNilai.praktikan_id = globe.chosenPraktikanID;
       globe.formNilai.asisten_id = globe.currentUser.id;
-      globe.$axios.post('/inputNilai', this.formNilai).then(response => {
+      globe.$axios.post('/asisten/nilai', this.formNilai).then(response => {
 
         if(response.data.message === "success"){
 

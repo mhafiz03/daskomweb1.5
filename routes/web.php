@@ -1,22 +1,40 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
-use Inertia\Inertia;
-use App\Models\Role;
-use App\Models\Kelas;
-use App\Models\Feedback;
-use App\Models\Modul;
-use App\Models\JadwalJaga;
-use App\Models\Asisten;
-use App\Models\Configuration;
-use App\Models\Tugaspendahuluan;
-use App\Models\LaporanPraktikan;
-use App\Models\Nilai;
-use App\Models\Praktikan;
-use App\Models\Polling;
-use App\Models\JenisPolling;
+use App\Http\Controllers\Auth\AsistenLoginController;
+use App\Http\Controllers\Auth\PraktikanLoginController;
+use App\Http\Controllers\AsistenController;
+use App\Http\Controllers\ConfigurationController;
+use App\Http\Controllers\CurrentPraktikumController;
+use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\HistoryIzinController;
+use App\Http\Controllers\HistoryJagaController;
+use App\Http\Controllers\JadwalJagaController;
+use App\Http\Controllers\JawabanFitbController;
+use App\Http\Controllers\JawabanJurnalController;
+use App\Http\Controllers\JawabanMandiriController;
+use App\Http\Controllers\JawabanTaController;
+use App\Http\Controllers\JawabanTkController;
+use App\Http\Controllers\KelasController;
+use App\Http\Controllers\KumpulTpController;
+use App\Http\Controllers\LaporanPjController;
+use App\Http\Controllers\LaporanPraktikanController;
+use App\Http\Controllers\ModulController;
+use App\Http\Controllers\NilaiController;
+use App\Http\Controllers\PollingController;
+use App\Http\Controllers\PraktikanController;
+use App\Http\Controllers\PraktikanLihatJawabanController;
+use App\Http\Controllers\PraktikumController;
+use App\Http\Controllers\SoalFitbController;
+use App\Http\Controllers\SoalJurnalController;
+use App\Http\Controllers\SoalMandiriController;
+use App\Http\Controllers\SoalTaController;
+use App\Http\Controllers\SoalTkController;
+use App\Http\Controllers\SoalTpController;
+use App\Http\Controllers\TempJawabantpController;
+use App\Http\Controllers\TugaspendahuluanController;
+use App\Http\Controllers\UploadController;
+use App\Http\Controllers\PageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,728 +47,329 @@ use App\Models\JenisPolling;
 |
 */
 
-Route::get('/', function () {
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    return Inertia::render('Welcome', [
-        'comingFrom' => $comingFrom
-    ]);
-})->middleware('guest');
+// Public Routes (Guest Only)
+Route::middleware('guest')->group(function () {
+    Route::get('/', [PageController::class, 'welcome'])->name('welcome');
+    Route::get('/about', [PageController::class, 'about'])->name('about');
+    Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+    Route::get('/login', [PageController::class, 'login'])->name('login');
+});
 
-Route::get('/about', function () {
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    return Inertia::render('About', [
-        'comingFrom' => $comingFrom
-    ]);
-})->middleware('guest');
-
-Route::get('/contact', function () {
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    return Inertia::render('Contact', [
-        'comingFrom' => $comingFrom
-    ]);
-})->middleware('guest');
-
-Route::get('/login', function () {
-    $all_kelas = Kelas::where('id','!=',12)->orderBy('kelas','asc')->get();
-    $roles = Role::all();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    return Inertia::render('Login', [
-        'comingFrom' => $comingFrom,
-        'all_kelas' => $all_kelas,
-        'roles' => $roles
-    ]);
-})->name('login')->middleware('guest');
-
-Route::get('/asisten', function () {
-    $user = Auth::guard('asisten')->user();
-    $messages = Feedback::where('asisten_id', $user->id)
-                    ->leftJoin('kelas', 'feedback.kelas_id', '=', 'kelas.id')
-                    ->leftJoin('praktikans', 'feedback.praktikan_id', '=', 'praktikans.id')
-                    ->orderBy('feedback.created_at', 'desc')->get();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    return Inertia::render('Asisten', [
-        'comingFrom' => $comingFrom,
-        'currentUser' => $user,
-        'messages' => $messages,
-        'userRole' => $userRole->role,
-    ]);
-})->name('asisten')->middleware('loggedIn:asisten');
-
-Route::get('/praktikan', function () {
-    $user = Auth::guard('praktikan')->user();
-    $user->kelas = Kelas::where('id', $user->kelas_id)->first()->kelas;
-    $allAsisten = Asisten::orderBy('kode','asc')->get();
-    $allAsistenPolling = Asisten::where('kode','!=','BOT')->orderBy('kode','asc')->get();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $isRunmod = Configuration::find(1)->runmod_activation;
-    $pollingComplete = Polling::where('praktikan_id', $user->id)->exists();
-    $allPolling = JenisPolling::all();
-    $allModul = Modul::orderBy('isEnglish','asc')->get();
-    $allJurnal = DB::table('soal_jurnals')
-            ->join('moduls', 'soal_jurnals.modul_id', '=', 'moduls.id')
-            ->select('soal_jurnals.*', 'moduls.judul')->get();
-    return Inertia::render('Praktikan', [
-        'comingFrom' => $comingFrom,
-        'currentUser' => $user,
-        'allAsisten' => $allAsisten,
-        'allAsistenPolling' => $allAsistenPolling,
-        'isRunmod' => $isRunmod,
-        'pollingComplete' => $pollingComplete,
-        'allPolling' => $allPolling,
-        'allModul' => $allModul,
-        'allJurnal' => $allJurnal,
-    ]);
-})->name('praktikan')->middleware('loggedIn:praktikan');
-
-Route::get('/soal', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $allModul = Modul::orderBy('isEnglish','asc')->get();
-    $allTP = DB::table('soal_tps')
-            ->join('moduls', 'soal_tps.modul_id', '=', 'moduls.id')
-            ->select('soal_tps.*', 'moduls.judul')->get();
-    $allTA = DB::table('soal_tas')
-            ->join('moduls', 'soal_tas.modul_id', '=', 'moduls.id')
-            ->select('soal_tas.*', 'moduls.judul')->get();
-    $allTK = DB::table('soal_tks')
-            ->join('moduls', 'soal_tks.modul_id', '=', 'moduls.id')
-            ->select('soal_tks.*', 'moduls.judul')->get();
-    $allJurnal = DB::table('soal_jurnals')
-            ->join('moduls', 'soal_jurnals.modul_id', '=', 'moduls.id')
-            ->select('soal_jurnals.*', 'moduls.judul')->get();
-    $allMandiri = DB::table('soal_mandiris')
-            ->join('moduls', 'soal_mandiris.modul_id', '=', 'moduls.id')
-            ->select('soal_mandiris.*', 'moduls.judul')->get();
-    $allFITB = DB::table('soal_fitbs')
-            ->join('moduls', 'soal_fitbs.modul_id', '=', 'moduls.id')
-            ->select('soal_fitbs.*', 'moduls.judul')->get();
-
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
-    return Inertia::render('Soal', [
-        'comingFrom' => $comingFrom,
-        'currentUser' => $user,
-        'position' => $position,
-        'userRole' => $userRole->role,
-        'allModul' => $allModul,
-
-        'allTP' => $allTP,
-        'allTA' => $allTA,
-        'allTK' => $allTK,
-        'allJurnal' => $allJurnal,
-        'allMandiri' => $allMandiri,
-        'allFITB' => $allFITB,
-    ]);
-})->name('soal')->middleware('loggedIn:asisten');
-
-Route::get('/kelas', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $allKelas = Kelas::all();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
-    $kelasPrivilege = array(1,2,4,5);
-    if(in_array($userRole->id,$kelasPrivilege,true)){
-        return Inertia::render('Kelas', [
-            'comingFrom' => $comingFrom,
-            'currentUser' => $user,
-            'position' => $position,
-            'userRole' => $userRole->role,
-            'allKelas' => $allKelas,
-        ]);
-    }else return redirect('/');
-})->name('kelas')->middleware('loggedIn:asisten');
-
-Route::get('/modul', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $allModul = Modul::orderBy('isEnglish','asc')->get();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
-    $modulPrivilege = array(1,2,4,15,7);
-    if(in_array($userRole->id,$modulPrivilege,true)){
-        return Inertia::render('Modul', [
-            'comingFrom' => $comingFrom,
-            'currentUser' => $user,
-            'position' => $position,
-            'userRole' => $userRole->role,
-            'allModul' => $allModul,
-        ]);
-    }else return redirect('/');
-})->name('modul')->middleware('loggedIn:asisten');
-
-Route::get('/plotting', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $allJaga = DB::table('jadwal_jagas')
-            ->join('asistens', 'jadwal_jagas.asisten_id', '=', 'asistens.id')
-            ->join('kelas', 'jadwal_jagas.kelas_id', '=', 'kelas.id')
-            ->select('jadwal_jagas.*', 'asistens.kode', 'kelas.kelas', 'kelas.hari', 'kelas.shift')->get();
-    $allKelas = Kelas::all();
-    $allAsisten = Asisten::orderBy('kode','asc')->get();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
-    $plottingPrivilege = array(1,2,4,5);
-    if(in_array($userRole->id,$plottingPrivilege,true)){
-        return Inertia::render('Plotting', [
-            'comingFrom' => $comingFrom,
-            'currentUser' => $user,
-            'position' => $position,
-            'userRole' => $userRole->role,
-            'allJaga' => $allJaga,
-            'allKelas' => $allKelas,
-            'allAsisten' => $allAsisten,
-        ]);
-    }else return redirect('/');
-})->name('plotting')->middleware('loggedIn:asisten');
-
-Route::get('/praktikum', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
+// Authentication Routes
+Route::prefix('auth')->name('auth.')->group(function () {
+    // Login routes
+    Route::post('/asisten/login', [AsistenLoginController::class, 'login'])->name('asisten.login');
+    Route::post('/praktikan/login', [PraktikanLoginController::class, 'login'])->name('praktikan.login');
     
-    $allKelas = Kelas::all();
-    $allModul = Modul::orderBy('isEnglish','asc')->get();
-    $isRunmod = Configuration::find(1)->runmod_activation;
-    return Inertia::render('Praktikum', [
-        'comingFrom' => $comingFrom,
-        'currentUser' => $user,
-        'position' => $position,
-        'userRole' => $userRole->role,
-        'allKelas' => $allKelas,
-        'allModul' => $allModul,
-        'isRunmod' => $isRunmod,
-    ]);
-})->name('praktikum')->middleware('loggedIn:asisten');
-
-Route::get('/konfigurasi', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
+    // Signup routes
+    Route::post('/asisten/signup', [AsistenController::class, 'store'])->name('asisten.signup');
+    Route::post('/praktikan/signup', [PraktikanController::class, 'store'])->name('praktikan.signup');
     
-    $currentConfig = Configuration::find(1); // Always get the first configuration
-    $konfigurasiPrivilege = array(1,2,4,18,7);
-    if(in_array($userRole->id,$konfigurasiPrivilege,true)){
-        return Inertia::render('Konfigurasi', [
-            'comingFrom' => $comingFrom,
-            'currentUser' => $user,
-            'position' => $position,
-            'userRole' => $userRole->role,
-            'currentConfig' => $currentConfig === null ? 'nope' : $currentConfig,
-        ]);
-    }else return redirect('/');
-})->name('konfigurasi')->middleware('loggedIn:asisten');
+    // Logout routes
+    Route::get('/asisten/logout', [AsistenLoginController::class, 'logout'])->name('asisten.logout');
+    Route::get('/praktikan/logout', [PraktikanLoginController::class, 'logout'])->name('praktikan.logout');
+});
 
-Route::get('/jawaban', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
+// Asisten Routes
+Route::middleware('loggedIn:asisten')->prefix('asisten')->name('asisten.')->group(function () {
+    // Dashboard
+    Route::get('/', [PageController::class, 'asisten'])->name('dashboard');
     
-    $allModul = Modul::where('isEnglish', 0)
-        ->where('id', '<', '20')
-        ->orderBy('id','asc')
-        ->get();
-        
-    $jawabanPrivilege = array(1,2,7,11,15);
-    if(in_array($userRole->id,$jawabanPrivilege,true)){
-        return Inertia::render('Jawaban', [
-            'comingFrom'    => $comingFrom,
-            'currentUser'   => $user,
-            'position'      => $position,
-            'userRole'      => $userRole->role,
-            'allModul'      => $allModul,
-        ]);
-    }else return redirect('/');
-})->name('jawaban')->middleware('loggedIn:asisten');
-
-Route::get('/pelanggaran', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
-
-    $allAsisten = Asisten::orderBy('kode','asc')->get();
-    foreach ($allAsisten as $asisten => $asisten_val) {
-
-        $allLaporan = LaporanPraktikan::where('laporan_praktikans.asisten_id',    $asisten_val->id)
-            ->join('praktikans', 'laporan_praktikans.praktikan_id', '=', 'praktikans.id')
-            ->select('laporan_praktikans.*', 'praktikans.nama', 'praktikans.nim', 'praktikans.kelas_id')
-            ->latest()
-            ->get();
-
-        $nilaiUnexists = 0;
-        foreach ($allLaporan as $laporan => $value)
-            if(Nilai::where('praktikan_id', $value->praktikan_id)
-                ->where('modul_id', $value->modul_id)
-                ->where('asisten_id', $value->asisten_id)
-                ->exists()) {
-
-                $value->nilaiExists = true;
-            } else {
-
-                $nilaiUnexists++; 
-                $value->nilaiExists = false;
-            }
-
-        $asisten_val->nilaiUnexists = $nilaiUnexists;
-    }
-    $pelanggaranPrivilege = array(1,2,4,5,6,18);
-    if(in_array($userRole->id,$pelanggaranPrivilege,true)){
-        return Inertia::render('Pelanggaran', [
-            'comingFrom' => $comingFrom,
-            'currentUser' => $user,
-            'position' => $position,
-            'userRole' => $userRole->role,
-            'allAsisten' => $allAsisten,
-        ]);
-    }else return redirect('/');
-})->name('pelanggaran')->middleware('loggedIn:asisten');
-
-Route::get('/polling', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
-    $jenisPollings = JenisPolling::all();
-
-    $allAsisten = Asisten::all();
-
-    $pollingResults = array();
-    foreach ($allAsisten as $each_asisten => $asisten) {
-
-        $allPolling = array();
-        foreach ($jenisPollings as $each_jenis => $jenis) {
-            
-            $jumlahPoll = Polling::where('polling_id', $jenis->id)
-                ->where('asisten_id', $asisten->id)
-                ->count();
-             
-            $allPolling[] = (object)
-                ['jenis' => $jenis->judul,
-                 'jumlah_poll' => $jumlahPoll];
-        }
-
-        $pollingResults[] = (object) 
-            ['id' => $asisten->id,
-             'kode' => $asisten->kode,
-             'nama' => $asisten->nama,
-             'polling' => $allPolling];
-    }
-
-    return Inertia::render('Polling', [
-        'comingFrom' => $comingFrom,
-        'currentUser' => $user,
-        'position' => $position,
-        'userRole' => $userRole->role,
-        'allJenisPollings' => $jenisPollings, 
-        'allPollingResults' => $pollingResults,
-    ]);
-})->name('polling')->middleware('loggedIn:asisten');
-
-Route::get('/tp', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
-    $allTP = DB::table('tugaspendahuluans')
-        ->join('moduls', 'tugaspendahuluans.modul_id', '=', 'moduls.id')
-        ->select('tugaspendahuluans.*', 'moduls.judul', 'moduls.isEnglish')->get();
-    $allModul = Modul::orderBy('isEnglish','asc')->get();
-
-    if($allTP !== null){
-        foreach ($allTP as $key => $value) {
-            if($value->isActive == '1')
-                $value->isActive = true;
-            else 
-                $value->isActive = false;
-        }
-    }
-    $tpPrivilege = array(1,2,15,11,7);
-    if(in_array($userRole->id,$tpPrivilege,true)){
-        return Inertia::render('TugasPendahuluan', [
-            'comingFrom' => $comingFrom,
-            'currentUser' => $user,
-            'position' => $position,
-            'userRole' => $userRole->role,
-            'allTP' => $allTP === null ? 'nope' : $allTP,
-            'allModul' => $allModul,
-        ]);
-    }else return redirect('/');
-})->name('tp')->middleware('loggedIn:asisten');
-
-# DISABLE THIS ROUTE
-// Route::get('/listTp', function () {
-//     $user = Auth::guard('asisten')->user();
-//     $userRole = Role::where('id', $user->role_id)->first();
-//     $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-//     $position = request('position') === null ? 0:request('position');
-//     $allKelas = Kelas::all();
-//     $allModul = Modul::all();
-
-//     return Inertia::render('ListTp', [
-//         'comingFrom' => $comingFrom,
-//         'currentUser' => $user,
-//         'position' => $position,
-//         'userRole' => $userRole->role,
-//         'allKelas' => $allKelas,
-//         'allModul' => $allModul,
-//     ]);
-// })->name('listTp')->middleware('loggedIn:asisten');
-
-Route::get('/nilai', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
-    $allLaporan = LaporanPraktikan::where('laporan_praktikans.asisten_id', $user->id)
-        ->join('praktikans', 'laporan_praktikans.praktikan_id', '=', 'praktikans.id')
-        ->join('kelas', 'praktikans.kelas_id', '=', 'kelas.id')
-        ->select('laporan_praktikans.*', 'praktikans.nama', 'praktikans.nim', 'praktikans.kelas_id', 'kelas', 'kelas.shift', 'kelas.hari')
-        ->latest()
-        ->get();
-    foreach ($allLaporan as $laporan => $value)
-        if(Nilai::where('praktikan_id', $value->praktikan_id)
-            ->where('modul_id', $value->modul_id)
-            ->where('asisten_id', $value->asisten_id)
-            ->exists())
-            $value->nilaiExists = true;
-        else 
-            $value->nilaiExists = false;
-
-    return Inertia::render('Nilai', [
-        'comingFrom' => $comingFrom,
-        'currentUser' => $user,
-        'position' => $position,
-        'userRole' => $userRole->role,
-        'allLaporan' => $allLaporan === null ? [] : $allLaporan,
-    ]);
-})->name('nilai')->middleware('loggedIn:asisten');
-
-Route::get('/history', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
+    // Pages
+    Route::get('/soal', [PageController::class, 'soal'])->name('soal');
+    Route::get('/kelas', [PageController::class, 'kelas'])->name('kelas');
+    Route::get('/modul', [PageController::class, 'modul'])->name('modul');
+    Route::get('/plotting', [PageController::class, 'plotting'])->name('plotting');
+    Route::get('/praktikum', [PageController::class, 'praktikum'])->name('praktikum');
+    Route::get('/konfigurasi', [PageController::class, 'konfigurasi'])->name('konfigurasi');
+    Route::get('/jawaban', [PageController::class, 'jawaban'])->name('jawaban');
+    Route::get('/pelanggaran', [PageController::class, 'pelanggaran'])->name('pelanggaran');
+    Route::get('/polling', [PageController::class, 'polling'])->name('polling');
+    Route::get('/tp', [PageController::class, 'tp'])->name('tp');
+    Route::get('/nilai', [PageController::class, 'nilai'])->name('nilai');
+    Route::get('/history', [PageController::class, 'history'])->name('history');
+    Route::get('/setpraktikan', [PageController::class, 'setpraktikan'])->name('setpraktikan');
+    Route::get('/rating', [PageController::class, 'rating'])->name('rating');
+    Route::get('/laporan', [PageController::class, 'allLaporan'])->name('laporan');
     
-    $asistenExist = false;
-    $allAsistenHistory = [];
-    $allHistory = DB::table('laporan_pjs')
-        ->join('moduls', 'laporan_pjs.modul_id', '=', 'moduls.id')
-        ->select('laporan_pjs.*', 'moduls.judul')->orderBy('created_at','desc')->get();
-    foreach ($allHistory as $history => $h) {
-
-        $asistenExist = false;
-        foreach (explode('-', $h->allasisten_id) as $asisten => $a)
-            if($a == $user->id)
-                $asistenExist = true;
-
-        if($asistenExist){
-            array_push($allAsistenHistory, $h);
-        }
-    }
-
-    return Inertia::render('History', [
-        'comingFrom' => $comingFrom,
-        'currentUser' => $user,
-        'position' => $position,
-        'userRole' => $userRole->role,
-        'allHistory' => $allAsistenHistory === null ? 'nope' : $allAsistenHistory,
-    ]);
-})->name('history')->middleware('loggedIn:asisten');
-
-Route::get('/setpraktikan', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
-    $allModul = Modul::orderBy('isEnglish','asc')->get();
-
-    return Inertia::render('SetPraktikan', [
-        'comingFrom' => $comingFrom,
-        'currentUser' => $user,
-        'position' => $position,
-        'userRole' => $userRole->role,
-        'allModul' => $allModul,
-    ]);
-})->name('setpraktikan')->middleware('loggedIn:asisten');
-
-Route::get('/lihat_tp', function () {
-    $user = Auth::guard('asisten')->user();
-    $allModul = Modul::orderBy('isEnglish','asc')->get();
-
-    return Inertia::render('Lihat_Tp', [
-        'currentUser' => $user,
-        'allModul' => $allModul,
-    ]);
-})->name('lihat_tp');
-
-Route::get('/logoutAsisten', [\App\Http\Controllers\Auth\AsistenLoginController::class, 'logout'])->name('logoutAsisten');
-Route::get('/logoutPraktikan', [\App\Http\Controllers\Auth\PraktikanLoginController::class, 'logout'])->name('logoutAsisten');
-
-Route::post('/signupAsisten', [\App\Http\Controllers\AsistenController::class, 'store'])->name('signupAsisten');
-Route::post('/signupPraktikan', [\App\Http\Controllers\PraktikanController::class, 'store'])->name('signupPraktikan');
-Route::post('/loginPraktikan', [\App\Http\Controllers\Auth\PraktikanLoginController::class, 'login'])->name('loginPraktikan');
-Route::post('/loginAsisten', [\App\Http\Controllers\Auth\AsistenLoginController::class, 'login'])->name('loginAsisten');
-
-Route::post('/sendPesan', [\App\Http\Controllers\FeedbackController::class, 'store'])->name('sendPesan')->middleware('loggedIn:praktikan');
-Route::post('/readPesan', [\App\Http\Controllers\FeedbackController::class, 'index'])->name('readPesan')->middleware('loggedIn:asisten');
-
-Route::post('/createKelas', [\App\Http\Controllers\KelasController::class, 'store'])->name('createPesan')->middleware('loggedIn:asisten');
-Route::post('/deleteKelas', [\App\Http\Controllers\KelasController::class, 'destroy'])->name('deletePesan')->middleware('loggedIn:asisten');
-Route::post('/updateKelas', [\App\Http\Controllers\KelasController::class, 'update'])->name('updatePesan')->middleware('loggedIn:asisten');
-
-Route::post('/createModul', [\App\Http\Controllers\ModulController::class, 'store'])->name('createModul')->middleware('loggedIn:asisten');
-Route::post('/deleteModul/{id}', [\App\Http\Controllers\ModulController::class, 'destroy'])->name('deleteModul')->middleware('loggedIn:asisten');
-Route::post('/updateModul', [\App\Http\Controllers\ModulController::class, 'update'])->name('updateModul')->middleware('loggedIn:asisten');
-Route::post('/readModul', [\App\Http\Controllers\ModulController::class, 'show'])->name('readModul')->middleware('loggedIn:asisten');
-Route::post('/getModul/{id}', [\App\Http\Controllers\ModulController::class, 'index'])->name('getModul')->middleware('loggedIn:all');
-
-Route::post('/createTP', [\App\Http\Controllers\SoalTpController::class, 'store'])->name('createTP')->middleware('loggedIn:asisten');
-Route::post('/deleteTP/{id}', [\App\Http\Controllers\SoalTpController::class, 'destroy'])->name('deleteTP')->middleware('loggedIn:asisten');
-Route::post('/updateTP', [\App\Http\Controllers\SoalTpController::class, 'update'])->name('updateTP')->middleware('loggedIn:asisten');
-
-Route::post('/createTA', [\App\Http\Controllers\SoalTaController::class, 'store'])->name('createTA')->middleware('loggedIn:asisten');
-Route::post('/deleteTA/{id}', [\App\Http\Controllers\SoalTaController::class, 'destroy'])->name('deleteTA')->middleware('loggedIn:asisten');
-Route::post('/updateTA', [\App\Http\Controllers\SoalTaController::class, 'update'])->name('updateTA')->middleware('loggedIn:asisten');
-
-Route::post('/createTK', [\App\Http\Controllers\SoalTkController::class, 'store'])->name('createTK')->middleware('loggedIn:asisten');
-Route::post('/deleteTK/{id}', [\App\Http\Controllers\SoalTkController::class, 'destroy'])->name('deleteTK')->middleware('loggedIn:asisten');
-Route::post('/updateTK', [\App\Http\Controllers\SoalTkController::class, 'update'])->name('updateTK')->middleware('loggedIn:asisten');
-
-Route::post('/createJurnal', [\App\Http\Controllers\SoalJurnalController::class, 'store'])->name('createJurnal')->middleware('loggedIn:asisten');
-Route::post('/deleteJurnal/{id}', [\App\Http\Controllers\SoalJurnalController::class, 'destroy'])->name('deleteJurnal')->middleware('loggedIn:asisten');
-Route::post('/updateJurnal', [\App\Http\Controllers\SoalJurnalController::class, 'update'])->name('updateJurnal')->middleware('loggedIn:asisten');
-
-Route::post('/createMandiri', [\App\Http\Controllers\SoalMandiriController::class, 'store'])->name('createMandiri')->middleware('loggedIn:asisten');
-Route::post('/deleteMandiri/{id}', [\App\Http\Controllers\SoalMandiriController::class, 'destroy'])->name('deleteMandiri')->middleware('loggedIn:asisten');
-Route::post('/updateMandiri', [\App\Http\Controllers\SoalMandiriController::class, 'update'])->name('updateMandiri')->middleware('loggedIn:asisten');
-
-Route::post('/createFitb', [\App\Http\Controllers\SoalFitbController::class, 'store'])->name('createFitb')->middleware('loggedIn:asisten');
-Route::post('/deleteFitb/{id}', [\App\Http\Controllers\SoalFitbController::class, 'destroy'])->name('deleteFitb')->middleware('loggedIn:asisten');
-Route::post('/updateFitb', [\App\Http\Controllers\SoalFitbController::class, 'update'])->name('updateFitb')->middleware('loggedIn:asisten');
-
-Route::post('/createJadwalJaga', [\App\Http\Controllers\JadwalJagaController::class, 'store'])->name('createJadwalJaga')->middleware('loggedIn:asisten');
-Route::post('/deleteJadwalJaga', [\App\Http\Controllers\JadwalJagaController::class, 'delete'])->name('deleteJadwalJaga')->middleware('loggedIn:asisten');
-Route::post('/resetJadwalJaga', [\App\Http\Controllers\JadwalJagaController::class, 'destroy'])->name('resetJadwalJaga')->middleware('loggedIn:asisten');
-
-Route::post('/readDataKelas/{kelas_id}', [\App\Http\Controllers\KelasController::class, 'show'])->name('updatePesan')->middleware('loggedIn:asisten');
-Route::post('/cekPraktikum', [\App\Http\Controllers\PraktikumController::class, 'index'])->name('cekPraktikum')->middleware('loggedIn:asisten');
-
-Route::post('/createLaporanPJ', [\App\Http\Controllers\LaporanPjController::class, 'store'])->name('createLaporanPJ')->middleware('loggedIn:asisten');
-Route::post('/deleteLaporanPJ/{id}', [\App\Http\Controllers\LaporanPjController::class, 'destroy'])->name('deleteLaporanPJ')->middleware('loggedIn:asisten');
-Route::post('/updateLaporanPJ', [\App\Http\Controllers\LaporanPjController::class, 'update'])->name('updateLaporanPJ')->middleware('loggedIn:asisten');
-Route::post('/currentLaporanPJ', [\App\Http\Controllers\LaporanPjController::class, 'show'])->name('currentLaporanPJ')->middleware('loggedIn:asisten');
-
-Route::post('/startPraktikum', [\App\Http\Controllers\CurrentPraktikumController::class, 'store'])->name('startPraktikum')->middleware('loggedIn:asisten');
-Route::post('/continuePraktikum/{status}', [\App\Http\Controllers\CurrentPraktikumController::class, 'update'])->name('continuePraktikum')->middleware('loggedIn:asisten');
-Route::post('/stopPraktikum', [\App\Http\Controllers\CurrentPraktikumController::class, 'destroy'])->name('stopPraktikum')->middleware('loggedIn:asisten');
-Route::post('/checkPraktikum', [\App\Http\Controllers\CurrentPraktikumController::class, 'show'])->name('checkPraktikum')->middleware('loggedIn:all');
-
-Route::post('/makeHistory/jaga', [\App\Http\Controllers\HistoryJagaController::class, 'store'])->name('createJagaHistory')->middleware('loggedIn:asisten');
-Route::post('/deleteHistory/jaga', [\App\Http\Controllers\HistoryJagaController::class, 'destroy'])->name('deleteJagaHistory')->middleware('loggedIn:asisten');
-Route::post('/latestPJHistory/jaga', [\App\Http\Controllers\HistoryJagaController::class, 'show'])->name('latestPJHistory')->middleware('loggedIn:asisten');
-
-Route::post('/makeHistory/izin', [\App\Http\Controllers\HistoryIzinController::class, 'store'])->name('createIzinHistory')->middleware('loggedIn:asisten');
-
-Route::post('/createPraktikum', [\App\Http\Controllers\PraktikumController::class, 'store'])->name('createPraktikum')->middleware('loggedIn:asisten');
-
-// TODO: Secure this 'getSoal' route from others by adding some private key algorithm to the request
-Route::get('/getSoalTP/{isEnglish}/{praktikan_id}', [\App\Http\Controllers\SoalTpController::class, 'show'])->name('getSoalTP');
-Route::get('/getSoalTA/{modul_id}/{kelas_id}', [\App\Http\Controllers\SoalTaController::class, 'show'])->name('getSoalTA');
-Route::get('/getSoalTK/{modul_id}/{kelas_id}', [\App\Http\Controllers\SoalTkController::class, 'show'])->name('getSoalTK');
-Route::get('/getSoalFITB', [\App\Http\Controllers\SoalFitbController::class, 'show'])->name('getSoalFITB');
-Route::get('/getSoalJURNAL', [\App\Http\Controllers\SoalJurnalController::class, 'show'])->name('getSoalJURNAL');
-Route::get('/getSoalRUNMOD', [\App\Http\Controllers\SoalJurnalController::class, 'showRunmod'])->name('getSoalRUNMOD');
-Route::get('/getSoalMANDIRI/{modul_id}/{kelas_id}', [\App\Http\Controllers\SoalMandiriController::class, 'show'])->name('getSoalMANDIRI');
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-Route::post('/sendLaporan', [\App\Http\Controllers\LaporanPraktikanController::class, 'store'])->name('sendLaporan')->middleware('loggedIn:praktikan');
-Route::post('/getLaporan/{praktikan_id}/{modul_id}', [\App\Http\Controllers\LaporanPraktikanController::class, 'show'])->name('getLaporan')->middleware('loggedIn:praktikan');
-
-Route::post('/sendJawabanTA', [\App\Http\Controllers\JawabanTaController::class, 'store'])->name('sendJawabanTA')->middleware('loggedIn:praktikan');
-Route::post('/sendJawabanTK', [\App\Http\Controllers\JawabanTkController::class, 'store'])->name('sendJawabanTK')->middleware('loggedIn:praktikan');
-Route::post('/sendJawabanJurnal', [\App\Http\Controllers\JawabanJurnalController::class, 'store'])->name('sendJawabanJurnal')->middleware('loggedIn:praktikan');
-Route::post('/sendJawabanFitb', [\App\Http\Controllers\JawabanFitbController::class, 'store'])->name('sendJawabanFitb')->middleware('loggedIn:praktikan');
-Route::post('/sendJawabanMandiri', [\App\Http\Controllers\JawabanMandiriController::class, 'store'])->name('sendJawabanMandiri')->middleware('loggedIn:praktikan');
-
-Route::post('/deletePraktikanAlfa', [\App\Http\Controllers\PraktikanController::class, 'destroy'])->name('deletePraktikanAlfa')->middleware('loggedIn:asisten');
-Route::get('/getProfilAsisten/{asisten_id}', [\App\Http\Controllers\AsistenController::class, 'show'])->name('getProfilAsisten')->middleware('loggedIn:asisten');
-
-Route::post('/saveConfiguration', [\App\Http\Controllers\ConfigurationController::class, 'store'])->name('saveConfiguration')->middleware('loggedIn:asisten');
-
-Route::post('/addPembahasanTP', [\App\Http\Controllers\TugaspendahuluanController::class, 'store'])->name('addPembahasanTP')->middleware('loggedIn:asisten');
-Route::post('/getPembahasanTP/{isEnglish}', [\App\Http\Controllers\TugaspendahuluanController::class, 'index'])->name('getPembahasanTP')->middleware('loggedIn:all');
-Route::post('/activateTP/{modul_id}', [\App\Http\Controllers\TugaspendahuluanController::class, 'show'])->name('activateTP')->middleware('loggedIn:asisten');
-Route::post('/deactivateTP/{modul_id}', [\App\Http\Controllers\TugaspendahuluanController::class, 'destroy'])->name('activateTP')->middleware('loggedIn:asisten');
-
-Route::post('/sendTempJawabanTP', [\App\Http\Controllers\TempJawabantpController::class, 'store'])->name('sendTempJawabanTP')->middleware('loggedIn:praktikan');
-Route::post('/saveJawabanTP', [\App\Http\Controllers\KumpulTpController::class, 'save'])->name('saveTp')->middleware('loggedIn:praktikan');
-Route::post('/kumpulTp', [\App\Http\Controllers\KumpulTpController::class, 'store'])->name('kumpulTp')->middleware('loggedIn:asisten');
-Route::post('/getKumpulTp/{kelas_id}/{modul_id}', [\App\Http\Controllers\KumpulTpController::class, 'show'])->name('getKumpulTp')->middleware('loggedIn:asisten');
-
-Route::post('/createFormNilai/{praktikan_id}/{modul_id}', [\App\Http\Controllers\NilaiController::class, 'index'])->name('createFormNilai')->middleware('loggedIn:asisten');
-Route::post('/getAllJawaban/{praktikan_id}/{modul_id}', [\App\Http\Controllers\NilaiController::class, 'list'])->name('getAllJawaban')->middleware('loggedIn:asisten');
-Route::post('/inputNilai', [\App\Http\Controllers\NilaiController::class, 'store'])->name('inputNilai')->middleware('loggedIn:asisten');
-Route::post('/getCurrentNilai/{praktikan_id}/{modul_id}', [\App\Http\Controllers\NilaiController::class, 'show'])->name('getCurrentNilai')->middleware('loggedIn:asisten');
-
-Route::post('/getAllNilai/{praktikan_id}', [\App\Http\Controllers\NilaiController::class, 'showAll'])->name('getAllNilai')->middleware('loggedIn:praktikan');
-Route::post('/praktikanGetJurnal/{praktikan_id}/{modul_id}', \App\Http\Controllers\PraktikanLihatJawabanController::class)->name('praktikanGetJurnal')->middleware('loggedIn:praktikan');
-
-Route::post('/setThisPraktikan/{praktikan_nim}/{asisten_id}/{modul_id}', [\App\Http\Controllers\NilaiController::class, 'edit'])->name('setThisPraktikan')->middleware('loggedIn:asisten');
-Route::post('/changePraktikanPass/{praktikan_nim}/{new_pass}', [\App\Http\Controllers\PraktikanController::class, 'edit'])->name('changePraktikanPass')->middleware('loggedIn:asisten');
-
-Route::post('/checkPolling', [\App\Http\Controllers\ConfigurationController::class, 'isPollingEnabled'])->name('checkPolling')->middleware('loggedIn:praktikan');
-Route::post('/savePolling', [\App\Http\Controllers\PollingController::class, 'store'])->name('savePolling')->middleware('loggedIn:praktikan');
-
-Route::post('/activateJawaban', [\App\Http\Controllers\ModulController::class, 'updateJawabanConfiguration'])->name('activateJawaban')->middleware('loggedIn:asisten');
-
-/////////////////////////////////////////////FILE UPLOAD////////////////////////////////////////////
-Route::get('/upload',[\App\Http\Controllers\UploadController::class, 'upload'])->middleware('loggedIn:asisten');
-Route::post('/upload/proses',[\App\Http\Controllers\UploadController::class, 'proses_upload'])->middleware('loggedIn:asisten');
-
-Route::get('/rating', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
-    $allPraktikan = Praktikan::join('kelas','praktikans.kelas_id','=','kelas.id')
-                    ->select('praktikans.id','praktikans.nama','praktikans.nim','kelas.kelas','praktikans.kelas_id')
-                    ->where('kelas.id','!=',12)
-                    ->get();
-    $allKelas = Kelas::where('kelas.id','!=',12)->orderBy('kelas','asc')->get();
-    foreach ($allPraktikan as $praktikan => $prak_value) {
-        $allLaporan = Nilai::where('nilais.praktikan_id',$prak_value->id)
-                        ->join('praktikans','nilais.praktikan_id','=','praktikans.id')
-                        ->join('kelas','praktikans.kelas_id','=','kelas.id')
-                        ->select('nilais.rating')
-                        ->sum('rating');
-                        $allTP = Nilai::where('nilais.praktikan_id',$prak_value->id)
-                        ->join('praktikans','nilais.praktikan_id','=','praktikans.id')
-                        ->join('kelas','praktikans.kelas_id','=','kelas.id')
-                        ->select('nilais.rating')
-                        ->sum('tp');
-        $allTA = Nilai::where('nilais.praktikan_id',$prak_value->id)
-                        ->join('praktikans','nilais.praktikan_id','=','praktikans.id')
-                        ->join('kelas','praktikans.kelas_id','=','kelas.id')
-                        ->select('nilais.rating')
-                        ->sum('ta');
-        $allJurnal = Nilai::where('nilais.praktikan_id',$prak_value->id)
-                        ->join('praktikans','nilais.praktikan_id','=','praktikans.id')
-                        ->join('kelas','praktikans.kelas_id','=','kelas.id')
-                        ->select('nilais.rating')
-                        ->sum('jurnal');
-        $allTK = Nilai::where('nilais.praktikan_id',$prak_value->id)
-                        ->join('praktikans','nilais.praktikan_id','=','praktikans.id')
-                        ->join('kelas','praktikans.kelas_id','=','kelas.id')
-                        ->select('nilais.rating')
-                        ->sum('tk');
-        $allSkill = Nilai::where('nilais.praktikan_id',$prak_value->id)
-                        ->join('praktikans','nilais.praktikan_id','=','praktikans.id')
-                        ->join('kelas','praktikans.kelas_id','=','kelas.id')
-                        ->select('nilais.rating')
-                        ->sum('skill');
-        $allDiskon = Nilai::where('nilais.praktikan_id',$prak_value->id)
-                        ->join('praktikans','nilais.praktikan_id','=','praktikans.id')
-                        ->join('kelas','praktikans.kelas_id','=','kelas.id')
-                        ->select('nilais.rating')
-                        ->sum('diskon');
-        $prak_value->tp = $allTP;
-        $prak_value->ta = $allTA;
-        $prak_value->jurnal = $allJurnal;
-        $prak_value->tk = $allTK;
-        $prak_value->diskon = $allDiskon;
-        $prak_value->total = ($allTP*0.15)+($allTA*0.15)+($allJurnal*0.1)+($allTK*0.2)-($allDiskon*0.01);
-        $prak_value->rating = $allLaporan;  
-    }
-
-    $allRating = array();
-
-    foreach ($allKelas as $key => $kelas) {
-        $allPraktikanArr = array();
-        foreach ($allPraktikan as $key2 => $praktikan) {
-            if($praktikan->kelas_id==$kelas->id){
-                array_push($allPraktikanArr, $praktikan);
-            }
-        }
-        $allPraktikanArr = collect($allPraktikanArr);
-        $allPraktikanArr = $allPraktikanArr->sortByDesc('rating');
-        $tempPraktikan = array();
-        foreach ($allPraktikanArr as $key => $value) {
-            array_push($tempPraktikan, $value);
-        }
-        array_push($allRating, $tempPraktikan);
-    }
-
-    $allNilai = array();
-
-    foreach ($allKelas as $key => $kelas) {
-        $allPraktikanArr = array();
-        foreach ($allPraktikan as $key2 => $praktikan) {
-            if($praktikan->kelas_id==$kelas->id){
-                array_push($allPraktikanArr, $praktikan);
-            }
-        }
-        $allPraktikanArr = collect($allPraktikanArr);
-        $allPraktikanArr = $allPraktikanArr->sortByDesc('total');
-        $tempPraktikan = array();
-        foreach ($allPraktikanArr as $key => $value) {
-            array_push($tempPraktikan, $value);
-        }
-        array_push($allNilai, $tempPraktikan);
-    }
-    $RatingPrivilege = array(1,2,4,5,8,16);
-    if(in_array($userRole->id,$RatingPrivilege,true)){
-    return Inertia::render('Rating', [
-        'comingFrom' => $comingFrom,
-        'currentUser' => $user,
-        'position' => $position,
-        'userRole' => $userRole->role,
-        'allRating' => $allRating,
-        'allNilai' => $allNilai,
-        'allKelas' => $allKelas,
-    ]);
-    }else return redirect('/');
+    // Profile
+    Route::get('/profil/{asisten_id}', [AsistenController::class, 'show'])->name('profil');
+    Route::post('/update-desc', [AsistenController::class, 'updateDesc'])->name('update_desc');
     
-})->name('rating')->middleware('loggedIn:asisten');
+    // Feedback
+    Route::post('/pesan', [FeedbackController::class, 'index'])->name('pesan.index');
+    
+    // Kelas Management
+    Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
+    Route::post('/kelas/{kelas_id}', [KelasController::class, 'show'])->name('kelas.show');
+    Route::put('/kelas', [KelasController::class, 'update'])->name('kelas.update');
+    Route::delete('/kelas', [KelasController::class, 'destroy'])->name('kelas.destroy');
+    
+    // Modul Management
+    Route::post('/modul', [ModulController::class, 'store'])->name('modul.store');
+    Route::post('/modul/read', [ModulController::class, 'show'])->name('modul.show');
+    Route::put('/modul', [ModulController::class, 'update'])->name('modul.update');
+    Route::delete('/modul/{id}', [ModulController::class, 'destroy'])->name('modul.destroy');
+    Route::post('/modul/jawaban-config', [ModulController::class, 'updateJawabanConfiguration'])->name('modul.jawaban_config');
+    
+    // Soal Management - TP
+    Route::post('/soal/tp', [SoalTpController::class, 'store'])->name('soal.tp.store');
+    Route::put('/soal/tp', [SoalTpController::class, 'update'])->name('soal.tp.update');
+    Route::delete('/soal/tp/{id}', [SoalTpController::class, 'destroy'])->name('soal.tp.destroy');
+    
+    // Soal Management - TA
+    Route::post('/soal/ta', [SoalTaController::class, 'store'])->name('soal.ta.store');
+    Route::put('/soal/ta', [SoalTaController::class, 'update'])->name('soal.ta.update');
+    Route::delete('/soal/ta/{id}', [SoalTaController::class, 'destroy'])->name('soal.ta.destroy');
+    
+    // Soal Management - TK
+    Route::post('/soal/tk', [SoalTkController::class, 'store'])->name('soal.tk.store');
+    Route::put('/soal/tk', [SoalTkController::class, 'update'])->name('soal.tk.update');
+    Route::delete('/soal/tk/{id}', [SoalTkController::class, 'destroy'])->name('soal.tk.destroy');
+    
+    // Soal Management - Jurnal
+    Route::post('/soal/jurnal', [SoalJurnalController::class, 'store'])->name('soal.jurnal.store');
+    Route::put('/soal/jurnal', [SoalJurnalController::class, 'update'])->name('soal.jurnal.update');
+    Route::delete('/soal/jurnal/{id}', [SoalJurnalController::class, 'destroy'])->name('soal.jurnal.destroy');
+    
+    // Soal Management - Mandiri
+    Route::post('/soal/mandiri', [SoalMandiriController::class, 'store'])->name('soal.mandiri.store');
+    Route::put('/soal/mandiri', [SoalMandiriController::class, 'update'])->name('soal.mandiri.update');
+    Route::delete('/soal/mandiri/{id}', [SoalMandiriController::class, 'destroy'])->name('soal.mandiri.destroy');
+    
+    // Soal Management - FITB
+    Route::post('/soal/fitb', [SoalFitbController::class, 'store'])->name('soal.fitb.store');
+    Route::put('/soal/fitb', [SoalFitbController::class, 'update'])->name('soal.fitb.update');
+    Route::delete('/soal/fitb/{id}', [SoalFitbController::class, 'destroy'])->name('soal.fitb.destroy');
+    
+    // Jadwal Jaga
+    Route::post('/jadwal-jaga', [JadwalJagaController::class, 'store'])->name('jadwal_jaga.store');
+    Route::delete('/jadwal-jaga', [JadwalJagaController::class, 'delete'])->name('jadwal_jaga.delete');
+    Route::delete('/jadwal-jaga/reset', [JadwalJagaController::class, 'destroy'])->name('jadwal_jaga.reset');
+    
+    // Praktikum Management
+    Route::post('/praktikum/check', [PraktikumController::class, 'index'])->name('praktikum.check');
+    Route::post('/praktikum', [PraktikumController::class, 'store'])->name('praktikum.store');
+    
+    // Current Praktikum
+    Route::post('/praktikum/start', [CurrentPraktikumController::class, 'store'])->name('praktikum.start');
+    Route::put('/praktikum/continue/{status}', [CurrentPraktikumController::class, 'update'])->name('praktikum.continue');
+    Route::delete('/praktikum/stop', [CurrentPraktikumController::class, 'destroy'])->name('praktikum.stop');
+    
+    // Laporan PJ
+    Route::post('/laporan-pj', [LaporanPjController::class, 'store'])->name('laporan_pj.store');
+    Route::post('/laporan-pj/current', [LaporanPjController::class, 'show'])->name('laporan_pj.current');
+    Route::put('/laporan-pj', [LaporanPjController::class, 'update'])->name('laporan_pj.update');
+    Route::delete('/laporan-pj/{id}', [LaporanPjController::class, 'destroy'])->name('laporan_pj.destroy');
+    
+    // History
+    Route::post('/history/jaga', [HistoryJagaController::class, 'store'])->name('history.jaga.store');
+    Route::post('/history/jaga/latest-pj', [HistoryJagaController::class, 'show'])->name('history.jaga.latest');
+    Route::delete('/history/jaga', [HistoryJagaController::class, 'destroy'])->name('history.jaga.destroy');
+    Route::post('/history/izin', [HistoryIzinController::class, 'store'])->name('history.izin.store');
+    
+    // Tugas Pendahuluan
+    Route::post('/tp/pembahasan', [TugaspendahuluanController::class, 'store'])->name('tp.pembahasan.store');
+    Route::post('/tp/activate/{modul_id}', [TugaspendahuluanController::class, 'show'])->name('tp.activate');
+    Route::post('/tp/deactivate/{modul_id}', [TugaspendahuluanController::class, 'destroy'])->name('tp.deactivate');
+    
+    // Kumpul TP
+    Route::post('/tp/kumpul', [KumpulTpController::class, 'store'])->name('tp.kumpul');
+    Route::post('/tp/kumpul/{kelas_id}/{modul_id}', [KumpulTpController::class, 'show'])->name('tp.kumpul.show');
+    
+    // Nilai Management
+    Route::post('/nilai/form/{praktikan_id}/{modul_id}', [NilaiController::class, 'index'])->name('nilai.form');
+    Route::post('/nilai/jawaban/{praktikan_id}/{modul_id}', [NilaiController::class, 'list'])->name('nilai.jawaban');
+    Route::post('/nilai', [NilaiController::class, 'store'])->name('nilai.store');
+    Route::post('/nilai/{praktikan_id}/{modul_id}', [NilaiController::class, 'show'])->name('nilai.show');
+    
+    // Praktikan Management
+    Route::delete('/praktikan/alfa', [PraktikanController::class, 'destroy'])->name('praktikan.alfa');
+    Route::post('/praktikan/set/{praktikan_nim}/{asisten_id}/{modul_id}', [NilaiController::class, 'edit'])->name('praktikan.set');
+    Route::put('/praktikan/password/{praktikan_nim}/{new_pass}', [PraktikanController::class, 'edit'])->name('praktikan.password');
+    
+    // Configuration
+    Route::post('/konfigurasi/save', [ConfigurationController::class, 'store'])->name('konfigurasi.save');
+    
+    // File Upload
+    Route::get('/upload', [UploadController::class, 'upload'])->name('upload');
+    Route::post('/upload/process', [UploadController::class, 'proses_upload'])->name('upload.process');
+});
 
-//All Laporan for Assistant feature
-Route::get('/allLaporan', function () {
-    $user = Auth::guard('asisten')->user();
-    $userRole = Role::where('id', $user->role_id)->first();
-    $comingFrom = request('comingFrom') === null ? 'none':request('comingFrom');
-    $position = request('position') === null ? 0:request('position');
-    $allModul = Modul::orderBy('isEnglish','asc')->get();
-    $allHistory = DB::table('laporan_pjs')
-                    ->join('moduls', 'laporan_pjs.modul_id', '=', 'moduls.id')
-                    ->select('laporan_pjs.*', 'moduls.judul')->orderBy('created_at','desc')->get();
+// Praktikan Routes
+Route::middleware('loggedIn:praktikan')->prefix('praktikan')->name('praktikan.')->group(function () {
+    // Dashboard
+    Route::get('/', [PageController::class, 'praktikan'])->name('dashboard');
+    Route::get('/contact-asisten', [PageController::class, 'contactAsisten'])->name('contact_asisten');
+    
+    // Feedback
+    Route::post('/pesan', [FeedbackController::class, 'store'])->name('pesan.store');
+    
+    // Laporan
+    Route::post('/laporan', [LaporanPraktikanController::class, 'store'])->name('laporan.store');
+    Route::post('/laporan/{praktikan_id}/{modul_id}', [LaporanPraktikanController::class, 'show'])->name('laporan.show');
+    
+    // Jawaban
+    Route::post('/jawaban/ta', [JawabanTaController::class, 'store'])->name('jawaban.ta');
+    Route::post('/jawaban/tk', [JawabanTkController::class, 'store'])->name('jawaban.tk');
+    Route::post('/jawaban/jurnal', [JawabanJurnalController::class, 'store'])->name('jawaban.jurnal');
+    Route::post('/jawaban/fitb', [JawabanFitbController::class, 'store'])->name('jawaban.fitb');
+    Route::post('/jawaban/mandiri', [JawabanMandiriController::class, 'store'])->name('jawaban.mandiri');
+    Route::post('/jawaban/jurnal/{praktikan_id}/{modul_id}', PraktikanLihatJawabanController::class)->name('jawaban.jurnal.show');
+    
+    // Tugas Pendahuluan
+    Route::post('/tp/temp-jawaban', [TempJawabantpController::class, 'store'])->name('tp.temp_jawaban');
+    Route::post('/tp/save-jawaban', [KumpulTpController::class, 'save'])->name('tp.save_jawaban');
+    
+    // Polling
+    Route::post('/polling/check', [ConfigurationController::class, 'isPollingEnabled'])->name('polling.check');
+    Route::post('/polling', [PollingController::class, 'store'])->name('polling.store');
+    
+    // Nilai
+    Route::post('/nilai/{praktikan_id}', [NilaiController::class, 'showAll'])->name('nilai.all');
+    
+    // Reset Password
+    Route::post('/reset-password', [PraktikanController::class, 'resetPass'])->name('reset_password');
+});
 
-    $allLaporanPrivilege = array(1,2,4,5,6);
-    if(in_array($userRole->id,$allLaporanPrivilege,true)){
-    return Inertia::render('Laporan', [
-        'comingFrom' => $comingFrom,
-        'currentUser' => $user,
-        'position' => $position,
-        'userRole' => $userRole->role,
-        'allModul' => $allModul,
-        'allHistory' => $allHistory,
-    ]);
-    }else return redirect('/'); 
+// Shared Routes (Both Asisten and Praktikan)
+Route::middleware('loggedIn:all')->group(function () {
+    Route::post('/praktikum/check', [CurrentPraktikumController::class, 'show'])->name('praktikum.check');
+    Route::post('/modul/{id}', [ModulController::class, 'index'])->name('modul.get');
+    Route::post('/tp/pembahasan/{isEnglish}', [TugaspendahuluanController::class, 'index'])->name('tp.pembahasan.get');
+});
 
-})->name('allLaporan')->middleware('loggedIn:asisten');
+// Public API Routes (TODO: Secure these routes with authentication/token)
+Route::prefix('api')->name('api.')->group(function () {
+    Route::get('/soal/tp/{isEnglish}/{praktikan_id}', [SoalTpController::class, 'show'])->name('soal.tp');
+    Route::get('/soal/ta/{modul_id}/{kelas_id}', [SoalTaController::class, 'show'])->name('soal.ta');
+    Route::get('/soal/tk/{modul_id}/{kelas_id}', [SoalTkController::class, 'show'])->name('soal.tk');
+    Route::get('/soal/fitb', [SoalFitbController::class, 'show'])->name('soal.fitb');
+    Route::get('/soal/jurnal', [SoalJurnalController::class, 'show'])->name('soal.jurnal');
+    Route::get('/soal/runmod', [SoalJurnalController::class, 'showRunmod'])->name('soal.runmod');
+    Route::get('/soal/mandiri/{modul_id}/{kelas_id}', [SoalMandiriController::class, 'show'])->name('soal.mandiri');
+});
 
-Route::post('/updateDesc', [\App\Http\Controllers\AsistenController::class, 'updateDesc'])->name('updateDesc')->middleware('loggedIn:asisten');
+// Special Routes (No middleware)
+Route::get('/lihat-tp', [PageController::class, 'lihatTp'])->name('lihat_tp');
 
-Route::post('/resetPass', [\App\Http\Controllers\PraktikanController::class, 'resetPass'])->name('resetPassword')->middleware('loggedIn:praktikan');
+// Legacy Routes - For Backward Compatibility (TODO: Update frontend to use new routes)
+Route::post('/loginAsisten', [AsistenLoginController::class, 'login'])->name('loginAsisten');
+Route::post('/loginPraktikan', [PraktikanLoginController::class, 'login'])->name('loginPraktikan');
+Route::post('/signupAsisten', [AsistenController::class, 'store'])->name('signupAsisten');
+Route::post('/signupPraktikan', [PraktikanController::class, 'store'])->name('signupPraktikan');
+Route::get('/logoutAsisten', [AsistenLoginController::class, 'logout'])->name('logoutAsisten');
+Route::get('/logoutPraktikan', [PraktikanLoginController::class, 'logout'])->name('logoutPraktikan');
 
-Route::get('/contact_asisten', function () {
-    $user = Auth::guard('praktikan')->user();
-    $allAsisten = Asisten::orderBy('kode','asc')->get();
-    return Inertia::render('ContactAsisten',[
-        'allAsisten' => $allAsisten,
-        'user'=> $user,
-    ]);
-})->name('contact_asisten')->middleware('loggedIn:praktikan');
+Route::post('/sendPesan', [FeedbackController::class, 'store'])->name('sendPesan')->middleware('loggedIn:praktikan');
+Route::post('/readPesan', [FeedbackController::class, 'index'])->name('readPesan')->middleware('loggedIn:asisten');
+
+Route::post('/createKelas', [KelasController::class, 'store'])->name('createKelas')->middleware('loggedIn:asisten');
+Route::post('/deleteKelas', [KelasController::class, 'destroy'])->name('deleteKelas')->middleware('loggedIn:asisten');
+Route::post('/updateKelas', [KelasController::class, 'update'])->name('updateKelas')->middleware('loggedIn:asisten');
+Route::post('/readDataKelas/{kelas_id}', [KelasController::class, 'show'])->name('readDataKelas')->middleware('loggedIn:asisten');
+
+Route::post('/createModul', [ModulController::class, 'store'])->name('createModul')->middleware('loggedIn:asisten');
+Route::post('/deleteModul/{id}', [ModulController::class, 'destroy'])->name('deleteModul')->middleware('loggedIn:asisten');
+Route::post('/updateModul', [ModulController::class, 'update'])->name('updateModul')->middleware('loggedIn:asisten');
+Route::post('/readModul', [ModulController::class, 'show'])->name('readModul')->middleware('loggedIn:asisten');
+Route::post('/getModul/{id}', [ModulController::class, 'index'])->name('getModul')->middleware('loggedIn:all');
+Route::post('/activateJawaban', [ModulController::class, 'updateJawabanConfiguration'])->name('activateJawaban')->middleware('loggedIn:asisten');
+
+Route::post('/createTP', [SoalTpController::class, 'store'])->name('createTP')->middleware('loggedIn:asisten');
+Route::post('/deleteTP/{id}', [SoalTpController::class, 'destroy'])->name('deleteTP')->middleware('loggedIn:asisten');
+Route::post('/updateTP', [SoalTpController::class, 'update'])->name('updateTP')->middleware('loggedIn:asisten');
+
+Route::post('/createTA', [SoalTaController::class, 'store'])->name('createTA')->middleware('loggedIn:asisten');
+Route::post('/deleteTA/{id}', [SoalTaController::class, 'destroy'])->name('deleteTA')->middleware('loggedIn:asisten');
+Route::post('/updateTA', [SoalTaController::class, 'update'])->name('updateTA')->middleware('loggedIn:asisten');
+
+Route::post('/createTK', [SoalTkController::class, 'store'])->name('createTK')->middleware('loggedIn:asisten');
+Route::post('/deleteTK/{id}', [SoalTkController::class, 'destroy'])->name('deleteTK')->middleware('loggedIn:asisten');
+Route::post('/updateTK', [SoalTkController::class, 'update'])->name('updateTK')->middleware('loggedIn:asisten');
+
+Route::post('/createJurnal', [SoalJurnalController::class, 'store'])->name('createJurnal')->middleware('loggedIn:asisten');
+Route::post('/deleteJurnal/{id}', [SoalJurnalController::class, 'destroy'])->name('deleteJurnal')->middleware('loggedIn:asisten');
+Route::post('/updateJurnal', [SoalJurnalController::class, 'update'])->name('updateJurnal')->middleware('loggedIn:asisten');
+
+Route::post('/createMandiri', [SoalMandiriController::class, 'store'])->name('createMandiri')->middleware('loggedIn:asisten');
+Route::post('/deleteMandiri/{id}', [SoalMandiriController::class, 'destroy'])->name('deleteMandiri')->middleware('loggedIn:asisten');
+Route::post('/updateMandiri', [SoalMandiriController::class, 'update'])->name('updateMandiri')->middleware('loggedIn:asisten');
+
+Route::post('/createFitb', [SoalFitbController::class, 'store'])->name('createFitb')->middleware('loggedIn:asisten');
+Route::post('/deleteFitb/{id}', [SoalFitbController::class, 'destroy'])->name('deleteFitb')->middleware('loggedIn:asisten');
+Route::post('/updateFitb', [SoalFitbController::class, 'update'])->name('updateFitb')->middleware('loggedIn:asisten');
+
+Route::post('/createJadwalJaga', [JadwalJagaController::class, 'store'])->name('createJadwalJaga')->middleware('loggedIn:asisten');
+Route::post('/deleteJadwalJaga', [JadwalJagaController::class, 'delete'])->name('deleteJadwalJaga')->middleware('loggedIn:asisten');
+Route::post('/resetJadwalJaga', [JadwalJagaController::class, 'destroy'])->name('resetJadwalJaga')->middleware('loggedIn:asisten');
+
+Route::post('/cekPraktikum', [PraktikumController::class, 'index'])->name('cekPraktikum')->middleware('loggedIn:asisten');
+Route::post('/createPraktikum', [PraktikumController::class, 'store'])->name('createPraktikum')->middleware('loggedIn:asisten');
+
+Route::post('/createLaporanPJ', [LaporanPjController::class, 'store'])->name('createLaporanPJ')->middleware('loggedIn:asisten');
+Route::post('/deleteLaporanPJ/{id}', [LaporanPjController::class, 'destroy'])->name('deleteLaporanPJ')->middleware('loggedIn:asisten');
+Route::post('/updateLaporanPJ', [LaporanPjController::class, 'update'])->name('updateLaporanPJ')->middleware('loggedIn:asisten');
+Route::post('/currentLaporanPJ', [LaporanPjController::class, 'show'])->name('currentLaporanPJ')->middleware('loggedIn:asisten');
+
+Route::post('/startPraktikum', [CurrentPraktikumController::class, 'store'])->name('startPraktikum')->middleware('loggedIn:asisten');
+Route::post('/continuePraktikum/{status}', [CurrentPraktikumController::class, 'update'])->name('continuePraktikum')->middleware('loggedIn:asisten');
+Route::post('/stopPraktikum', [CurrentPraktikumController::class, 'destroy'])->name('stopPraktikum')->middleware('loggedIn:asisten');
+Route::post('/checkPraktikum', [CurrentPraktikumController::class, 'show'])->name('checkPraktikum')->middleware('loggedIn:all');
+
+Route::post('/makeHistory/jaga', [HistoryJagaController::class, 'store'])->name('createJagaHistory')->middleware('loggedIn:asisten');
+Route::post('/deleteHistory/jaga', [HistoryJagaController::class, 'destroy'])->name('deleteJagaHistory')->middleware('loggedIn:asisten');
+Route::post('/latestPJHistory/jaga', [HistoryJagaController::class, 'show'])->name('latestPJHistory')->middleware('loggedIn:asisten');
+Route::post('/makeHistory/izin', [HistoryIzinController::class, 'store'])->name('createIzinHistory')->middleware('loggedIn:asisten');
+
+Route::get('/getSoalTP/{isEnglish}/{praktikan_id}', [SoalTpController::class, 'show'])->name('getSoalTP');
+Route::get('/getSoalTA/{modul_id}/{kelas_id}', [SoalTaController::class, 'show'])->name('getSoalTA');
+Route::get('/getSoalTK/{modul_id}/{kelas_id}', [SoalTkController::class, 'show'])->name('getSoalTK');
+Route::get('/getSoalFITB', [SoalFitbController::class, 'show'])->name('getSoalFITB');
+Route::get('/getSoalJURNAL', [SoalJurnalController::class, 'show'])->name('getSoalJURNAL');
+Route::get('/getSoalRUNMOD', [SoalJurnalController::class, 'showRunmod'])->name('getSoalRUNMOD');
+Route::get('/getSoalMANDIRI/{modul_id}/{kelas_id}', [SoalMandiriController::class, 'show'])->name('getSoalMANDIRI');
+
+Route::post('/sendLaporan', [LaporanPraktikanController::class, 'store'])->name('sendLaporan')->middleware('loggedIn:praktikan');
+Route::post('/getLaporan/{praktikan_id}/{modul_id}', [LaporanPraktikanController::class, 'show'])->name('getLaporan')->middleware('loggedIn:praktikan');
+
+Route::post('/sendJawabanTA', [JawabanTaController::class, 'store'])->name('sendJawabanTA')->middleware('loggedIn:praktikan');
+Route::post('/sendJawabanTK', [JawabanTkController::class, 'store'])->name('sendJawabanTK')->middleware('loggedIn:praktikan');
+Route::post('/sendJawabanJurnal', [JawabanJurnalController::class, 'store'])->name('sendJawabanJurnal')->middleware('loggedIn:praktikan');
+Route::post('/sendJawabanFitb', [JawabanFitbController::class, 'store'])->name('sendJawabanFitb')->middleware('loggedIn:praktikan');
+Route::post('/sendJawabanMandiri', [JawabanMandiriController::class, 'store'])->name('sendJawabanMandiri')->middleware('loggedIn:praktikan');
+
+Route::post('/deletePraktikanAlfa', [PraktikanController::class, 'destroy'])->name('deletePraktikanAlfa')->middleware('loggedIn:asisten');
+Route::get('/getProfilAsisten/{asisten_id}', [AsistenController::class, 'show'])->name('getProfilAsisten')->middleware('loggedIn:asisten');
+
+Route::post('/saveConfiguration', [ConfigurationController::class, 'store'])->name('saveConfiguration')->middleware('loggedIn:asisten');
+
+Route::post('/addPembahasanTP', [TugaspendahuluanController::class, 'store'])->name('addPembahasanTP')->middleware('loggedIn:asisten');
+Route::post('/getPembahasanTP/{isEnglish}', [TugaspendahuluanController::class, 'index'])->name('getPembahasanTP')->middleware('loggedIn:all');
+Route::post('/activateTP/{modul_id}', [TugaspendahuluanController::class, 'show'])->name('activateTP')->middleware('loggedIn:asisten');
+Route::post('/deactivateTP/{modul_id}', [TugaspendahuluanController::class, 'destroy'])->name('deactivateTP')->middleware('loggedIn:asisten');
+
+Route::post('/sendTempJawabanTP', [TempJawabantpController::class, 'store'])->name('sendTempJawabanTP')->middleware('loggedIn:praktikan');
+Route::post('/saveJawabanTP', [KumpulTpController::class, 'save'])->name('saveJawabanTP')->middleware('loggedIn:praktikan');
+Route::post('/kumpulTp', [KumpulTpController::class, 'store'])->name('kumpulTp')->middleware('loggedIn:asisten');
+Route::post('/getKumpulTp/{kelas_id}/{modul_id}', [KumpulTpController::class, 'show'])->name('getKumpulTp')->middleware('loggedIn:asisten');
+
+Route::post('/createFormNilai/{praktikan_id}/{modul_id}', [NilaiController::class, 'index'])->name('createFormNilai')->middleware('loggedIn:asisten');
+Route::post('/getAllJawaban/{praktikan_id}/{modul_id}', [NilaiController::class, 'list'])->name('getAllJawaban')->middleware('loggedIn:asisten');
+Route::post('/inputNilai', [NilaiController::class, 'store'])->name('inputNilai')->middleware('loggedIn:asisten');
+Route::post('/getCurrentNilai/{praktikan_id}/{modul_id}', [NilaiController::class, 'show'])->name('getCurrentNilai')->middleware('loggedIn:asisten');
+
+Route::post('/getAllNilai/{praktikan_id}', [NilaiController::class, 'showAll'])->name('getAllNilai')->middleware('loggedIn:praktikan');
+Route::post('/praktikanGetJurnal/{praktikan_id}/{modul_id}', PraktikanLihatJawabanController::class)->name('praktikanGetJurnal')->middleware('loggedIn:praktikan');
+
+Route::post('/setThisPraktikan/{praktikan_nim}/{asisten_id}/{modul_id}', [NilaiController::class, 'edit'])->name('setThisPraktikan')->middleware('loggedIn:asisten');
+Route::post('/changePraktikanPass/{praktikan_nim}/{new_pass}', [PraktikanController::class, 'edit'])->name('changePraktikanPass')->middleware('loggedIn:asisten');
+
+Route::post('/checkPolling', [ConfigurationController::class, 'isPollingEnabled'])->name('checkPolling')->middleware('loggedIn:praktikan');
+Route::post('/savePolling', [PollingController::class, 'store'])->name('savePolling')->middleware('loggedIn:praktikan');
+
+Route::get('/upload', [UploadController::class, 'upload'])->name('uploadPage')->middleware('loggedIn:asisten');
+Route::post('/upload/proses', [UploadController::class, 'proses_upload'])->name('uploadProses')->middleware('loggedIn:asisten');
+
+Route::post('/updateDesc', [AsistenController::class, 'updateDesc'])->name('updateDesc')->middleware('loggedIn:asisten');
+Route::post('/resetPass', [PraktikanController::class, 'resetPass'])->name('resetPassword')->middleware('loggedIn:praktikan');

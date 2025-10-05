@@ -592,7 +592,7 @@ export default {
 
       const globe = this;
 
-      this.$axios.post('/loginAsisten', this.formLoginAsisten).then(response => {
+      this.$axios.post('/auth/asisten/login', this.formLoginAsisten).then(response => {
         
         if(response.data.message === "Login Failed"){
           globe.$toasted.global.showError({
@@ -624,7 +624,7 @@ export default {
 
       const globe = this;
 
-      this.$axios.post('/loginPraktikan', this.formLoginPraktikan).then(response => {
+      this.$axios.post('/auth/praktikan/login', this.formLoginPraktikan).then(response => {
         
         if(response.data.message === "Login Failed"){
           globe.$toasted.global.showError({
@@ -656,7 +656,7 @@ export default {
 
       const globe = this;
 
-      this.$axios.post('/signupAsisten', this.formAsisten).then(response => {
+      this.$axios.post('/auth/asisten/signup', this.formAsisten).then(response => {
         if(response.data.message === "success"){
           
           globe.$toasted.global.showSuccess({
@@ -718,7 +718,7 @@ export default {
 
       const globe = this;
 
-      this.$axios.post('/signupPraktikan', this.formPraktikan).then(response => {
+      this.$axios.post('/auth/praktikan/signup', this.formPraktikan).then(response => {
         if(response.data.message === "success"){
 
           globe.$toasted.global.showSuccess({
