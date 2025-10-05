@@ -583,8 +583,7 @@
               </div>
             </div>
           </div>
-          <div class="w-1/3 h-full m-auto flex p-4 hover:p-5 animation-enable-short cursor-pointer pointer-events-auto"
-              v-on:click="goToNextSection(false)">
+          <div class="w-1/3 h-full m-auto flex p-4 hover:p-5 animation-enable-short cursor-pointer pointer-events-auto" v-on:click="goToNextSection(false)">
             <div class="w-full h-16 bg-gray-300 flex font-merri-bold text-2xl items-center rounded-full">
               <div class="w-auto select-none h-full m-auto items-center flex">
                 NEXT
@@ -828,211 +827,46 @@
       </div>
     </div>
 
-    <div class="w-full h-full flex absolute bg-black opacity-90 z-30 top-0"
-        :class="[{ 'hidden': !bigLeaveQuestionShown },
-                { 'visible': bigLeaveQuestionShown }]">
-      <div class="w-3/4 h-60 flex-row m-auto items-end z-40">
-        <div class="w-full h-1/2 font-monda-bold text-center items-end flex text-3xl text-white">
-          <div class="mx-auto">
-            Apakah anda yakin ? (Any changes can't be revert back) <br>
-            Are you sure ? (Semua perubahan tidak bisa dikembalikkan)  
-          </div>
-        </div>
-        <div class="w-full h-1/2 flex">
-          <div class="w-1/2 h-full p-4">
-            <div class="w-full h-full p-4 cursor-pointer hover:p-5 animation-enable-short"
-                v-on:click="bigLeaveQuestionShown = false">
-              <div class="w-full h-full font-overpass-bold text-xl text-white flex pt-1 rounded-full bg-red-600">
-                <div class="m-auto">
-                  NOPE (lanjutkan praktikumnya)
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="w-1/2 h-full p-4">
-            <div class="w-full h-full p-4 cursor-pointer hover:p-5 animation-enable-short"
-                v-on:click="rollbackPraktikum(true)">
-              <div class="w-full h-full font-overpass-bold text-xl text-white flex pt-1 rounded-full bg-green-600">
-                <div class="m-auto">
-                  YEAH (get me out)
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ConfirmationModal
+      :open="bigLeaveQuestionShown"
+      message="Apakah anda yakin ? (Any changes can't be revert back) <br>Are you sure ? (Semua perubahan tidak bisa dikembalikkan)"
+      cancel-label="NOPE (lanjutkan praktikumnya)"
+      confirm-label="YEAH (get me out)"
+      @cancel="bigLeaveQuestionShown = false"
+      @confirm="rollbackPraktikum(true)"
+    />
 
-    <div class="w-full h-full flex absolute bg-black opacity-90 z-30 top-0"
-        :class="[{ 'hidden': !bigNextQuestionShown },
-                { 'visible': bigNextQuestionShown }]">
-      <div class="w-3/4 h-60 flex-row m-auto items-end z-40">
-        <div class="w-full h-1/2 font-monda-bold text-center items-end flex text-3xl text-white">
-          <div class="mx-auto">
-            Waktu belum selesai !!! <br>
-            Apakah ingin tetap lanjut ?  
-          </div>
-        </div>
-        <div class="w-full h-1/2 flex">
-          <div class="w-1/2 h-full p-4">
-            <div class="w-full h-full p-4 cursor-pointer hover:p-5 animation-enable-short"
-                v-on:click="bigNextQuestionShown = false">
-              <div class="w-full h-full font-overpass-bold text-xl text-white flex pt-1 rounded-full bg-red-600">
-                <div class="m-auto">
-                  NOPE (Salah pencet)
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="w-1/2 h-full p-4">
-            <div class="w-full h-full p-4 cursor-pointer hover:p-5 animation-enable-short"
-                v-on:click="goToNextSection(true)">
-              <div class="w-full h-full font-overpass-bold text-xl text-white flex pt-1 rounded-full bg-green-600">
-                <div class="m-auto">
-                  YEAH (Lanjut ke bagian berikutnya)
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ConfirmationModal
+      :open="bigNextQuestionShown"
+      message="Waktu belum selesai !!! <br>Apakah ingin tetap lanjut ?"
+      cancel-label="NOPE (Salah pencet)"
+      confirm-label="YEAH (Lanjut ke bagian berikutnya)"
+      @cancel="bigNextQuestionShown = false"
+      @confirm="goToNextSection(true)"
+    />
 
-    <div class="w-full h-full flex absolute bg-black opacity-97 z-30 top-0"
-        :class="[{ 'hidden': !bigviewShown },
-                { 'visible': bigviewShown }]">
-      <div class="w-24 h-4full flex-row"
-          :class="[{ 'visible' : praktikanBanned.length > 0 || asistenBanned.length > 0 },
-                  { 'hidden' : praktikanBanned.length == 0 && asistenBanned.length == 0 }]">
-        <div v-for="praktikan in praktikanBanned" v-bind:key="praktikan.nim"
-            class="w-full h-8 py-1 px-2 flex">
-          <div class="w-full h-full flex rounded-sm bg-gray-400 text-black text-xl font-overpass-mono-bold">
-            <span class="m-auto">{{ praktikan.nim }}</span>
-          </div>
-        </div>
-        <div v-for="asisten in asistenBanned" v-bind:key="asisten.kode"
-            class="w-full h-8 py-1 px-2 flex">
-          <div class="w-full h-full flex rounded-sm bg-yellow-400 text-black text-xl font-overpass-mono-bold">
-            <span class="m-auto">{{ asisten.kode }}</span>
-          </div>
-        </div>
-      </div>
-      <div class="h-4full flex-row"
-          :class="[{ 'w-24full' : praktikanBanned.length > 0 || asistenBanned.length > 0 },
-                  { 'w-4full' : praktikanBanned.length == 0 && asistenBanned.length == 0 }]">
-        <div class="w-full h-16 flex">
-          <div class="w-full h-full flex">
-            <div class="w-1/3 h-full flex py-2 px-8 hover:px-10 hover:py-3 animation-enable-short cursor-pointer"
-                v-on:click="bigviewShown = false">
-              <div class="w-full h-full flex font-monda-bold text-lg bg-yellow-400 rounded-lg">
-                <div class="w-auto select-none h-auto m-auto">
-                  CLOSE
-                </div>
-              </div>
-            </div>
-            <div class="w-1/3 h-full flex py-2 px-8 hover:px-10 hover:py-3 animation-enable-short cursor-pointer"
-                :class="[{ 'hidden' : spaceToggled },
-                        { 'visible' : !spaceToggled }]"
-                v-on:click="shuffleEmAll()">
-              <div class="w-full h-full flex font-monda-bold text-lg bg-yellow-400 rounded-lg">
-                <div class="w-auto select-none h-auto m-auto">
-                  SHUFFLE
-                </div>
-              </div>
-            </div>
-            <div class="w-1/3 h-full flex py-2 px-8 hover:px-10 hover:py-3 animation-enable-short cursor-pointer"
-                v-on:click="console.log('nop')">
-              <div class="w-full h-full flex font-monda-bold text-lg bg-yellow-400 rounded-lg">
-                <div class="w-auto select-none h-auto m-auto">
-                  SAVE
-                </div>
-              </div>
-            </div>
-          </div> 
-        </div>
-        <div class="w-full h-16full flex-row pt-4 px-4">
-          <div v-for="(plotrow, row) in plots" v-bind:key="row"
-                class="w-full flex"
-                :style="'height: ' + (100/plots.length) + '%; '">
-            <div v-for="(space, col) in plotrow" v-bind:key="col"
-                  class="h-full flex p-1 hover:p-2 animation-enable-short"
-                  :class="'space-' + row + '-' + col"
-                  :style="'width: ' + (100/plots[row].length) + '%; '"
-                  v-on:click="toggleSpace(space)">
+    <BigViewOverlay
+      :visible="bigviewShown"
+      :plots="plots"
+      :list-all-asisten="listAllAsisten"
+      :list-all-praktikan="listAllPraktikan"
+      :praktikan-banned="praktikanBanned"
+      :asisten-banned="asistenBanned"
+      :space-toggled="spaceToggled"
+      @close="bigviewShown = false"
+      @shuffle="shuffleEmAll()"
+      @save="console.log('nop')"
+      @toggle-space="toggleSpace"
+    />
 
-              <!--------------------------->
-              <!-- PLOTTING POSITION     -->
-              <!--------------------------->
-              <!-- 0   -> empty space                                        -->
-              <!-- 1,2 -> practicant space (different number for grouping)   -->
-              <!-- 3   -> asisstant space                                    -->
-              <!-- 4   -> info pj space                                      -->
-              <!-- 5   -> backup space                                       -->
-              <!-- 6   -> info practicum space                               -->
-              <!-- 7   -> projector space                                    -->
-              <div class="w-full h-full flex rounded-sm text-black text-xl font-overpass-mono-bold"
-                  :class="[{ 'opacity-0' : space.substring(0,1) == 0 },
-                            { 'bg-red-600 cursor-pointer' : space.substring(0,1) == 1 },
-                            { 'bg-blue-600 cursor-pointer' : space.substring(0,1) == 2 },
-                            { 'bg-yellow-600 cursor-pointer' : space.substring(0,1) == 3 },
-                            { 'bg-yellow-700' : space.substring(0,1) == 4 },
-                            { 'bg-green-700' : space.substring(0,1) == 5 },
-                            { 'bg-yellow-900' : space.substring(0,1) == 6 },
-                            { 'bg-orange-700' : space.substring(0,1) == 7 },]">
-
-                <div class="w-auto h-auto m-auto"
-                    :class="[{ 'visible': space.substring(0,1) == 3 },
-                              { 'hidden': space.substring(0,1) != 3 },]">
-                  <span :id="'asisten-' + space">{{ listAllAsisten[parseInt(space.substring(1,3))] == undefined ? "" : listAllAsisten[parseInt(space.substring(1,3))].kode }}</span>              
-                </div>
-
-                <div class="w-auto h-auto m-auto"
-                    :class="[{ 'visible': space.substring(0,1) == 1 || space.substring(0,1) == 2 },
-                              { 'hidden': space.substring(0,1) != 1 && space.substring(0,1) != 2 },]">
-                  <span :id="'praktikan-' + space">{{ listAllPraktikan[((parseInt(space.substring(1,3)) * 3) + parseInt(space.substring(3,4))) - 1] == undefined ? "" : listAllPraktikan[((parseInt(space.substring(1,3)) * 3) + parseInt(space.substring(3,4))) - 1].nim.substring(6,10) }}</span>
-                </div>
-
-              </div>
-            </div>            
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="w-full h-full flex absolute bg-black opacity-90 z-30 top-0"
-        :class="[{ 'hidden': !bigRatingQuestionShown },
-                { 'visible': bigRatingQuestionShown }]">
-      <div class="w-3/4 h-60 flex-row m-auto items-end z-40">
-        <div class="w-full h-1/2 font-monda-bold text-center items-end flex text-3xl text-white">
-          <div class="mx-auto">
-            Apakah semua praktikan sudah rating ? <br>
-            Jika sudah yakin maka klik "YEAH" 
-          </div>
-        </div>
-        <div class="w-full h-1/2 flex">
-          <div class="w-1/2 h-full p-4">
-            <div class="w-full h-full p-4 cursor-pointer hover:p-5 animation-enable-short"
-                v-on:click="bigRatingQuestionShown = false">
-              <div class="w-full h-full font-overpass-bold text-xl text-white flex pt-1 rounded-full bg-red-600">
-                <div class="m-auto">
-                  NOPE (Salah pencet)
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="w-1/2 h-full p-4">
-            <div class="w-full h-full p-4 cursor-pointer hover:p-5 animation-enable-short"
-                v-on:click="goToNextSection(true)">
-              <div class="w-full h-full font-overpass-bold text-xl text-white flex pt-1 rounded-full bg-green-600">
-                <div class="m-auto">
-                  YEAH (Lanjut ke bagian berikutnya)
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ConfirmationModal
+      :open="bigRatingQuestionShown"
+      message='Apakah semua praktikan sudah rating ? <br>Jika sudah yakin maka klik "YEAH"'
+      cancel-label="NOPE (Salah pencet)"
+      confirm-label="YEAH (Lanjut ke bagian berikutnya)"
+      @cancel="bigRatingQuestionShown = false"
+      @confirm="goToNextSection(true)"
+    />
   </div>
 </template>
 
@@ -1048,7 +882,49 @@
 
 <script>
 import moment from 'moment';
+import MenuList from '../components/praktikum/MenuList.vue';
+import ConfirmationModal from '../components/praktikum/ConfirmationModal.vue';
+import BigViewOverlay from '../components/praktikum/BigViewOverlay.vue';
+
+const staticMenuDefinitions = [
+  { key: 'asisten', label: 'Profil', icon: 'fa-address-card' },
+  { key: 'praktikum', label: 'Praktikum', icon: 'fa-code' },
+  { key: 'history', label: 'History', icon: 'fa-history' },
+  { key: 'nilai', label: 'Nilai', icon: 'fa-clipboard-check' },
+  { key: 'polling', label: 'Polling', icon: 'fa-chart-area' },
+  { key: 'kelas', label: 'Kelas', icon: 'fa-chalkboard-teacher', privilege: 'kelas' },
+  { key: 'soal', label: 'Soal', icon: 'fa-file-code', privilege: 'soal' },
+  { key: 'plotting', label: 'Plotting', icon: 'fa-calendar-alt', privilege: 'plotting' },
+  { key: 'modul', label: 'Modul', icon: 'fa-book', privilege: 'modul' },
+  { key: 'konfigurasi', label: 'Konfigurasi', icon: 'fa-cog', privilege: 'konfigurasi' },
+  { key: 'tp', label: 'Tugas Pendahuluan', icon: 'fa-book-open', privilege: 'tp' },
+  { key: 'jawaban', label: 'Jawaban', icon: 'fa-tasks', privilege: 'jawaban' },
+];
+
+const interactiveMenuDefinitions = [
+  { key: 'asisten', label: 'Profil', icon: 'fa-address-card', route: 'asisten' },
+  { key: 'praktikum', label: 'Praktikum', icon: 'fa-code', route: null },
+  { key: 'history', label: 'History', icon: 'fa-history', route: 'history' },
+  { key: 'nilai', label: 'Nilai', icon: 'fa-clipboard-check', route: 'nilai' },
+  { key: 'polling', label: 'Polling', icon: 'fa-chart-area', route: 'polling' },
+  { key: 'setpraktikan', label: 'Set Praktikan', icon: 'fa-users', route: 'setpraktikan' },
+  { key: 'kelas', label: 'Kelas', icon: 'fa-chalkboard-teacher', route: 'kelas', privilege: 'kelas' },
+  { key: 'allLaporan', label: 'All Laporan', icon: 'fa-file-medical-alt', route: 'allLaporan', privilege: 'allLaporan' },
+  { key: 'soal', label: 'Soal', icon: 'fa-file-code', route: 'soal', privilege: 'soal' },
+  { key: 'plotting', label: 'Plotting', icon: 'fa-calendar-alt', route: 'plotting', privilege: 'plotting' },
+  { key: 'modul', label: 'Modul', icon: 'fa-book', route: 'modul', privilege: 'modul' },
+  { key: 'konfigurasi', label: 'Konfigurasi', icon: 'fa-cog', route: 'konfigurasi', privilege: 'konfigurasi' },
+  { key: 'tp', label: 'Tugas Pendahuluan', icon: 'fa-book-open', route: 'tp', privilege: 'tp' },
+  { key: 'jawaban', label: 'Jawaban', icon: 'fa-tasks', route: 'jawaban', privilege: 'jawaban' },
+  { key: 'pelanggaran', label: 'Pelanggaran', icon: 'fa-radiation-alt', route: 'pelanggaran', privilege: 'pelanggaran' },
+  { key: 'rating', label: 'Ranking Praktikan', icon: 'fa-star', route: 'rating', privilege: 'ranking' },
+];
 export default {
+  components: {
+    MenuList,
+    ConfirmationModal,
+    BigViewOverlay,
+  },
   props: [
     'comingFrom',
     'currentUser',
@@ -1077,27 +953,8 @@ export default {
       changePage: false,
       currentPage: false,
       isForbidden: false,
-
-      formHovered: false,
-      buttonHovered: false,
-
-      menuProfil: false,
-      menuListTp: false,
-      menuHistory: false,
-      menuPolling: false,
-      menuSoal: false,
-      menuKelas: false,
-      menuModul: false,
-      menuPlotting: false,
-      menuKonfigurasi: false,
-      menuTp: false,
-      menuNilai: false,
-      menuSetPraktikan: false,
-      menuPelanggaran : false,
-      menuRanking: false,
-      menuAllLaporan: false,
-      menuDisabled : false,
-      menuJawaban: false,
+      menuDisabled: false,
+      activeMenu: 'praktikum',
 
       listAllAsisten: [],
       listAllPraktikan: [],
@@ -1450,7 +1307,6 @@ export default {
     },
 
     goToNextSection: function($force){
-
       const globe = this;
       if(!$force){
 
@@ -1478,6 +1334,7 @@ export default {
                 globe.$toasted.global.showError({
                   message: 'Tidak perlu tanda "-" pada awal dan akhir isian'
                 });
+                console.log('Tidak perlu tanda "-" pada awal dan akhir isian');
                 return;
               }
             }
@@ -1492,6 +1349,7 @@ export default {
                 globe.$toasted.global.showError({
                   message: 'Tidak perlu tanda "-" pada awal dan akhir isian'
                 });
+                console.log('Tidak perlu tanda "-" pada awal dan akhir isian');
                 return;
               }
             }
@@ -1506,6 +1364,7 @@ export default {
                 globe.$toasted.global.showError({
                   message: 'Tidak perlu tanda "-" pada awal dan akhir isian'
                 });
+                console.log('Tidak perlu tanda "-" pada awal dan akhir isian');
                 return;
               }
             }
@@ -1520,6 +1379,7 @@ export default {
                 globe.$toasted.global.showError({
                   message: 'Tidak perlu tanda "-" pada awal dan akhir isian'
                 });
+                console.log('Tidak perlu tanda "-" pada awal dan akhir isian');
                 return;
               }
             }
@@ -1535,6 +1395,7 @@ export default {
                 globe.$toasted.global.showError({
                   message: 'Tidak perlu tanda "-" pada awal dan akhir isian'
                 });
+                console.log('Tidak perlu tanda "-" pada awal dan akhir isian');
                 return;
               }
             }
@@ -1549,6 +1410,7 @@ export default {
             globe.$toasted.global.showError({
               message: "Satu asisten tidak boleh berada dalam kolom yang berbeda"
             });
+            console.log('Satu asisten tidak boleh berada dalam kolom yang berbeda');
             return;
           }
 
@@ -1556,6 +1418,7 @@ export default {
             globe.$toasted.global.showError({
               message: "Isi data terlebih dahulu"
             });
+            console.log("Isi data terlebih dahulu");
             return;
           }
 
@@ -1563,6 +1426,7 @@ export default {
             globe.$toasted.global.showError({
               message: "Ketikkan '*' pada praktikan alfa <br> jika tidak ada praktikan yang alfa"
             });
+            console.log("Ketikkan '*' pada praktikan alfa <br> jika tidak ada praktikan yang alfa");
             return;
           } else if(globe.formPraktikan_Alfa.allpraktikan_nim !== "*"){
 
@@ -1579,6 +1443,7 @@ export default {
                 globe.$toasted.global.showError({
                   message: 'Praktikan dengan nim "'+ praktikan +'" tidak ada dalam kelas ini'
                 });
+                console.log('Praktikan dengan nim "'+ praktikan +'" tidak ada dalam kelas ini');
                 return;
               }
             }
@@ -1588,6 +1453,7 @@ export default {
             globe.$toasted.global.showError({
               message: "Asisten PJ tidak perlu ditulis disini"
             });
+            console.log("Asisten PJ tidak perlu ditulis disini");
             return;
           }
 
@@ -1607,6 +1473,7 @@ export default {
               globe.$toasted.global.showError({
                 message: "Asisten "+diff_FromList+" tidak ada dalam praktikum ini"
               });
+              console.log("Asisten "+diff_FromList+" tidak ada dalam praktikum ini");
               return;
             }
           }
@@ -1617,6 +1484,7 @@ export default {
               globe.$toasted.global.showError({
                 message: "Asisten "+diff_FromSum+" belum dimasukkan"
               });
+              console.log("Asisten "+diff_FromSum+" belum dimasukkan");
               return;
             }
           }

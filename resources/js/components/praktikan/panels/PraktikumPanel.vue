@@ -640,6 +640,7 @@ const allPolling = toRef(props, 'allPolling');
 const isPollingEnabled = toRef(props, 'isPollingEnabled');
 const pollingComplete_mutable = toRef(props, 'pollingComplete');
 const isRunmod = toRef(props, 'isRunmod');
+const generateScoreText = (nilai) => props.generateScoreText?.(nilai);
 
 function savePolling() {
   props.onSavePolling?.();

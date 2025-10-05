@@ -182,15 +182,15 @@ import { defineComponent, ref, reactive, computed, toRefs, onMounted, onBeforeUn
 import { router } from '@inertiajs/vue3';
 import CryptoJS from 'crypto-js';
 
-import TopBar from '../components/dashboard/TopBar.vue';
-import ProfileMenu from '../components/dashboard/ProfileMenu.vue';
-import MainMenu from '../components/dashboard/MainMenu.vue';
-import MessageDrawer from '../components/dashboard/MessageDrawer.vue';
-import ProfilePanel from '../components/dashboard/panels/ProfilePanel.vue';
-import TPPanel from '../components/dashboard/panels/TPPanel.vue';
-import NilaiPanel from '../components/dashboard/panels/NilaiPanel.vue';
-import JawabanPanel from '../components/dashboard/panels/JawabanPanel.vue';
-import PraktikumPanel from '../components/dashboard/panels/PraktikumPanel.vue';
+import TopBar from '../components/praktikan/TopBar.vue';
+import ProfileMenu from '../components/praktikan/ProfileMenu.vue';
+import MainMenu from '../components/praktikan/MainMenu.vue';
+import MessageDrawer from '../components/praktikan/MessageDrawer.vue';
+import ProfilePanel from '../components/praktikan/panels/ProfilePanel.vue';
+import TPPanel from '../components/praktikan/panels/TPPanel.vue';
+import NilaiPanel from '../components/praktikan/panels/NilaiPanel.vue';
+import JawabanPanel from '../components/praktikan/panels/JawabanPanel.vue';
+import PraktikumPanel from '../components/praktikan/panels/PraktikumPanel.vue';
 
 const SUCCESS_SCORE_MESSAGES = [
   'Mantap gini nih kalau sebelum praktikum belajar',
@@ -233,7 +233,7 @@ export default defineComponent({
       default: () => [],
     },
     isRunmod: {
-      type: Boolean,
+      type: [Boolean, Number],
       default: false,
     },
     pollingComplete: {
@@ -366,6 +366,7 @@ export default defineComponent({
     });
 
     const activeView = ref('profil');
+    const isRunmod = computed(() => Boolean(props.isRunmod));
 
     const isProfil = computed(() => activeView.value === 'profil');
     const isPraktikum = computed(() => activeView.value === 'praktikum');
@@ -846,7 +847,7 @@ export default defineComponent({
           });
           break;
         case 5:
-          if (props.isRunmod) {
+          if (isRunmod.value) {
             if (isRealtime) {
               http.post('/sendJawabanJurnal', state.jawabanRunmod).then((response) => {
                 if (response.data.message !== 'success') {
@@ -1082,6 +1083,7 @@ export default defineComponent({
       isTP,
       isNilai,
       isJawaban,
+      isRunmod,
       choiceClass,
       isChoiceSelected,
       showPraktikum,

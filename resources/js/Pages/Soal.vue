@@ -5,237 +5,21 @@
     <div class="absolute w-120 z-20 h-48full bottom-0 right-0 animation-enable"
         :class="[{ 'right-0': pageActive },
                 { 'right-min20rem': !pageActive }]" @mouseover="isMenuShown = false">
-      <div class="w-full h-full animation-enable overflow-y-auto"
-          :class="[{ 'rounded-none': changePage && menuProfil },
-                  { 'rounded-tl-large': !changePage || !menuProfil }]" ref="menu">
-        <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-            :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuProfil },
-                    { 'bg-yellow-500 text-white': changePage && menuProfil }]"
-            v-on:click="travel('asisten')">
+      <div class="w-full h-full animation-enable overflow-y-auto rounded-tl-large"
+          :class="menuContainerClass" ref="menu">
+        <div
+          v-for="item in visibleMenuItems"
+          :key="item.id"
+          :class="menuItemClasses(item)"
+          @click="!item.isCurrentPage && travel(item.id)">
           <div class="w-7/12 my-2 flex">
-            <div class="w-4/6"/>
-            <img class="select-none m-auto w-2/6 h-auto fas fa-address-card">
+            <div class="w-4/6"></div>
+            <img :class="['select-none m-auto w-2/6 h-auto', item.icon]">
           </div>
           <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-            Profil
+            {{ item.label }}
           </span>
         </div>
-
-        <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-            :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuPraktikum },
-                    { 'bg-yellow-500 text-white': changePage && menuPraktikum }]"
-            v-on:click="travel('praktikum')">
-          <div class="w-7/12 my-2 flex">
-            <div class="w-4/6"/>
-            <img class="select-none m-auto w-2/6 h-auto fas fa-code">
-          </div>
-          <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-            Praktikum
-          </span>
-        </div>
-
-
-        <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-            :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuHistory },
-                    { 'bg-yellow-500 text-white': changePage && menuHistory }]"
-            v-on:click='travel("history")'>
-          <div class="w-7/12 my-2 flex">
-            <div class="w-4/6"/>
-            <img class="select-none m-auto w-2/6 h-auto fas fa-history">
-          </div>
-          <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-            History
-          </span>
-        </div>
-
-        <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-            :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuNilai },
-                    { 'bg-yellow-500 text-white': changePage && menuNilai }]"
-            v-on:click='travel("nilai")'>
-          <div class="w-7/12 my-2 flex">
-            <div class="w-4/6"/>
-            <img class="select-none m-auto w-2/6 h-auto fas fa-clipboard-check">
-          </div>
-          <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-            Nilai
-          </span>
-        </div>
-
-        <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-            :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuPolling },
-                    { 'bg-yellow-500 text-white': changePage && menuPolling }]"
-            v-on:click='travel("polling")'>
-          <div class="w-7/12 my-2 flex">
-            <div class="w-4/6"/>
-            <img class="select-none m-auto w-2/6 h-auto fas fa-chart-area">
-          </div>
-          <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-            Polling
-          </span>
-        </div>
-
-        <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-            :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuSetPraktikan },
-                    { 'bg-yellow-500 text-white': changePage && menuSetPraktikan }]"
-            v-on:click='travel("setpraktikan")'>
-          <div class="w-7/12 my-2 flex">
-            <div class="w-4/6"/>
-            <img class="select-none m-auto w-2/6 h-auto fas fa-users">
-          </div>
-          <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-            Set Praktikan
-          </span>
-        </div>
-
-        <!-- Role Based Menu -->
-        <div v-if="kelasPriviledge.includes(currentUser.role_id) || kelasPriviledge == 'all'">
-          <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-              :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuKelas },
-                      { 'bg-yellow-500 text-white': changePage && menuKelas }]"
-              v-on:click='travel("kelas")'>
-            <div class="w-7/12 my-2 flex">
-              <div class="w-4/6"/>
-              <img class="select-none m-auto w-2/6 h-auto fas fa-chalkboard-teacher">
-            </div>
-            <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-              Kelas
-            </span>
-          </div>
-        </div>
-
-        <div v-if="allLaporanPriviledge.includes(currentUser.role_id) || allLaporanPriviledge == 'all'">
-          <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-              :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuAllLaporan },
-                      { 'bg-yellow-500 text-white': changePage && menuAllLaporan }]"
-              v-on:click='travel("allLaporan")'>
-            <div class="w-7/12 my-2 flex">
-              <div class="w-4/6"/>
-              <img class="select-none m-auto w-2/6 h-auto fas fa-file-medical-alt">
-            </div>
-            <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-              All Laporan
-            </span>
-          </div>
-        </div>
-
-        <div v-if="soalPriviledge.includes(currentUser.role_id) || soalPriviledge == 'all'">
-          <div class="w-full p-4 h-24 flex select-none animation-enable"
-              :class="[{ 'bg-yellow-500 text-white': !changePage },
-                      { 'bg-yellow-400 text-black': changePage }]">
-            <div class="w-7/12 my-2 flex">
-              <div class="w-4/6"/>
-              <img class="select-none m-auto w-2/6 h-auto fas fa-file-code">
-            </div>
-            <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-              Soal
-            </span>
-          </div>
-        </div>
-
-        <div v-if="plottingPriviledge.includes(currentUser.role_id) || plottingPriviledge == 'all'">
-          <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-              :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuPlotting },
-                      { 'bg-yellow-500 text-white': changePage && menuPlotting }]"
-              v-on:click='travel("plotting")'>
-            <div class="w-7/12 my-2 flex">
-              <div class="w-4/6"/>
-              <img class="select-none m-auto w-2/6 h-auto fas fa-calendar-alt">
-            </div>
-            <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-              Plotting
-            </span>
-          </div>
-        </div>
-
-        <div v-if="modulPriviledge.includes(currentUser.role_id) || modulPriviledge == 'all'">
-          <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-              :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuModul },
-                      { 'bg-yellow-500 text-white': changePage && menuModul }]"
-              v-on:click='travel("modul")'>
-            <div class="w-7/12 my-2 flex">
-              <div class="w-4/6"/>
-              <img class="select-none m-auto w-2/6 h-auto fas fa-book">
-            </div>
-            <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-              Modul
-            </span>
-          </div>
-        </div>
-
-        <div v-if="konfigurasiPriviledge.includes(currentUser.role_id) || konfigurasiPriviledge == 'all'">
-          <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-              :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuKonfigurasi },
-                      { 'bg-yellow-500 text-white': changePage && menuKonfigurasi }]"
-              v-on:click='travel("konfigurasi")'>
-            <div class="w-7/12 my-2 flex">
-              <div class="w-4/6"/>
-              <img class="select-none m-auto w-2/6 h-auto fas fa-cog">
-            </div>
-            <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-              Konfigurasi
-            </span>
-          </div>
-        </div>
-
-        <div v-if="tpPriviledge.includes(currentUser.role_id) || tpPriviledge == 'all'">
-          <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-              :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuTp },
-                      { 'bg-yellow-500 text-white': changePage && menuTp }]"
-              v-on:click='travel("tp")'>
-            <div class="w-7/12 my-2 flex">
-              <div class="w-4/6"/>
-              <img class="select-none m-auto w-2/6 h-auto fas fa-book-open">
-            </div>
-            <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-              Tugas Pendahuluan
-            </span>
-          </div>
-        </div> 
-
-        <div v-if="jawabanPriviledge.includes(currentUser.role_id) || jawabanPriviledge == 'all'">
-          <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-              :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuJawaban },
-                      { 'bg-yellow-500 text-white': changePage && menuJawaban }]"
-              v-on:click='travel("jawaban")'>
-            <div class="w-7/12 my-2 flex">
-              <div class="w-4/6"/>
-              <img class="select-none m-auto w-2/6 h-auto fas fa-tasks">
-            </div>
-            <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-              Jawaban
-            </span>
-          </div>
-        </div> 
-
-        <div v-if="pelanggaranPriviledge.includes(currentUser.role_id) || pelanggaranPriviledge == 'all'">
-          <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-              :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuPelanggaran },
-                      { 'bg-yellow-500 text-white': changePage && menuPelanggaran }]"
-              v-on:click='travel("pelanggaran")'>
-            <div class="w-7/12 my-2 flex">
-              <div class="w-4/6"/>
-              <img class="select-none m-auto w-2/6 h-auto fas fa-radiation-alt">
-            </div>
-            <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-              Pelanggaran
-            </span>
-          </div>
-        </div>
-
-        <div v-if="RankingPriviledge.includes(currentUser.role_id) || RankingPriviledge == 'all'">
-          <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
-              :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuRanking },
-                      { 'bg-yellow-500 text-white': changePage && menuRanking }]"
-              v-on:click='travel("rating")'>
-            <div class="w-7/12 my-2 flex">
-              <div class="w-4/6"/>
-              <img class="select-none m-auto w-2/6 h-auto fas fa-star">
-            </div>
-            <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-              Ranking Praktikan
-            </span>
-          </div>
-        </div>  
       </div>
     </div>
 
@@ -393,12 +177,12 @@
                             v-if="editPriviledge.includes(currentUser.role_id)">
 
                           <!-- Open this only when needed -->
-                          <!-- <div class="w-full h-1/2 flex">
+                          <div class="w-full h-1/2 flex">
                             <span class="w-full h-full p-3 hover:p-4 cursor-pointer animation-enable-short"
                                 v-on:click="deleteSoal(soal.id)">
                               <img class="w-full h-full p-1 fas fa-trash">
                             </span>
-                          </div> -->
+                          </div>
 
                           <div class="w-full h-1/2 flex">
                             <span class="w-full h-full p-3 visible hover:p-4 cursor-pointer animation-enable-short"
@@ -456,12 +240,12 @@
                             v-if="editPriviledge.includes(currentUser.role_id)">
 
                           <!-- Open this only when needed -->
-                          <!-- <div class="w-full h-1/2 flex">
+                          <div class="w-full h-1/2 flex">
                             <span class="w-full h-full p-3 hover:p-4 cursor-pointer animation-enable-short"
                                 v-on:click="deleteSoal(soal.id)">
                               <img class="w-full h-full p-1 fas fa-trash">
                             </span>
-                          </div> -->
+                          </div>
 
                           <div class="w-full h-1/2 flex">
                             <span class="w-full h-full p-3 visible hover:p-4 cursor-pointer animation-enable-short"
@@ -517,12 +301,12 @@
                             v-if="editPriviledge.includes(currentUser.role_id)">
 
                           <!-- Open this only when needed -->
-                          <!-- <div class="w-full h-1/2 flex">
+                          <div class="w-full h-1/2 flex">
                             <span class="w-full h-full p-3 hover:p-4 cursor-pointer animation-enable-short"
                                 v-on:click="deleteSoal(soal.id)">
                               <img class="w-full h-full p-1 fas fa-trash">
                             </span>
-                          </div> -->
+                          </div>
 
                           <div class="w-full h-1/2 flex">
                             <span class="w-full h-full p-3 visible hover:p-4 cursor-pointer animation-enable-short"
@@ -565,12 +349,12 @@
                             v-if="editPriviledge.includes(currentUser.role_id)">
 
                             <!-- Open this only when needed -->
-                            <!-- <div class="w-full h-1/2 flex">
+                            <div class="w-full h-1/2 flex">
                               <span class="w-full h-full p-3 hover:p-4 cursor-pointer animation-enable-short"
                                   v-on:click="deleteSoal(soal.id)">
                                 <img class="w-full h-full p-1 fas fa-trash">
                               </span>
-                            </div> -->
+                            </div>
 
                             <div class="w-full h-1/2 flex">
                               <span class="w-full h-full p-3 visible hover:p-4 cursor-pointer animation-enable-short"
@@ -612,12 +396,12 @@
                             v-if="editPriviledge.includes(currentUser.role_id)">
 
                             <!-- Open this only when needed -->
-                            <!-- <div class="w-full h-1/2 flex">
+                            <div class="w-full h-1/2 flex">
                               <span class="w-full h-full p-3 hover:p-4 cursor-pointer animation-enable-short"
                                   v-on:click="deleteSoal(soal.id)">
                                 <img class="w-full h-full p-1 fas fa-trash">
                               </span>
-                            </div> -->
+                            </div>
 
                             <div class="w-full h-1/2 flex">
                               <span class="w-full h-full p-3 visible hover:p-4 cursor-pointer animation-enable-short"
@@ -659,12 +443,12 @@
                             v-if="editPriviledge.includes(currentUser.role_id)">
 
                             <!-- Open this only when needed -->
-                            <!-- <div class="w-full h-1/2 flex">
+                            <div class="w-full h-1/2 flex">
                               <span class="w-full h-full p-3 hover:p-4 cursor-pointer animation-enable-short"
                                   v-on:click="deleteSoal(soal.id)">
                                 <img class="w-full h-full p-1 fas fa-trash">
                               </span>
-                            </div> -->
+                            </div>
 
                             <div class="w-full h-1/2 flex">
                               <span class="w-full h-full p-3 visible hover:p-4 cursor-pointer animation-enable-short"
@@ -1023,6 +807,8 @@
 </style>
 
 <script>
+import { MENU_ITEMS, PRIVILEGES, SOAL_TABS } from './Soal/constants';
+
 export default {
   props: [
     'comingFrom',
@@ -1041,59 +827,29 @@ export default {
 
   data() {
     return {
-      kelasPriviledge: [],
-      plottingPriviledge: [1,2,4,5],
-      modulPriviledge: [1,2,4,15,7],
-      konfigurasiPriviledge: [1,2,4,18,7],
-      tpPriviledge: [1,2,15,11,7],
-      pelanggaranPriviledge: [1,2,4,5,6,18],
-      RankingPriviledge: [1,2,4,5,8,16],
-      allLaporanPriviledge: [1,2,4,5,6],
-      jawabanPriviledge: [1,2,7,11,15],
-      soalPriviledge: "all",
-      editPriviledge: [1,2,15,11,7],
+      privileges: { ...PRIVILEGES },
+      menuItems: MENU_ITEMS,
+      soalTabs: SOAL_TABS,
 
       pageActive: true,
       isMenuShown: false,
       changePage: false,
       currentPage: false,
-      
+
       chosenModulID: '',
-
-      openedMenu: true,
       soalMenuShown: true,
+      activeMenu: null,
+      activeSoalType: 'TP',
+
       editing: false,
-      currentSoal: "",
+      activeEditId: null,
 
-      listAllTP: this.allTP === null ? [] : this.allTP,
-      listAllTA: this.allTA === null ? [] : this.allTA,
-      listAllTK: this.allTK === null ? [] : this.allTK,
-      listAllJurnal: this.allJurnal === null ? [] : this.allJurnal,
-      listAllMandiri: this.allMandiri === null ? [] : this.allMandiri,
-      listAllFITB: this.allFITB === null ? [] : this.allFITB,
-
-      isTA: false,
-      isTK: false,
-      isJurnal: false,
-      isMandiri: false,
-      isFITB: false,
-
-      menuProfil: false,
-      menuPraktikum: false,
-      menuListTp: false,
-      menuHistory: false,
-      menuPolling: false,
-      menuKelas: false,
-      menuModul: false,
-      menuPlotting: false,
-      menuKonfigurasi: false,
-      menuTp: false,
-      menuNilai: false,
-      menuSetPraktikan: false,
-      menuPelanggaran: false,
-      menuRanking: false,
-      menuAllLaporan: false,
-      menuJawaban: false,
+      listAllTP: this.allTP ?? [],
+      listAllTA: this.allTA ?? [],
+      listAllTK: this.allTK ?? [],
+      listAllJurnal: this.allJurnal ?? [],
+      listAllMandiri: this.allMandiri ?? [],
+      listAllFITB: this.allFITB ?? [],
 
       // Form for TA and TK
       formTATK: {
@@ -1118,7 +874,7 @@ export default {
         isSulit: false,
       },
 
-      // Form for Tugas Pendahuluan and FITB
+      // Form for Tugas Pendahuluan
       formTP: {
         id: '',
         jenisSoal: '',
@@ -1126,1188 +882,547 @@ export default {
         modul_id: '',
         oldSoal: '',
         soal: '',
-        isEssay: '',
-        isProgram: '',
+        isEssay: false,
+        isProgram: false,
       },
     }
   },
 
+  computed: {
+    highlightedMenu() {
+      return this.changePage ? this.activeMenu : 'soal';
+    },
+
+    visibleMenuItems() {
+      return this.menuItems.filter(item => this.hasMenuAccess(item));
+    },
+
+    menuContainerClass() {
+      const navigatingToProfile = this.changePage && this.highlightedMenu === 'asisten';
+      return navigatingToProfile ? 'rounded-none' : 'rounded-tl-large';
+    },
+
+    editPriviledge() {
+      return this.privileges.edit === 'all' ? 'all' : (this.privileges.edit || []);
+    },
+
+    canEdit() {
+      if (this.editPriviledge === 'all') {
+        return true;
+      }
+      return this.editPriviledge.includes(this.currentUser.role_id);
+    },
+
+    isTA() {
+      return this.activeSoalType === 'TA';
+    },
+
+    isTK() {
+      return this.activeSoalType === 'TK';
+    },
+
+    isJurnal() {
+      return this.activeSoalType === 'Jurnal';
+    },
+
+    isMandiri() {
+      return this.activeSoalType === 'Mandiri';
+    },
+
+    isFITB() {
+      return this.activeSoalType === 'FITB';
+    },
+
+    activeTabIndex() {
+      return this.soalTabs.findIndex(tab => tab.id === this.activeSoalType);
+    },
+  },
+
   mounted() {
+    document.body.classList.add('closed');
 
-    $('body').addClass('closed');
-    this.$refs.menu.scrollTop = this.position;
+    if (this.$refs.menu) {
+      this.$refs.menu.scrollTop = this.position;
+    }
 
-    const globe = this;
+    const incomingFrom = [
+      'asisten',
+      'none',
+      'kelas',
+      'modul',
+      'plotting',
+      'praktikum',
+      'konfigurasi',
+      'tp',
+      'polling',
+      'listTp',
+      'nilai',
+      'history',
+      'pelanggaran',
+      'setpraktikan',
+      'rating',
+      'allLaporan',
+      'jawaban',
+    ];
 
-    if(this.comingFrom === 'asisten' ||
-        this.comingFrom === 'none' ||
-        this.comingFrom === 'kelas' ||
-        this.comingFrom === 'modul'||
-        this.comingFrom === 'plotting' ||
-        this.comingFrom === 'praktikum' ||
-        this.comingFrom === 'konfigurasi' ||
-        this.comingFrom === 'tp' ||
-        this.comingFrom === 'polling' ||
-        this.comingFrom === 'listTp' ||
-        this.comingFrom === 'nilai'||
-        this.comingFrom === 'history'||
-        this.comingFrom === 'pelanggaran'||
-        this.comingFrom === 'setpraktikan'||
-        this.comingFrom === 'rating' ||
-        this.comingFrom === 'allLaporan' ||
-        this.comingFrom === 'jawaban'){
-
-      setTimeout(
-        function() {
-          globe.currentPage = true;
-        }, 10); 
+    if (incomingFrom.includes(this.comingFrom)) {
+      setTimeout(() => {
+        this.currentPage = true;
+      }, 10);
     }
   },
 
   methods: {
-    setCurrentMenu: function($whereTo, $bool){
-
-      if($whereTo === "praktikum")
-        this.menuPraktikum = $bool;
-      if($whereTo === "asisten")
-        this.menuProfil = $bool;
-      if($whereTo === "listTp")
-        this.menuListTp = $bool;
-      if($whereTo === "history")
-        this.menuHistory = $bool;
-      if($whereTo === "polling")
-        this.menuPolling = $bool;
-      if($whereTo === "kelas")
-        this.menuKelas = $bool;
-      if($whereTo === "modul")
-        this.menuModul = $bool;
-      if($whereTo === "plotting")
-        this.menuPlotting = $bool;
-      if($whereTo === "konfigurasi")
-        this.menuKonfigurasi = $bool;
-      if($whereTo === "tp")
-        this.menuTp = $bool;
-      if($whereTo === "nilai")
-        this.menuNilai = $bool;
-      if($whereTo === "setpraktikan")
-        this.menuSetPraktikan = $bool;
-      if($whereTo === "pelanggaran")
-        this.menuPelanggaran = $bool;
-      if($whereTo === "rating")
-        this.menuRanking = $bool;
-      if($whereTo === "allLaporan")
-        this.menuAllLaporan = $bool;
-      if($whereTo === "jawaban")
-        this.menuJawaban = $bool;
-    },
-
-    deleteSoal: function($id){
-
-      const globe = this;
-      if(!this.isTA &&
-          !this.isTK &&
-          !this.isFITB &&
-          !this.isJurnal &&
-          !this.isMandiri){
-
-        this.$axios.post('/deleteTP/'+$id).then(response => {
-
-          if(response.data.message === "success") {
-
-            globe.$toasted.global.showSuccess({
-              message: "Soal TP berhasil dihapus"
-            });
-
-            var i;
-            for(i=0; i<globe.listAllTP.length; i++){
-              if(globe.listAllTP[i].id === $id){
-                break;
-              }
-            }
-            globe.listAllTP.splice(i, 1);
-          } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
-          }
-        }).catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            if(error.response.data.errors != null){
-              if(error.response.data.errors.modul_id != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.modul_id[0]
-                });
-              if(error.response.data.errors.soal != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.soal[0]
-                });
-              if(error.response.data.errors.isEssay != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.isEssay[0]
-                });
-              if(error.response.data.errors.isProgram != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.isProgram[0]
-                });
-            }
-          }
-        });
+    hasMenuAccess(item) {
+      if (!item.privilege) {
+        return true;
       }
+      const privilege = this.privileges[item.privilege];
+      if (privilege === 'all') {
+        return true;
+      }
+      if (Array.isArray(privilege)) {
+        return privilege.includes(this.currentUser.role_id);
+      }
+      return false;
     },
 
-    editSoal: function($soal, $editing){
+    menuItemClasses(item) {
+      const baseClasses = [
+        'w-full',
+        'p-4',
+        'h-24',
+        'flex',
+        'select-none',
+        'animation-enable',
+      ];
 
-      const globe = this;
-      this.editing = $editing;
-      this.currentSoal = $soal;
+      const isCurrent = this.highlightedMenu === item.id;
+      const isClickable = !item.isCurrentPage;
 
-      if($editing){
-
-        if(!this.isTA &&
-            !this.isTK &&
-            !this.isFITB &&
-            !this.isJurnal &&
-            !this.isMandiri){
-
-          if($soal.isEssay)
-            $("div.jenisSoalOption select").val("essay");
-          
-          if($soal.isProgram)
-            $("div.jenisSoalOption select").val("program");
-
-          if(globe.formTP.id != null){
-            
-            $(".editCloseTP-"+globe.formTP.id).removeClass("visible");
-            $(".editCloseTP-"+globe.formTP.id).addClass("hidden");
-            $(".editOpenTP-"+globe.formTP.id).removeClass("hidden");
-            $(".editOpenTP-"+globe.formTP.id).addClass("visible");
-          }
-
-          $(".editOpenTP-"+$soal.id).removeClass("visible");
-          $(".editOpenTP-"+$soal.id).addClass("hidden");
-          $(".editCloseTP-"+$soal.id).removeClass("hidden");
-          $(".editCloseTP-"+$soal.id).addClass("visible");
-
-          globe.formTP.id = $soal.id;
-
-          if($soal.isEssay)
-            globe.formTP.jenisSoal = "essay";
-          if($soal.isProgram)
-            globe.formTP.jenisSoal = "program";
-
-          globe.formTP.oldModul_id = $soal.modul_id;
-          globe.formTP.modul_id = $soal.modul_id;
-          globe.formTP.oldSoal = $soal.soal;
-          globe.formTP.soal = $soal.soal;
-          globe.formTP.isEssay = $soal.isEssay;
-          globe.formTP.isProgram = $soal.isProgram;
-        } else if(this.isTA){
-
-          if(globe.formTATK.id != null){
-            
-            $(".editCloseTA-"+globe.formTATK.id).removeClass("visible");
-            $(".editCloseTA-"+globe.formTATK.id).addClass("hidden");
-            $(".editOpenTA-"+globe.formTATK.id).removeClass("hidden");
-            $(".editOpenTA-"+globe.formTATK.id).addClass("visible");
-          }
-
-          $(".editOpenTA-"+$soal.id).removeClass("visible");
-          $(".editOpenTA-"+$soal.id).addClass("hidden");
-          $(".editCloseTA-"+$soal.id).removeClass("hidden");
-          $(".editCloseTA-"+$soal.id).addClass("visible");
-
-          globe.formTATK.id = $soal.id;
-          globe.formTATK.oldModul_id = $soal.modul_id;
-          globe.formTATK.modul_id = $soal.modul_id;
-          globe.formTATK.oldPertanyaan = $soal.pertanyaan;
-          globe.formTATK.pertanyaan = $soal.pertanyaan;
-          globe.formTATK.jawaban_benar = $soal.jawaban_benar;
-          globe.formTATK.jawaban_salah1 = $soal.jawaban_salah1;
-          globe.formTATK.jawaban_salah2 = $soal.jawaban_salah2;
-          globe.formTATK.jawaban_salah3 = $soal.jawaban_salah3;
-        } else if(this.isTK){
-
-          if(globe.formTATK.id != null){
-            
-            $(".editCloseTK-"+globe.formTATK.id).removeClass("visible");
-            $(".editCloseTK-"+globe.formTATK.id).addClass("hidden");
-            $(".editOpenTK-"+globe.formTATK.id).removeClass("hidden");
-            $(".editOpenTK-"+globe.formTATK.id).addClass("visible");
-          }
-
-          $(".editOpenTK-"+$soal.id).removeClass("visible");
-          $(".editOpenTK-"+$soal.id).addClass("hidden");
-          $(".editCloseTK-"+$soal.id).removeClass("hidden");
-          $(".editCloseTK-"+$soal.id).addClass("visible");
-
-          globe.formTATK.id = $soal.id;
-          globe.formTATK.oldModul_id = $soal.modul_id;
-          globe.formTATK.modul_id = $soal.modul_id;
-          globe.formTATK.oldPertanyaan = $soal.pertanyaan;
-          globe.formTATK.pertanyaan = $soal.pertanyaan;
-          globe.formTATK.jawaban_benar = $soal.jawaban_benar;
-          globe.formTATK.jawaban_salah1 = $soal.jawaban_salah1;
-          globe.formTATK.jawaban_salah2 = $soal.jawaban_salah2;
-          globe.formTATK.jawaban_salah3 = $soal.jawaban_salah3;
-        } else if(this.isJurnal){
-
-          if(globe.formJMFITB.id != null){
-            
-            $(".editCloseJurnal-"+globe.formJMFITB.id).removeClass("visible");
-            $(".editCloseJurnal-"+globe.formJMFITB.id).addClass("hidden");
-            $(".editOpenJurnal-"+globe.formJMFITB.id).removeClass("hidden");
-            $(".editOpenJurnal-"+globe.formJMFITB.id).addClass("visible");
-          }
-
-          $(".editOpenJurnal-"+$soal.id).removeClass("visible");
-          $(".editOpenJurnal-"+$soal.id).addClass("hidden");
-          $(".editCloseJurnal-"+$soal.id).removeClass("hidden");
-          $(".editCloseJurnal-"+$soal.id).addClass("visible");
-
-          globe.formJMFITB.id = $soal.id;
-          globe.formJMFITB.oldModul_id = $soal.modul_id;
-          globe.formJMFITB.modul_id = $soal.modul_id;
-          globe.formJMFITB.oldSoal = $soal.soal;
-          globe.formJMFITB.soal = $soal.soal;
-        } else if(this.isMandiri){
-
-          if(globe.formJMFITB.id != null){
-            
-            $(".editCloseMandiri-"+globe.formJMFITB.id).removeClass("visible");
-            $(".editCloseMandiri-"+globe.formJMFITB.id).addClass("hidden");
-            $(".editOpenMandiri-"+globe.formJMFITB.id).removeClass("hidden");
-            $(".editOpenMandiri-"+globe.formJMFITB.id).addClass("visible");
-          }
-
-          $(".editOpenMandiri-"+$soal.id).removeClass("visible");
-          $(".editOpenMandiri-"+$soal.id).addClass("hidden");
-          $(".editCloseMandiri-"+$soal.id).removeClass("hidden");
-          $(".editCloseMandiri-"+$soal.id).addClass("visible");
-
-          globe.formJMFITB.id = $soal.id;
-          globe.formJMFITB.oldModul_id = $soal.modul_id;
-          globe.formJMFITB.modul_id = $soal.modul_id;
-          globe.formJMFITB.oldSoal = $soal.soal;
-          globe.formJMFITB.soal = $soal.soal;
-        } else if(this.isFITB){
-
-          if(globe.formJMFITB.id != null){
-            
-            $(".editCloseFITB-"+globe.formJMFITB.id).removeClass("visible");
-            $(".editCloseFITB-"+globe.formJMFITB.id).addClass("hidden");
-            $(".editOpenFITB-"+globe.formJMFITB.id).removeClass("hidden");
-            $(".editOpenFITB-"+globe.formJMFITB.id).addClass("visible");
-          }
-
-          $(".editOpenFITB-"+$soal.id).removeClass("visible");
-          $(".editOpenFITB-"+$soal.id).addClass("hidden");
-          $(".editCloseFITB-"+$soal.id).removeClass("hidden");
-          $(".editCloseFITB-"+$soal.id).addClass("visible");
-
-          globe.formJMFITB.id = $soal.id;
-          globe.formJMFITB.oldModul_id = $soal.modul_id;
-          globe.formJMFITB.modul_id = $soal.modul_id;
-          globe.formJMFITB.oldSoal = $soal.soal;
-          globe.formJMFITB.soal = $soal.soal;
-        }
+      if (isClickable) {
+        baseClasses.push('cursor-pointer', 'hover:text-white');
+        baseClasses.push(isCurrent ? 'bg-yellow-500 text-white' : 'bg-yellow-400 hover:bg-yellow-600');
       } else {
+        baseClasses.push('cursor-default');
+        baseClasses.push(isCurrent ? 'bg-yellow-500 text-white' : 'bg-yellow-400 text-black');
+      }
 
-        if(!this.isTA &&
-            !this.isTK &&
-            !this.isFITB &&
-            !this.isJurnal &&
-            !this.isMandiri){
-        
-          $(".editCloseTP-"+$soal.id).removeClass("visible");
-          $(".editCloseTP-"+$soal.id).addClass("hidden");
-          $(".editOpenTP-"+$soal.id).removeClass("hidden");
-          $(".editOpenTP-"+$soal.id).addClass("visible");
+      return baseClasses.join(' ');
+    },
 
-          $("div.jenisSoalOption select").val("");
-          globe.formTP.id = "";
-          globe.formTP.jenisSoal = "";
-          globe.formTP.oldModul_id = "";
-          globe.formTP.modul_id = "";
-          globe.formTP.oldSoal = "";
-          globe.formTP.soal = "";
-          globe.formTP.isEssay = "";
-          globe.formTP.isProgram = "";
-        } else if(this.isTA){
-        
-          $(".editCloseTA-"+$soal.id).removeClass("visible");
-          $(".editCloseTA-"+$soal.id).addClass("hidden");
-          $(".editOpenTA-"+$soal.id).removeClass("hidden");
-          $(".editOpenTA-"+$soal.id).addClass("visible");
+    setCurrentMenu(target) {
+      this.activeMenu = target;
+    },
 
-          globe.formTATK.id = "";
-          globe.formTATK.oldModul_id = "";
-          globe.formTATK.modul_id = "";
-          globe.formTATK.oldPertanyaan = "";
-          globe.formTATK.pertanyaan = "";
-          globe.formTATK.jawaban_benar = "";
-          globe.formTATK.jawaban_salah1 = "";
-          globe.formTATK.jawaban_salah2 = "";
-          globe.formTATK.jawaban_salah3 = "";
-        } else if(this.isTK){
-        
-          $(".editCloseTK-"+$soal.id).removeClass("visible");
-          $(".editCloseTK-"+$soal.id).addClass("hidden");
-          $(".editOpenTK-"+$soal.id).removeClass("hidden");
-          $(".editOpenTK-"+$soal.id).addClass("visible");
+    getTypeConfig(type = this.activeSoalType) {
+      const configs = {
+        TP: {
+          listKey: 'listAllTP',
+          createUrl: '/createTP',
+          updateUrl: '/updateTP',
+          deleteUrl: id => `/deleteTP/${id}`,
+          messages: {
+            create: 'Soal TP berhasil ditambahkan',
+            update: 'Soal TP berhasil diperbaharui',
+            delete: 'Soal TP berhasil dihapus',
+          },
+          errorFields: ['modul_id', 'soal', 'isEssay', 'isProgram'],
+        },
+        TA: {
+          listKey: 'listAllTA',
+          createUrl: '/createTA',
+          updateUrl: '/updateTA',
+          deleteUrl: id => `/deleteTA/${id}`,
+          messages: {
+            create: 'Soal TA berhasil ditambahkan',
+            update: 'Soal TA berhasil diperbaharui',
+            delete: 'Soal TA berhasil dihapus',
+          },
+          errorFields: ['modul_id', 'pertanyaan', 'jawaban_benar', 'jawaban_salah1', 'jawaban_salah2', 'jawaban_salah3'],
+        },
+        TK: {
+          listKey: 'listAllTK',
+          createUrl: '/createTK',
+          updateUrl: '/updateTK',
+          deleteUrl: id => `/deleteTK/${id}`,
+          messages: {
+            create: 'Soal TK berhasil ditambahkan',
+            update: 'Soal TK berhasil diperbaharui',
+            delete: 'Soal TK berhasil dihapus',
+          },
+          errorFields: ['modul_id', 'pertanyaan', 'jawaban_benar', 'jawaban_salah1', 'jawaban_salah2', 'jawaban_salah3'],
+        },
+        Jurnal: {
+          listKey: 'listAllJurnal',
+          createUrl: '/createJurnal',
+          updateUrl: '/updateJurnal',
+          deleteUrl: id => `/deleteJurnal/${id}`,
+          messages: {
+            create: 'Soal Jurnal berhasil ditambahkan',
+            update: 'Soal Jurnal berhasil diperbaharui',
+            delete: 'Soal Jurnal berhasil dihapus',
+          },
+          errorFields: ['modul_id', 'soal'],
+        },
+        Mandiri: {
+          listKey: 'listAllMandiri',
+          createUrl: '/createMandiri',
+          updateUrl: '/updateMandiri',
+          deleteUrl: id => `/deleteMandiri/${id}`,
+          messages: {
+            create: 'Soal Mandiri berhasil ditambahkan',
+            update: 'Soal Mandiri berhasil diperbaharui',
+            delete: 'Soal Mandiri berhasil dihapus',
+          },
+          errorFields: ['modul_id', 'soal'],
+        },
+        FITB: {
+          listKey: 'listAllFITB',
+          createUrl: '/createFitb',
+          updateUrl: '/updateFitb',
+          deleteUrl: id => `/deleteFitb/${id}`,
+          messages: {
+            create: 'Soal FITB berhasil ditambahkan',
+            update: 'Soal FITB berhasil diperbaharui',
+            delete: 'Soal FITB berhasil dihapus',
+          },
+          errorFields: ['modul_id', 'soal'],
+        },
+      };
 
-          globe.formTATK.id = "";
-          globe.formTATK.oldModul_id = "";
-          globe.formTATK.modul_id = "";
-          globe.formTATK.oldPertanyaan = "";
-          globe.formTATK.pertanyaan = "";
-          globe.formTATK.jawaban_benar = "";
-          globe.formTATK.jawaban_salah1 = "";
-          globe.formTATK.jawaban_salah2 = "";
-          globe.formTATK.jawaban_salah3 = "";
-        } else if(this.isJurnal){
-        
-          $(".editCloseJurnal-"+$soal.id).removeClass("visible");
-          $(".editCloseJurnal-"+$soal.id).addClass("hidden");
-          $(".editOpenJurnal-"+$soal.id).removeClass("hidden");
-          $(".editOpenJurnal-"+$soal.id).addClass("visible");
+      return configs[type];
+    },
 
-          globe.formJMFITB.id = "";
-          globe.formJMFITB.oldModul_id = "";
-          globe.formJMFITB.modul_id = "";
-          globe.formJMFITB.oldSoal = "";
-          globe.formJMFITB.soal = "";
-        } else if(this.isMandiri){
-        
-          $(".editCloseMandiri-"+$soal.id).removeClass("visible");
-          $(".editCloseMandiri-"+$soal.id).addClass("hidden");
-          $(".editOpenMandiri-"+$soal.id).removeClass("hidden");
-          $(".editOpenMandiri-"+$soal.id).addClass("visible");
+    getFormReference(type = this.activeSoalType) {
+      if (type === 'TP') {
+        return this.formTP;
+      }
+      if (type === 'TA' || type === 'TK') {
+        return this.formTATK;
+      }
+      return this.formJMFITB;
+    },
 
-          globe.formJMFITB.id = "";
-          globe.formJMFITB.oldModul_id = "";
-          globe.formJMFITB.modul_id = "";
-          globe.formJMFITB.oldSoal = "";
-          globe.formJMFITB.soal = "";
-        } else if(this.isFITB){
-        
-          $(".editCloseFITB-"+$soal.id).removeClass("visible");
-          $(".editCloseFITB-"+$soal.id).addClass("hidden");
-          $(".editOpenFITB-"+$soal.id).removeClass("hidden");
-          $(".editOpenFITB-"+$soal.id).addClass("visible");
+    findModulTitle(modulId) {
+      const modul = this.allModul.find(item => item.id === modulId);
+      return modul ? modul.judul : '';
+    },
 
-          globe.formJMFITB.id = "";
-          globe.formJMFITB.oldModul_id = "";
-          globe.formJMFITB.modul_id = "";
-          globe.formJMFITB.oldSoal = "";
-          globe.formJMFITB.soal = "";
-        }
+    prepareTpFlags() {
+      if (this.formTP.jenisSoal === 'essay') {
+        this.formTP.isEssay = true;
+        this.formTP.isProgram = false;
+      } else if (this.formTP.jenisSoal === 'program') {
+        this.formTP.isEssay = false;
+        this.formTP.isProgram = true;
+      } else {
+        this.formTP.isEssay = false;
+        this.formTP.isProgram = false;
       }
     },
 
-    createSoal: function(){
+    resetFormTP() {
+      this.formTP.id = '';
+      this.formTP.jenisSoal = '';
+      this.formTP.oldModul_id = '';
+      this.formTP.modul_id = '';
+      this.formTP.oldSoal = '';
+      this.formTP.soal = '';
+      this.formTP.isEssay = false;
+      this.formTP.isProgram = false;
+    },
 
-      const globe = this;
-      if(!this.isTA &&
-          !this.isTK &&
-          !this.isFITB &&
-          !this.isJurnal &&
-          !this.isMandiri){
+    resetFormTATK() {
+      this.formTATK.id = '';
+      this.formTATK.oldModul_id = '';
+      this.formTATK.modul_id = '';
+      this.formTATK.oldPertanyaan = '';
+      this.formTATK.pertanyaan = '';
+      this.formTATK.jawaban_benar = '';
+      this.formTATK.jawaban_salah1 = '';
+      this.formTATK.jawaban_salah2 = '';
+      this.formTATK.jawaban_salah3 = '';
+    },
 
-        if(this.formTP.jenisSoal === "essay"){
-          this.formTP.isEssay = true;
-          this.formTP.isProgram = false;
-        } else if(this.formTP.jenisSoal === "program"){
-          this.formTP.isEssay = false;
-          this.formTP.isProgram = true;
-        }
+    resetFormJMFITB() {
+      this.formJMFITB.id = '';
+      this.formJMFITB.oldSoal = '';
+      this.formJMFITB.soal = '';
+      this.formJMFITB.oldModul_id = '';
+      this.formJMFITB.modul_id = '';
+      this.formJMFITB.isSulit = false;
+    },
 
-        this.$axios.post('/createTP', this.formTP).then(response => {
-
-          if(response.data.message === "success") {
-
-            $("#tpForm")[0].reset();
-            globe.$toasted.global.showSuccess({
-              message: "Soal TP berhasil ditambahkan"
-            });
-            var judul;
-            globe.allModul.forEach(element => {
-              if(element.id === globe.formTP.modul_id)
-                judul = element.judul;
-            });
-            globe.listAllTP.push({
-              id: response.data.id,
-              judul: judul,
-              modul_id: globe.formTP.modul_id,
-              soal: globe.formTP.soal,
-              isEssay: globe.formTP.isEssay,
-              isProgram: globe.formTP.isProgram,
-            })
-            globe.formTP.modul_id = "";
-            globe.formTP.jenisSoal = "";
-            globe.formTP.soal = "";
-            globe.formTP.isEssay = "";
-            globe.formTP.isProgram = "";
-          } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
-          }
-        }).catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            if(error.response.data.errors != null){
-              if(error.response.data.errors.modul_id != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.modul_id[0]
-                });
-              if(error.response.data.errors.soal != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.soal[0]
-                });
-              if(error.response.data.errors.isEssay != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.isEssay[0]
-                });
-              if(error.response.data.errors.isProgram != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.isProgram[0]
-                });
-            }
-          }
-        });
-      } else if(this.isTA) {
-          
-        this.$axios.post('/createTA', this.formTATK).then(response => {
-
-          if(response.data.message === "success") {
-
-            $("#tatkForm")[0].reset();
-            globe.$toasted.global.showSuccess({
-              message: "Soal TA berhasil ditambahkan"
-            });
-            var judul;
-            globe.allModul.forEach(element => {
-              if(element.id === globe.formTATK.modul_id)
-                judul = element.judul;
-            });
-            globe.listAllTA.push({
-              id: response.data.id,
-              judul: judul,
-              modul_id: globe.formTATK.modul_id,
-              pertanyaan: globe.formTATK.pertanyaan,
-              jawaban_benar: globe.formTATK.jawaban_benar,
-              jawaban_salah1: globe.formTATK.jawaban_salah1,
-              jawaban_salah2: globe.formTATK.jawaban_salah2,
-              jawaban_salah3: globe.formTATK.jawaban_salah3,
-            })
-            globe.formTATK.modul_id = "";
-            globe.formTATK.pertanyaan = "";
-            globe.formTATK.jawaban_benar = "";
-            globe.formTATK.jawaban_salah1 = "";
-            globe.formTATK.jawaban_salah2 = "";
-            globe.formTATK.jawaban_salah3 = "";
-          } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
-          }
-        }).catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            if(error.response.data.errors != null){
-              if(error.response.data.errors.modul_id != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.modul_id[0]
-                });
-              if(error.response.data.errors.pertanyaan != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.pertanyaan[0]
-                });
-              if(error.response.data.errors.jawaban_benar != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_benar[0]
-                });
-              if(error.response.data.errors.jawaban_salah1 != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_salah1[0]
-                });
-              if(error.response.data.errors.jawaban_salah2 != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_salah2[0]
-                });
-              if(error.response.data.errors.jawaban_salah3 != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_salah3[0]
-                });
-            }
-          }
-        });
-      } else if(this.isTK) {
-          
-        this.$axios.post('/createTK', this.formTATK).then(response => {
-
-          if(response.data.message === "success") {
-
-            $("#tatkForm")[0].reset();
-            globe.$toasted.global.showSuccess({
-              message: "Soal TK berhasil ditambahkan"
-            });
-            var judul;
-            globe.allModul.forEach(element => {
-              if(element.id === globe.formTATK.modul_id)
-                judul = element.judul;
-            });
-            globe.listAllTK.push({
-              id: response.data.id,
-              judul: judul,
-              modul_id: globe.formTATK.modul_id,
-              pertanyaan: globe.formTATK.pertanyaan,
-              jawaban_benar: globe.formTATK.jawaban_benar,
-              jawaban_salah1: globe.formTATK.jawaban_salah1,
-              jawaban_salah2: globe.formTATK.jawaban_salah2,
-              jawaban_salah3: globe.formTATK.jawaban_salah3,
-            })
-            globe.formTATK.modul_id = "";
-            globe.formTATK.pertanyaan = "";
-            globe.formTATK.jawaban_benar = "";
-            globe.formTATK.jawaban_salah1 = "";
-            globe.formTATK.jawaban_salah2 = "";
-            globe.formTATK.jawaban_salah3 = "";
-          } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
-          }
-        }).catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            if(error.response.data.errors != null){
-              if(error.response.data.errors.modul_id != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.modul_id[0]
-                });
-              if(error.response.data.errors.pertanyaan != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.pertanyaan[0]
-                });
-              if(error.response.data.errors.jawaban_benar != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_benar[0]
-                });
-              if(error.response.data.errors.jawaban_salah1 != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_salah1[0]
-                });
-              if(error.response.data.errors.jawaban_salah2 != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_salah2[0]
-                });
-              if(error.response.data.errors.jawaban_salah3 != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_salah3[0]
-                });
-            }
-          }
-        });
-      } else if(this.isJurnal) {
-          
-        this.$axios.post('/createJurnal', this.formJMFITB).then(response => {
-
-          if(response.data.message === "success") {
-
-            $("#jmfitbForm")[0].reset();
-            globe.$toasted.global.showSuccess({
-              message: "Soal Jurnal berhasil ditambahkan"
-            });
-            var judul;
-            globe.allModul.forEach(element => {
-              if(element.id === globe.formJMFITB.modul_id)
-                judul = element.judul;
-            });
-            globe.listAllJurnal.push({
-              id: response.data.id,
-              judul: judul,
-              modul_id: globe.formJMFITB.modul_id,
-              soal: globe.formJMFITB.soal,
-              isSulit: globe.formJMFITB.isSulit,
-            })
-            globe.formJMFITB.modul_id = "";
-            globe.formJMFITB.soal = "";
-            globe.formJMFITB.isSulit = false;
-          } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
-          }
-        }).catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            if(error.response.data.errors != null){
-              if(error.response.data.errors.modul_id != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.modul_id[0]
-                });
-              if(error.response.data.errors.soal != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.soal[0]
-                });
-            }
-          }
-        });
-      } else if(this.isMandiri) {
-          
-        this.$axios.post('/createMandiri', this.formJMFITB).then(response => {
-
-          if(response.data.message === "success") {
-
-            $("#jmfitbForm")[0].reset();
-            globe.$toasted.global.showSuccess({
-              message: "Soal Jurnal berhasil ditambahkan"
-            });
-            var judul;
-            globe.allModul.forEach(element => {
-              if(element.id === globe.formJMFITB.modul_id)
-                judul = element.judul;
-            });
-            globe.listAllMandiri.push({
-              id: response.data.id,
-              judul: judul,
-              modul_id: globe.formJMFITB.modul_id,
-              soal: globe.formJMFITB.soal,
-            })
-            globe.formJMFITB.modul_id = "";
-            globe.formJMFITB.soal = "";
-          } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
-          }
-        }).catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            if(error.response.data.errors != null){
-              if(error.response.data.errors.modul_id != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.modul_id[0]
-                });
-              if(error.response.data.errors.soal != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.soal[0]
-                });
-            }
-          }
-        });
-      } else if(this.isFITB) {
-          
-        this.$axios.post('/createFitb', this.formJMFITB).then(response => {
-
-          if(response.data.message === "success") {
-
-            $("#jmfitbForm")[0].reset();
-            globe.$toasted.global.showSuccess({
-              message: "Soal Jurnal berhasil ditambahkan"
-            });
-            var judul;
-            globe.allModul.forEach(element => {
-              if(element.id === globe.formJMFITB.modul_id)
-                judul = element.judul;
-            });
-            globe.listAllFITB.push({
-              id: response.data.id,
-              judul: judul,
-              modul_id: globe.formJMFITB.modul_id,
-              soal: globe.formJMFITB.soal,
-            })
-            globe.formJMFITB.modul_id = "";
-            globe.formJMFITB.soal = "";
-          } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
-          }
-        }).catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            if(error.response.data.errors != null){
-              if(error.response.data.errors.modul_id != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.modul_id[0]
-                });
-              if(error.response.data.errors.soal != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.soal[0]
-                });
-            }
-          }
-        });
+    resetFormByType(type = this.activeSoalType) {
+      if (type === 'TP') {
+        this.resetFormTP();
+      } else if (type === 'TA' || type === 'TK') {
+        this.resetFormTATK();
+      } else {
+        this.resetFormJMFITB();
       }
     },
 
-    updateSoal: function(){
-
-      const globe = this;
-
-      if(!this.isTA &&
-          !this.isTK &&
-          !this.isFITB &&
-          !this.isJurnal &&
-          !this.isMandiri){
-
-        this.$axios.post('/updateTP', this.formTP).then(response => {
-
-          if(response.data.message === "success") {
-
-            globe.editing = false;
-            $(".editCloseTP-"+globe.formTP.id).removeClass("visible");
-            $(".editCloseTP-"+globe.formTP.id).addClass("hidden");
-            $(".editOpenTP-"+globe.formTP.id).removeClass("hidden");
-            $(".editOpenTP-"+globe.formTP.id).addClass("visible");
-
-            globe.$toasted.global.showSuccess({
-              message: "Soal TP berhasil diperbaharui"
-            });
-
-            var judul;
-            globe.allModul.forEach(element => {
-              if(element.id === response.data.soal.modul_id)
-                judul = element.judul;
-            });
-
-            for(var i=0; i<globe.listAllTP.length; i++)
-              if(globe.listAllTP[i].id === globe.formTP.id){
-                globe.listAllTP[i] = response.data.soal;
-                globe.listAllTP[i].judul = judul;
-                break;
-              }
-
-            globe.formTP.id = "";
-            globe.formTP.jenisSoal = "";
-            globe.formTP.oldModul_id = "";
-            globe.formTP.modul_id = "";
-            globe.formTP.oldSoal = "";
-            globe.formTP.soal = "";
-            globe.formTP.isEssay = "";
-            globe.formTP.isProgram = "";
-          } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
-          }
-        }).catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            if(error.response.data.errors != null){
-              if(error.response.data.errors.modul_id != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.modul_id[0]
-                });
-              if(error.response.data.errors.soal != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.soal[0]
-                });
-              if(error.response.data.errors.isEssay != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.isEssay[0]
-                });
-              if(error.response.data.errors.isProgram != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.isProgram[0]
-                });
-            }
-          }
-        });
-      } else if(this.isTA){
-
-        this.$axios.post('/updateTA', this.formTATK).then(response => {
-
-          if(response.data.message === "success") {
-
-            $("#tatkForm")[0].reset();
-            globe.editing = false;
-            $(".editCloseTA-"+globe.formTATK.id).removeClass("visible");
-            $(".editCloseTA-"+globe.formTATK.id).addClass("hidden");
-            $(".editOpenTA-"+globe.formTATK.id).removeClass("hidden");
-            $(".editOpenTA-"+globe.formTATK.id).addClass("visible");
-
-            globe.$toasted.global.showSuccess({
-              message: "Soal TA berhasil diperbaharui"
-            });
-            
-            var judul;
-            globe.allModul.forEach(element => {
-              if(element.id === response.data.soal.modul_id)
-                judul = element.judul;
-            });
-
-            for(var i=0; i<globe.listAllTA.length; i++){
-              if(globe.listAllTA[i].id === globe.formTATK.id){
-                globe.listAllTA[i] = response.data.soal;
-                globe.listAllTA[i].judul = judul;
-                break;
-              }
-            }
-
-            globe.formTATK.modul_id = "";
-            globe.formTATK.pertanyaan = "";
-            globe.formTATK.jawaban_benar = "";
-            globe.formTATK.jawaban_salah1 = "";
-            globe.formTATK.jawaban_salah2 = "";
-            globe.formTATK.jawaban_salah3 = "";
-          } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
-          }
-        }).catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            if(error.response.data.errors != null){
-              if(error.response.data.errors.modul_id != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.modul_id[0]
-                });
-              if(error.response.data.errors.pertanyaan != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.pertanyaan[0]
-                });
-              if(error.response.data.errors.jawaban_benar != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_benar[0]
-                });
-              if(error.response.data.errors.jawaban_salah1 != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_salah1[0]
-                });
-              if(error.response.data.errors.jawaban_salah2 != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_salah2[0]
-                });
-              if(error.response.data.errors.jawaban_salah3 != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_salah3[0]
-                });
-            }
-          }
-        });
-      } else if(this.isTK){
-
-        this.$axios.post('/updateTK', this.formTATK).then(response => {
-
-          if(response.data.message === "success") {
-
-            $("#tatkForm")[0].reset();
-            globe.editing = false;
-            $(".editCloseTK-"+globe.formTATK.id).removeClass("visible");
-            $(".editCloseTK-"+globe.formTATK.id).addClass("hidden");
-            $(".editOpenTK-"+globe.formTATK.id).removeClass("hidden");
-            $(".editOpenTK-"+globe.formTATK.id).addClass("visible");
-
-            globe.$toasted.global.showSuccess({
-              message: "Soal TK berhasil diperbaharui"
-            });
-            
-            var judul;
-            globe.allModul.forEach(element => {
-              if(element.id === response.data.soal.modul_id)
-                judul = element.judul;
-            });
-
-            for(var i=0; i<globe.listAllTK.length; i++){
-              if(globe.listAllTK[i].id === globe.formTATK.id){
-                globe.listAllTK[i] = response.data.soal;
-                globe.listAllTK[i].judul = judul;
-                break;
-              }
-            }
-
-            globe.formTATK.modul_id = "";
-            globe.formTATK.pertanyaan = "";
-            globe.formTATK.jawaban_benar = "";
-            globe.formTATK.jawaban_salah1 = "";
-            globe.formTATK.jawaban_salah2 = "";
-            globe.formTATK.jawaban_salah3 = "";
-          } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
-          }
-        }).catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            if(error.response.data.errors != null){
-              if(error.response.data.errors.modul_id != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.modul_id[0]
-                });
-              if(error.response.data.errors.pertanyaan != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.pertanyaan[0]
-                });
-              if(error.response.data.errors.jawaban_benar != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_benar[0]
-                });
-              if(error.response.data.errors.jawaban_salah1 != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_salah1[0]
-                });
-              if(error.response.data.errors.jawaban_salah2 != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_salah2[0]
-                });
-              if(error.response.data.errors.jawaban_salah3 != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.jawaban_salah3[0]
-                });
-            }
-          }
-        });
-      } else if(this.isJurnal){
-
-        this.$axios.post('/updateJurnal', this.formJMFITB).then(response => {
-
-          if(response.data.message === "success") {
-
-            $("#jmfitbForm")[0].reset();
-            globe.editing = false;
-            $(".editCloseJurnal-"+globe.formJMFITB.id).removeClass("visible");
-            $(".editCloseJurnal-"+globe.formJMFITB.id).addClass("hidden");
-            $(".editOpenJurnal-"+globe.formJMFITB.id).removeClass("hidden");
-            $(".editOpenJurnal-"+globe.formJMFITB.id).addClass("visible");
-
-            globe.$toasted.global.showSuccess({
-              message: "Soal Jurnal berhasil diperbaharui"
-            });
-            
-            var judul;
-            globe.allModul.forEach(element => {
-              if(element.id === response.data.soal.modul_id)
-                judul = element.judul;
-            });
-            
-            for(var i=0; i<globe.listAllJurnal.length; i++){
-              if(globe.listAllJurnal[i].id === globe.formJMFITB.id){
-                globe.listAllJurnal[i] = response.data.soal;
-                globe.listAllJurnal[i].judul = judul;
-                break;
-              }
-            }
-
-            globe.formJMFITB.modul_id = "";
-            globe.formJMFITB.soal = "";
-          } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
-          }
-        }).catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            if(error.response.data.errors != null){
-              if(error.response.data.errors.modul_id != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.modul_id[0]
-                });
-              if(error.response.data.errors.soal != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.soal[0]
-                });
-            }
-          }
-        });
-      } else if(this.isMandiri){
-
-        this.$axios.post('/updateMandiri', this.formJMFITB).then(response => {
-
-          if(response.data.message === "success") {
-
-            $("#jmfitbForm")[0].reset();
-            globe.editing = false;
-            $(".editCloseMandiri-"+globe.formJMFITB.id).removeClass("visible");
-            $(".editCloseMandiri-"+globe.formJMFITB.id).addClass("hidden");
-            $(".editOpenMandiri-"+globe.formJMFITB.id).removeClass("hidden");
-            $(".editOpenMandiri-"+globe.formJMFITB.id).addClass("visible");
-
-            globe.$toasted.global.showSuccess({
-              message: "Soal Mandiri berhasil diperbaharui"
-            });
-            
-            var judul;
-            globe.allModul.forEach(element => {
-              if(element.id === response.data.soal.modul_id)
-                judul = element.judul;
-            });
-            
-            for(var i=0; i<globe.listAllMandiri.length; i++){
-              if(globe.listAllMandiri[i].id === globe.formJMFITB.id){
-                globe.listAllMandiri[i] = response.data.soal;
-                globe.listAllMandiri[i].judul = judul;
-                break;
-              }
-            }
-
-            globe.formJMFITB.modul_id = "";
-            globe.formJMFITB.soal = "";
-          } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
-          }
-        }).catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            if(error.response.data.errors != null){
-              if(error.response.data.errors.modul_id != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.modul_id[0]
-                });
-              if(error.response.data.errors.soal != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.soal[0]
-                });
-            }
-          }
-        });
-      } else if(this.isFITB){
-
-        this.$axios.post('/updateFitb', this.formJMFITB).then(response => {
-
-          if(response.data.message === "success") {
-
-            $("#jmfitbForm")[0].reset();
-            globe.editing = false;
-            $(".editCloseFITB-"+globe.formJMFITB.id).removeClass("visible");
-            $(".editCloseFITB-"+globe.formJMFITB.id).addClass("hidden");
-            $(".editOpenFITB-"+globe.formJMFITB.id).removeClass("hidden");
-            $(".editOpenFITB-"+globe.formJMFITB.id).addClass("visible");
-
-            globe.$toasted.global.showSuccess({
-              message: "Soal Fill In The Blank berhasil diperbaharui"
-            });
-            
-            var judul;
-            globe.allModul.forEach(element => {
-              if(element.id === response.data.soal.modul_id)
-                judul = element.judul;
-            });
-            
-            for(var i=0; i<globe.listAllFITB.length; i++){
-              if(globe.listAllFITB[i].id === globe.formJMFITB.id){
-                globe.listAllFITB[i] = response.data.soal;
-                globe.listAllFITB[i].judul = judul;
-                break;
-              }
-            }
-
-            globe.formJMFITB.modul_id = "";
-            globe.formJMFITB.soal = "";
-          } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
-          }
-        }).catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            if(error.response.data.errors != null){
-              if(error.response.data.errors.modul_id != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.modul_id[0]
-                });
-              if(error.response.data.errors.soal != null)
-                globe.$toasted.global.showError({
-                  message: error.response.data.errors.soal[0]
-                });
-            }
-          }
-        });
-      }
+    resetEditing(type = this.activeSoalType) {
+      this.editing = false;
+      this.activeEditId = null;
+      this.resetFormByType(type);
     },
 
-    setActiveSoal: function($soalMenu){
-
-      this.editSoal(this.currentSoal, false);
-
-      if($soalMenu === "TA"){
-        this.isTA = true;
-        this.isTK = false;
-        this.isJurnal = false;
-        this.isMandiri = false;
-        this.isFITB = false;
-      } else if($soalMenu === "TK"){
-        this.isTA = false;
-        this.isTK = true;
-        this.isJurnal = false;
-        this.isMandiri = false;
-        this.isFITB = false;
-      } else if($soalMenu === "Jurnal"){
-        this.isTA = false;
-        this.isTK = false;
-        this.isJurnal = true;
-        this.isMandiri = false;
-        this.isFITB = false;
-      } else if($soalMenu === "Mandiri"){
-        this.isTA = false;
-        this.isTK = false;
-        this.isJurnal = false;
-        this.isMandiri = true;
-        this.isFITB = false;
-      } else if($soalMenu === "FITB"){
-        this.isTA = false;
-        this.isTK = false;
-        this.isJurnal = false;
-        this.isMandiri = false;
-        this.isFITB = true;
-      } else if($soalMenu === "TP"){
-        this.isTA = false;
-        this.isTK = false;
-        this.isJurnal = false;
-        this.isMandiri = false;
-        this.isFITB = false;
-      }
+    isEditingSoal(id) {
+      return this.editing && this.activeEditId === id;
     },
 
-    travel: function($whereTo){
+    handleValidationErrors(error, fields = []) {
+      if (!error.response || !error.response.data || !error.response.data.errors) {
+        return;
+      }
 
-      this.setCurrentMenu($whereTo, true);
-      this.changePage = true;
-
-      const globe = this;
-      this.currentPage = false;
-      setTimeout(
-        function() {
-          globe.$inertia.get('/' + $whereTo + '?comingFrom=soal&position=' + globe.$refs.menu.scrollTop, {}, {
-            replace: true,
+      fields.forEach(field => {
+        if (error.response.data.errors[field]) {
+          this.$toasted.global.showError({
+            message: error.response.data.errors[field][0],
           });
-        }, 501); 
+        }
+      });
     },
 
-    signOut: function(){
+    populateFormForCurrentType(soal) {
+      if (this.activeSoalType === 'TP') {
+        this.formTP.id = soal.id;
+        this.formTP.oldModul_id = soal.modul_id;
+        this.formTP.modul_id = soal.modul_id;
+        this.formTP.oldSoal = soal.soal;
+        this.formTP.soal = soal.soal;
+        this.formTP.isEssay = Boolean(soal.isEssay);
+        this.formTP.isProgram = Boolean(soal.isProgram);
+        if (soal.isEssay) {
+          this.formTP.jenisSoal = 'essay';
+        } else if (soal.isProgram) {
+          this.formTP.jenisSoal = 'program';
+        } else {
+          this.formTP.jenisSoal = '';
+        }
+      } else if (this.activeSoalType === 'TA' || this.activeSoalType === 'TK') {
+        this.formTATK.id = soal.id;
+        this.formTATK.oldModul_id = soal.modul_id;
+        this.formTATK.modul_id = soal.modul_id;
+        this.formTATK.oldPertanyaan = soal.pertanyaan;
+        this.formTATK.pertanyaan = soal.pertanyaan;
+        this.formTATK.jawaban_benar = soal.jawaban_benar;
+        this.formTATK.jawaban_salah1 = soal.jawaban_salah1;
+        this.formTATK.jawaban_salah2 = soal.jawaban_salah2;
+        this.formTATK.jawaban_salah3 = soal.jawaban_salah3;
+      } else {
+        this.formJMFITB.id = soal.id;
+        this.formJMFITB.oldModul_id = soal.modul_id;
+        this.formJMFITB.modul_id = soal.modul_id;
+        this.formJMFITB.oldSoal = soal.soal;
+        this.formJMFITB.soal = soal.soal;
+        this.formJMFITB.isSulit = Boolean(soal.isSulit);
+      }
+    },
 
-      const globe = this;
+    updateQuestionInList(listKey, updated) {
+      const list = this[listKey];
+      const index = Array.isArray(list) ? list.findIndex(item => item.id === updated.id) : -1;
+      if (index !== -1) {
+        list[index] = updated;
+      }
+    },
+
+    removeQuestionFrom(listKey, id) {
+      const list = this[listKey];
+      if (!Array.isArray(list)) {
+        return;
+      }
+      const index = list.findIndex(item => item.id === id);
+      if (index !== -1) {
+        list.splice(index, 1);
+      }
+    },
+
+    appendNewSoal(config, response) {
+      const list = this[config.listKey];
+      const form = this.getFormReference();
+      const modulTitle = this.findModulTitle(form.modul_id);
+
+      if (this.activeSoalType === 'TP') {
+        list.push({
+          id: response.id,
+          judul: modulTitle,
+          modul_id: form.modul_id,
+          soal: form.soal,
+          isEssay: form.isEssay,
+          isProgram: form.isProgram,
+        });
+      } else if (this.activeSoalType === 'TA' || this.activeSoalType === 'TK') {
+        list.push({
+          id: response.id,
+          judul: modulTitle,
+          modul_id: form.modul_id,
+          pertanyaan: form.pertanyaan,
+          jawaban_benar: form.jawaban_benar,
+          jawaban_salah1: form.jawaban_salah1,
+          jawaban_salah2: form.jawaban_salah2,
+          jawaban_salah3: form.jawaban_salah3,
+        });
+      } else if (this.activeSoalType === 'Jurnal') {
+        list.push({
+          id: response.id,
+          judul: modulTitle,
+          modul_id: form.modul_id,
+          soal: form.soal,
+          isSulit: form.isSulit,
+        });
+      } else {
+        list.push({
+          id: response.id,
+          judul: modulTitle,
+          modul_id: form.modul_id,
+          soal: form.soal,
+        });
+      }
+    },
+
+    setActiveSoal(soalMenu) {
+      if (this.activeSoalType === soalMenu) {
+        return;
+      }
+      this.resetEditing(this.activeSoalType);
+      this.activeSoalType = soalMenu;
+    },
+
+    editSoal(soal, editing) {
+      if (!this.canEdit) {
+        return;
+      }
+
+      if (editing) {
+        this.editing = true;
+        this.activeEditId = soal.id;
+        this.populateFormForCurrentType(soal);
+      } else {
+        this.resetEditing();
+      }
+    },
+
+    createSoal() {
+      const config = this.getTypeConfig();
+      if (!config) {
+        return;
+      }
+
+      if (this.activeSoalType === 'TP') {
+        this.prepareTpFlags();
+      }
+
+      const form = this.getFormReference();
+
+      this.$axios.post(config.createUrl, form).then(response => {
+        if (response.data.message === 'success') {
+          this.$toasted.global.showSuccess({
+            message: config.messages.create,
+          });
+          this.appendNewSoal(config, response.data);
+          this.resetFormByType();
+        } else {
+          this.$toasted.global.showError({
+            message: response.data.message,
+          });
+        }
+      }).catch(error => {
+        this.handleValidationErrors(error, config.errorFields);
+      });
+    },
+
+    updateSoal() {
+      const config = this.getTypeConfig();
+      if (!config) {
+        return;
+      }
+
+      if (this.activeSoalType === 'TP') {
+        this.prepareTpFlags();
+      }
+
+      const form = this.getFormReference();
+
+      this.$axios.post(config.updateUrl, form).then(response => {
+        if (response.data.message === 'success') {
+          const updated = response.data.soal;
+          const modulTitle = this.findModulTitle(updated.modul_id);
+          const enriched = { ...updated, judul: modulTitle };
+
+          this.updateQuestionInList(config.listKey, enriched);
+          this.$toasted.global.showSuccess({
+            message: config.messages.update,
+          });
+          this.resetEditing();
+        } else {
+          this.$toasted.global.showError({
+            message: response.data.message,
+          });
+        }
+      }).catch(error => {
+        this.handleValidationErrors(error, config.errorFields);
+      });
+    },
+
+    deleteSoal(id) {
+      const config = this.getTypeConfig();
+      if (!config) {
+        return;
+      }
+
+      this.$axios.post(config.deleteUrl(id)).then(response => {
+        if (response.data.message === 'success') {
+          this.$toasted.global.showSuccess({
+            message: config.messages.delete,
+          });
+          this.removeQuestionFrom(config.listKey, id);
+          if (this.isEditingSoal(id)) {
+            this.resetEditing();
+          }
+        } else {
+          this.$toasted.global.showError({
+            message: response.data.message,
+          });
+        }
+      }).catch(error => {
+        this.handleValidationErrors(error, config.errorFields);
+      });
+    },
+
+    travel(whereTo) {
+      if (whereTo === 'soal') {
+        return;
+      }
+
+      this.setCurrentMenu(whereTo);
+      this.changePage = true;
+      this.currentPage = false;
+
+      const position = this.$refs.menu ? this.$refs.menu.scrollTop : 0;
+
+      setTimeout(() => {
+        this.$inertia.get(`/${whereTo}?comingFrom=soal&position=${position}`, {}, {
+          replace: true,
+        });
+      }, 501);
+    },
+
+    signOut() {
       this.pageActive = false;
       this.currentPage = false;
-      setTimeout(
-        function() {
-          globe.$inertia.get('/logoutAsisten', {}, {
-            replace: true,
-          });
-        }, 1010); 
-    }
+      setTimeout(() => {
+        this.$inertia.get('/logoutAsisten', {}, {
+          replace: true,
+        });
+      }, 1010);
+    },
   }
+
 }
 </script>
