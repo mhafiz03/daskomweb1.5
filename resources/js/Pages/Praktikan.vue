@@ -145,47 +145,21 @@
                     <div class="absolute bottom-0 w-full h-12full flex">
                       <div class="w-full h-full" v-scrollbar>
                         <div>
-                          <div v-for="(soal, index) in soalTPEssay" v-bind:key="soal.id" 
-                              class="w-full flex-row h-auto">
-                            <div class="w-full h-auto flex my-10">
-                              <div class="h-full w-12 flex font-merri-bold text-xl">
-                                <div class="m-auto w-auto h-auto">{{ index+1 }}</div>
-                              </div>
-                              <div class="h-12 px-1 w-4">
-                                <div class="h-full w-full bg-gray-900"/>
-                              </div>
-                              <div class="h-full w-16full break-words whitespace-pre-wrap flex px-2 font-monda text-2xl">
-                                <span>{{ soal.soal }}</span>
-                              </div>
-                            </div>
-                            <div class="w-full h-auto flex px-5">
-                              <textarea v-model="jawabanTP[index].jawaban" cols="30" rows="10"
-                                    @selectstart.prevent @paste.prevent @copy.prevent @cut.prevent @drag.prevent @drop.prevent autocomplete="off"
-                                    class="font-overpass-mono-bold resize-none text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                                    type="text" placeholder="Ketik jawabanmu disini ..."/>
-                            </div>
-                          </div>
+                          <QuestionBlock
+                              :questions="soalTPEssay"
+                              :answers="jawabanTP"
+                              :secure-text="true"
+                              :on-answer-change="payload => onTextAnswerChange('jawabanTP', payload)"
+                          />
 
-                          <div v-for="(soal, index) in soalTPProgram" v-bind:key="soal.id" 
-                              class="w-full flex-row h-auto">
-                            <div class="w-full h-auto flex my-10">
-                              <div class="h-full w-12 flex font-merri-bold text-xl">
-                                <div class="m-auto w-auto h-auto">{{ (index+1) + soalTPEssay.length }}</div>
-                              </div>
-                              <div class="h-12 px-1 w-4">
-                                <div class="h-full w-full bg-gray-900"/>
-                              </div>
-                              <div class="h-full w-16full break-words whitespace-pre-wrap flex px-2 font-monda text-2xl">
-                                <span>{{ soal.soal }}</span>
-                              </div>
-                            </div>
-                            <div class="w-full h-auto flex px-5">
-                              <textarea v-model="jawabanTP[index + soalTPEssay.length].jawaban" cols="30" rows="10"
-                                    @selectstart.prevent @paste.prevent @copy.prevent @cut.prevent @drag.prevent @drop.prevent autocomplete="off"
-                                    class="font-overpass-mono-bold resize-none text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                                    type="text" placeholder="Ketik jawabanmu disini ..."/>
-                            </div>
-                          </div>
+                          <QuestionBlock
+                              :questions="soalTPProgram"
+                              :answers="jawabanTP"
+                              :secure-text="true"
+                              :numbering-offset="soalTPEssay.length"
+                              :answer-index-offset="soalTPEssay.length"
+                              :on-answer-change="payload => onTextAnswerChange('jawabanTP', payload)"
+                          />
 
                           <div class="w-1/2 h-20 mx-auto">
                             <div class="w-full h-full p-4 cursor-pointer hover:p-5 animation-enable-short"
@@ -431,30 +405,13 @@
                 <div class="w-3/4 h-full flex">
                   <div class="w-full h-full overflow-y-auto">
                     <div class="w-full h-auto flex-row">
-                      <div v-for="(soal, index) in soalTA" v-bind:key="soal.id" 
-                          class="w-full flex-row h-auto">
-                        <div class="w-full h-auto flex my-10">
-                          <div class="h-full w-12 flex font-merri-bold text-xl">
-                            <div class="m-auto w-auto h-auto">{{ index+1 }}</div>
-                          </div>
-                          <div class="h-12 px-1 w-4">
-                            <div class="h-full w-full bg-gray-900"/>
-                          </div>
-                          <div class="h-full w-16full break-words whitespace-pre-wrap flex px-2 font-monda text-2xl">
-                            <span>{{ soal.pertanyaan }}</span>
-                          </div>
-                        </div>
-                        <div v-for="(jawaban, i) in jawabanTA[index]" v-bind:key="i"
-                            class="w-full h-auto flex-row">
-                          <div class="w-full px-8 my-2 h-auto cursor-pointer flex">
-                            <div class="w-full bg-green-200 hover:bg-green-300 px-4 py-2 rounded-large font-overpass-bold break-words whitespace-pre-wrap text-xl"
-                                :class="'jawaban-'+index+i"
-                                v-on:click="chooseJawaban('TA', jawaban, soal.id, index, i)">
-                              <span>{{ jawaban }}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      <QuestionBlock
+                          mode="options"
+                          :questions="soalTA"
+                          :options-list="jawabanTA"
+                          question-key="pertanyaan"
+                          :on-option-select="payload => onQuestionOptionSelect('TA', payload)"
+                      />
                     </div>
                   </div>
                 </div>
@@ -538,44 +495,17 @@
                       v-if="!modulShown">
                   <div class="w-full h-full overflow-y-auto">
                     <div class="w-full h-auto flex-row">
-                      <div v-for="(soal, index) in soalFitb" v-bind:key="index" 
-                          class="w-full flex-row h-auto">
-                        <div class="w-full h-auto flex my-10">
-                          <div class="h-full w-12 flex font-merri-bold text-xl">
-                            <div class="m-auto w-auto h-auto">{{ index+1 }}</div>
-                          </div>
-                          <div class="h-12 px-1 w-4">
-                            <div class="h-full w-full bg-gray-900"/>
-                          </div>
-                          <div class="h-full w-16full break-words whitespace-pre-wrap flex px-2 font-monda text-2xl">
-                            <span>{{ soal.soal }}</span>
-                          </div>
-                        </div>
-                        <div class="w-full h-auto flex px-5">
-                          <textarea v-model="jawabanFitb[index].jawaban" cols="30" rows="10"
-                                class="font-overpass-mono-bold resize-none text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                                type="text" placeholder="Ketik jawabanmu disini ..."/>
-                        </div>
-                      </div>
-                      <div v-for="(soal, index) in soalJurnal" v-bind:key="index+1" 
-                          class="w-full flex-row h-auto">
-                        <div class="w-full h-auto flex my-10">
-                          <div class="h-full w-12 flex font-merri-bold text-xl">
-                            <div class="m-auto w-auto h-auto">{{ soalFitb.length+(index+1) }}</div>
-                          </div>
-                          <div class="h-12 px-1 w-4">
-                            <div class="h-full w-full bg-gray-900"/>
-                          </div>
-                          <div class="h-full w-16full break-words whitespace-pre-wrap flex px-2 font-monda text-2xl">
-                            <span>{{ soal.soal }}</span>
-                          </div>
-                        </div>
-                        <div class="w-full h-auto flex px-5">
-                          <textarea v-model="jawabanJurnal[index].jawaban" cols="30" rows="10"
-                                class="font-overpass-mono-bold resize-none text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                                type="text" placeholder="Ketik jawabanmu disini ..."/>
-                        </div>
-                      </div>
+                      <QuestionBlock
+                          :questions="soalFitb"
+                          :answers="jawabanFitb"
+                          :on-answer-change="payload => onTextAnswerChange('jawabanFitb', payload)"
+                      />
+                      <QuestionBlock
+                          :questions="soalJurnal"
+                          :answers="jawabanJurnal"
+                          :numbering-offset="soalFitb.length"
+                          :on-answer-change="payload => onTextAnswerChange('jawabanJurnal', payload)"
+                      />
                     </div>
                   </div>
                 </div>
@@ -631,25 +561,11 @@
                     v-if="!modulShown">
                   <div class="w-full h-full overflow-y-auto">
                     <div class="w-full h-auto flex-row">
-                      <div v-for="(soal, index) in soalRunmod" v-bind:key="soal.id" 
-                          class="w-full flex-row h-auto">
-                        <div class="w-full h-auto flex my-10">
-                          <div class="h-full w-12 flex font-merri-bold text-xl">
-                            <div class="m-auto w-auto h-auto">{{ index+1 }}</div>
-                          </div>
-                          <div class="h-12 px-1 w-4">
-                            <div class="h-full w-full bg-gray-900"/>
-                          </div>
-                          <div class="h-full w-16full break-words whitespace-pre-wrap flex px-2 font-monda text-2xl">
-                            <span>{{ soal.soal }}</span>
-                          </div>
-                        </div>
-                        <div class="w-full h-auto flex px-5">
-                          <textarea v-model="jawabanRunmod[index].jawaban" cols="30" rows="10"
-                                class="font-overpass-mono-bold resize-none text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                                type="text" placeholder="Ketik jawabanmu disini ..."/>
-                        </div>
-                      </div>
+                      <QuestionBlock
+                          :questions="soalRunmod"
+                          :answers="jawabanRunmod"
+                          :on-answer-change="payload => onTextAnswerChange('jawabanRunmod', payload)"
+                      />
                     </div>
                   </div>
                 </div>
@@ -704,25 +620,11 @@
                     v-if="!modulShown">
                   <div class="w-full h-full overflow-y-auto">
                     <div class="w-full h-auto flex-row">
-                      <div v-for="(soal, index) in soalMandiri" v-bind:key="soal.id" 
-                          class="w-full flex-row h-auto">
-                        <div class="w-full h-auto flex my-10">
-                          <div class="h-full w-12 flex font-merri-bold text-xl">
-                            <div class="m-auto w-auto h-auto">{{ index+1 }}</div>
-                          </div>
-                          <div class="h-12 px-1 w-4">
-                            <div class="h-full w-full bg-gray-900"/>
-                          </div>
-                          <div class="h-full w-16full break-words whitespace-pre-wrap flex px-2 font-monda text-2xl">
-                            <span>{{ soal.soal }}</span>
-                          </div>
-                        </div>
-                        <div class="w-full h-auto flex px-5">
-                          <textarea v-model="jawabanMandiri[index].jawaban" cols="30" rows="10"
-                                class="font-overpass-mono-bold resize-none text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                                type="text" placeholder="Ketik jawabanmu disini ..."/>
-                        </div>
-                      </div>
+                      <QuestionBlock
+                          :questions="soalMandiri"
+                          :answers="jawabanMandiri"
+                          :on-answer-change="payload => onTextAnswerChange('jawabanMandiri', payload)"
+                      />
                     </div>
                   </div>
                 </div>
@@ -752,30 +654,13 @@
                 <div class="w-3/4 h-full flex">
                   <div class="w-full h-full overflow-y-auto">
                     <div class="w-full h-auto flex-row">
-                      <div v-for="(soal, index) in soalTK" v-bind:key="soal.id" 
-                          class="w-full flex-row h-auto">
-                        <div class="w-full h-auto flex my-10">
-                          <div class="h-full w-12 flex font-merri-bold text-xl">
-                            <div class="m-auto w-auto h-auto">{{ index+1 }}</div>
-                          </div>
-                          <div class="h-12 px-1 w-4">
-                            <div class="h-full w-full bg-gray-900"/>
-                          </div>
-                          <div class="h-full w-16full break-words whitespace-pre-wrap flex px-2 font-monda text-2xl">
-                            <span>{{ soal.pertanyaan }}</span>
-                          </div>
-                        </div>
-                        <div v-for="(jawaban, i) in jawabanTK[index]" v-bind:key="i"
-                            class="w-full h-auto flex-row">
-                          <div class="w-full px-8 my-2 h-auto cursor-pointer flex">
-                            <div class="w-full bg-green-200 hover:bg-green-300 px-4 py-2 rounded-large font-overpass-bold break-words whitespace-pre-wrap text-xl"
-                                :class="'jawaban-'+index+i"
-                                v-on:click="chooseJawaban('TK', jawaban, soal.id, index, i)">
-                              <span>{{ jawaban }}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      <QuestionBlock
+                          mode="options"
+                          :questions="soalTK"
+                          :options-list="jawabanTK"
+                          question-key="pertanyaan"
+                          :on-option-select="payload => onQuestionOptionSelect('TK', payload)"
+                      />
                     </div>
                   </div>
                 </div>
@@ -1150,6 +1035,7 @@
 
 <script>
 import { useToast } from '@/composables/useToast';
+import QuestionBlock from '@/components/praktikan/sections/QuestionBlock.vue';
 export default {
   props: [
     'comingFrom',
@@ -1162,6 +1048,10 @@ export default {
     'allModul',
     'allJurnal',
   ],
+
+  components: {
+    QuestionBlock,
+  },
 
   data() {
     return {
@@ -1617,6 +1507,37 @@ export default {
         return globe.goodScoreText[Math.floor(Math.random() * globe.goodScoreText.length)];
       else 
         return globe.badScoreText[Math.floor(Math.random() * globe.badScoreText.length)];
+    },
+
+    onTextAnswerChange(arrayName, payload) {
+
+      const target = this[arrayName];
+      if (!Array.isArray(target)) {
+        return;
+      }
+
+      const { answerIndex, value } = payload;
+      const entry = target[answerIndex];
+      if (entry && typeof entry === 'object') {
+        entry.jawaban = value;
+      }
+    },
+
+    onQuestionOptionSelect(type, payload) {
+
+      const question = payload.question || {};
+      const soalId = question.id || question.soal_id || question.question_id || question.soalId;
+      if (!soalId) {
+        return;
+      }
+
+      this.chooseJawaban(
+        type,
+        payload.option,
+        soalId,
+        payload.questionIndex,
+        payload.optionIndex,
+      );
     },
 
     tpPickRandomProgram: function()

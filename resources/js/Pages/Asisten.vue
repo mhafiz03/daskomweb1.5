@@ -111,7 +111,7 @@
           </div>
           <div class="absolute w-full h-16 px-16 pt-2 z-20">
             <div class="bg-yellow-700 rounded-lg w-full h-full flex">
-              <div class="flex w-1/2min">
+              <div class="flex w-1/2">
                 <star-rating class="ml-auto mr-4"
                   style="width: 150px;" 
                   :increment="0.01" 
@@ -122,7 +122,7 @@
                   :star-size='30'/>
               </div>
               <div class="w-1 h-3/4 my-auto bg-yellow-500"/>
-              <div class="flex w-1/2min mr-auto h-full pt-1 items-center font-overpass-bold text-2xl text-white ml-4">
+              <div class="flex w-1/2 mr-auto h-full pt-1 items-center font-overpass-bold text-2xl text-white ml-4">
                 <span class="whitespace-pre-wrap">Rp. {{ gajiAsisten }} | Pajak kas: {{ taxRate*100 }}% x gaji</span> 
               </div>
             </div>
