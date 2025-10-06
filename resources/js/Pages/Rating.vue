@@ -374,6 +374,8 @@ option {
 <script>
 import { ref, toRefs } from 'vue';
 import { useNavigation } from '@/composables/useNavigation';
+import SidebarMenu from '@/components/asisten/SidebarMenu.vue';
+import AsistenProfilePanel from '@/components/asisten/ProfilePanel.vue';
 export default {
   props: [
     'comingFrom',
@@ -384,6 +386,11 @@ export default {
     'allNilai',
     'allKelas',
   ],
+
+  components: {
+    SidebarMenu,
+    AsistenProfilePanel,
+  },
 
   setup(props) {
     const menuRef = ref(null);

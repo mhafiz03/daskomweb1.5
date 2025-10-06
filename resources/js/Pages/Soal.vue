@@ -2,76 +2,25 @@
   <div class="bg-green-900 w-full h-full overflow-hidden">
 
     <!-- Main Menu -->
-    <div class="absolute w-120 z-20 h-48full bottom-0 right-0 animation-enable"
-        :class="[{ 'right-0': pageActive },
-                { 'right-min20rem': !pageActive }]" @mouseover="isMenuShown = false">
-      <div class="w-full h-full animation-enable overflow-y-auto rounded-tl-large"
-          :class="menuContainerClass" ref="menuRef">
-        <div
-          v-for="item in visibleMenuItems"
-          :key="item.id"
-          :class="menuItemClasses(item)"
-          @click="!item.isCurrentPage && travel(item.id)">
-          <div class="w-7/12 my-2 flex">
-            <div class="w-4/6"></div>
-            <img :class="['select-none m-auto w-2/6 h-auto', item.icon]">
-          </div>
-          <span class="ml-6 font-merri-bold font-medium w-full text-start self-center text-xl">
-            {{ item.label }}
-          </span>
-        </div>
-      </div>
-    </div>
+    <SidebarMenu
+      :page-active="pageActive"
+      :items="visibleMenuItems"
+      :menu-container-class="menuContainerClass"
+      :highlighted-menu="highlightedMenu"
+      :menu-ref="menuRef"
+      @hover="isMenuShown = false"
+      @select="handleMenuSelect"
+    />
 
     <!-- Profile Menu -->
-    <div class="w-72 bg-gray-200 absolute top-0 mr-6 mt-4 h-40 rounded-lg flex-row animation-enable"
-        :class="[{ 'hidden': !isMenuShown },
-                { 'visible': isMenuShown },
-                { 'right-min20rem': !pageActive },
-                { 'right-0': pageActive }]" @mouseover="isMenuShown = true" @mouseleave="isMenuShown = false">
-        <div class="w-full h-3/4"/>
-        <div class="w-full h-1/4 flex">
-          <div class="rounded-b-lg bg-gray-400 flex hover:bg-gray-500 w-full h-full cursor-pointer" v-on:click="signOut">
-            <span class="m-auto font-monda-bold text-lg text-right w-full">
-              Logout
-            </span>
-            <img class="select-none p-3 h-full w-auto mr-20 m-auto fas fa-sign-out-alt">
-          </div>
-        </div>
-    </div>
-
-    <!-- Assistant's Profile -->
-    <div class="absolute top-0 w-120 flex animation-enable"
-        :class="[{ 'right-0': pageActive },
-                { 'right-min20rem': !pageActive },
-                { 'h-48': !isMenuShown },
-                { 'h-36': isMenuShown }]" @mouseover="isMenuShown = true">
-      <div class="w-auto m-auto h-full flex">
-        <div class="w-24 h-full flex mr-4">
-          <div class="flex w-24 h-24 m-auto rounded-full"
-              :class="[{ 'bg-green-400': !isMenuShown },
-                      { 'bg-green-600': isMenuShown }]">
-            <img class="select-none w-20 h-20 m-auto rounded-full bg-white object-cover" :src="'/assets/'+currentUser.kode+'.jpg'" alt="daskom logo">
-          </div>
-        </div>
-        <div class="w-auto h-full flex-row ml-4 cursor-default">
-          <div class="h-3/5 w-full flex">
-            <span class="select-none3 font-overpass-mono-bold text-5xl self-end text-left w-full -mb-2 uppercase tracking-widest"
-                :class="[{ 'text-black': isMenuShown },
-                        { 'text-white ': !isMenuShown }]">
-              {{ currentUser.kode }}
-            </span>
-          </div>
-          <div class="h-2/5 text-xl w-full text-left -mt-2">
-            <span class="selec-none font-overpass-thin font-semibold capitalize"
-                :class="[{ 'text-black': isMenuShown },
-                        { 'text-white ': !isMenuShown }]">
-              [ {{ userRole }} ]
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <AsistenProfilePanel
+      :page-active="pageActive"
+      :is-menu-shown="isMenuShown"
+      :current-user="currentUser"
+      :user-role="userRole"
+      @update:isMenuShown="isMenuShown = $event"
+      @sign-out="signOut"
+    />
 
     <!-- Soal Layout -->
     <div class="absolute py-8 pr-8 h-full w-120full flex animation-enable"
@@ -807,11 +756,13 @@
 </style>
 
 <script>
-import { MENU_ITEMS, PRIVILEGES, SOAL_TABS } from './Soal/constants';
-
-import { ref, toRefs } from 'vue';
+import { MENU_ITEMS, PRIVILEGES, SOAL_TABS } from '../constants';
+import { ref, toRef, toRefs } from 'vue';
 import { useNavigation } from '@/composables/useNavigation';
 import { useToast } from '@/composables/useToast';
+import { useSidebarMenu } from '@/composables/useSidebarMenu';
+import SidebarMenu from '@/components/asisten/SidebarMenu.vue';
+import AsistenProfilePanel from '@/components/asisten/ProfilePanel.vue';
 export default {
   props: [
     'comingFrom',
@@ -828,6 +779,11 @@ export default {
     'allFITB',
   ],
 
+  components: {
+    SidebarMenu,
+    AsistenProfilePanel,
+  },
+
   setup(props) {
     const menuRef = ref(null);
     const toast = useToast();
@@ -838,22 +794,31 @@ export default {
       menuRef: menuRef,
       currentPage: 'soal'
     });
+    const navigationRefs = toRefs(navigation);
 
     // Initialize menu state based on comingFrom prop
     navigation.initializeMenu(props.comingFrom, true);
+
+    const sidebarMenu = useSidebarMenu({
+      menuItems: MENU_ITEMS,
+      privileges: PRIVILEGES,
+      currentUser: toRef(props, 'currentUser'),
+      currentPageId: 'soal',
+      changePage: navigationRefs.changePage,
+    });
 
     // Return all navigation state and methods
     return {
       toast,
       menuRef,
-      ...toRefs(navigation),
+      ...navigationRefs,
+      ...sidebarMenu,
     };
   },
 
   data() {
     return {
       privileges: { ...PRIVILEGES },
-      menuItems: MENU_ITEMS,
       soalTabs: SOAL_TABS,
 
       pageActive: true,
@@ -861,7 +826,6 @@ export default {
 
       chosenModulID: '',
       soalMenuShown: true,
-      activeMenu: null,
       activeSoalType: 'TP',
 
       editing: false,
@@ -912,19 +876,6 @@ export default {
   },
 
   computed: {
-    highlightedMenu() {
-      return this.changePage ? this.activeMenu : 'soal';
-    },
-
-    visibleMenuItems() {
-      return this.menuItems.filter(item => this.hasMenuAccess(item));
-    },
-
-    menuContainerClass() {
-      const navigatingToProfile = this.changePage && this.highlightedMenu === 'asisten';
-      return navigatingToProfile ? 'rounded-none' : 'rounded-tl-large';
-    },
-
     editPriviledge() {
       return this.privileges.edit === 'all' ? 'all' : (this.privileges.edit || []);
     },
@@ -965,11 +916,10 @@ export default {
     const globe = this;
     document.body.classList.add('closed');
 
-    if (this.$refs.menuRef) {
-      if (this.$refs.menuRef && this.position != null) {
+    if (this.menuRef?.value && this.position != null) {
       this.$nextTick(() => {
+        this.menuRef.value.scrollTop = this.position;
       });
-    }
     }
 
     const incomingFrom = [
@@ -999,46 +949,9 @@ export default {
   },
 
   methods: {
-    hasMenuAccess(item) {
-      if (!item.privilege) {
-        return true;
-      }
-      const privilege = this.privileges[item.privilege];
-      if (privilege === 'all') {
-        return true;
-      }
-      if (Array.isArray(privilege)) {
-        return privilege.includes(this.currentUser.role_id);
-      }
-      return false;
-    },
-
-    menuItemClasses(item) {
-      const baseClasses = [
-        'w-full',
-        'p-4',
-        'h-24',
-        'flex',
-        'select-none',
-        'animation-enable',
-      ];
-
-      const isCurrent = this.highlightedMenu === item.id;
-      const isClickable = !item.isCurrentPage;
-
-      if (isClickable) {
-        baseClasses.push('cursor-pointer', 'hover:text-white');
-        baseClasses.push(isCurrent ? 'bg-yellow-500 text-white' : 'bg-yellow-400 hover:bg-yellow-600');
-      } else {
-        baseClasses.push('cursor-default');
-        baseClasses.push(isCurrent ? 'bg-yellow-500 text-white' : 'bg-yellow-400 text-black');
-      }
-
-      return baseClasses.join(' ');
-    },
-
-    setCurrentMenu(target) {
-      this.activeMenu = target;
+    handleMenuSelect(target) {
+      this.setActiveMenu(target);
+      this.travel(target);
     },
 
     getTypeConfig(type = this.activeSoalType) {

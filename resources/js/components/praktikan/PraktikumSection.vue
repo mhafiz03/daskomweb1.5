@@ -401,7 +401,7 @@
 
 <script>
 import PollingMode from './PollingMode.vue';
-import QuestionBlock from '@/components/praktikan/sections/QuestionBlock.vue';
+import QuestionBlock from '@/components/praktikan/QuestionBlock.vue';
 
 export default {
   name: 'PraktikumSection',
