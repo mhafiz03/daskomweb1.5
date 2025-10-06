@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-green-900 w-full h-full overflow-y-scroll">
+  <div ref="menu" class="bg-green-900 w-full h-full overflow-y-scroll">
 
       <!-- Navbar -->
       <section class="py-1 px-5 bg-green-700 w-full fixed">
@@ -9,7 +9,7 @@
           </div>
           <div>
             <span class="font-overpass text-3xl text-yellow-400 rounded-lg hover:text-yellow-500 cursor-pointer duration-300 hover:duration-300 hover:scale-105"
-            v-on:click='travel("praktikan")'>
+            v-on:click='travel("")'>
             <img class="p-1 fas fa-home fa-lg"></span>
           </div>
         </div>
@@ -25,7 +25,7 @@
                 <div class="mr-2">
                   <img class="select-none w-36 lg:h-36 h-auto m-auto rounded-full bg-white object-cover border-green-900 border-4 cursor-pointer"
                   :src="'/assets/' + asisten.kode + '.jpg'"
-                  @error="$event.target.src='assets/logo.png'">
+                  @error="$event.target.src='../assets/logo.png'">
                 </div>
 
                 <div class="ml-2 w-72 h-auto">

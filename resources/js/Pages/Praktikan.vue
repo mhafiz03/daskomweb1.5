@@ -70,7 +70,7 @@
                  <div class="w-auto h-auto ml-4 mt-4"
                   :class="[{'hidden':viewPassForm},
                           {'visible':!viewPassForm}]">
-                  <span class="font-overpass text-2xl bg-green-800 text-yellow-300 p-3 pb-2 rounded-lg hover:bg-green-600 cursor-pointer duration-300 hover:duration-300" v-on:click='travel("contact_asisten")'
+                  <span class="font-overpass text-2xl bg-green-800 text-yellow-300 p-3 pb-2 rounded-lg hover:bg-green-600 cursor-pointer duration-300 hover:duration-300" v-on:click='travel("contact-asisten")'
                   >Kontak Asisten<img class="ml-1 p-1 fas fa-users fa-lg"></span>
                 </div>
             </div>
@@ -160,7 +160,7 @@
                             </div>
                             <div class="w-full h-auto flex px-5">
                               <textarea v-model="jawabanTP[index].jawaban" cols="30" rows="10"
-                                    onselectstart="return false" onpaste="return false;" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete="off"
+                                    @selectstart.prevent @paste.prevent @copy.prevent @cut.prevent @drag.prevent @drop.prevent autocomplete="off"
                                     class="font-overpass-mono-bold resize-none text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
                                     type="text" placeholder="Ketik jawabanmu disini ..."/>
                             </div>
@@ -181,7 +181,7 @@
                             </div>
                             <div class="w-full h-auto flex px-5">
                               <textarea v-model="jawabanTP[index + soalTPEssay.length].jawaban" cols="30" rows="10"
-                                    onselectstart="return false" onpaste="return false;" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete="off"
+                                    @selectstart.prevent @paste.prevent @copy.prevent @cut.prevent @drag.prevent @drop.prevent autocomplete="off"
                                     class="font-overpass-mono-bold resize-none text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
                                     type="text" placeholder="Ketik jawabanmu disini ..."/>
                             </div>
@@ -2328,7 +2328,7 @@ export default {
       const globe = this;
       setTimeout(
         function() {
-          globe.$inertia.get('/' + $whereTo, {}, {
+          globe.$inertia.get('/praktikan/' + $whereTo, {}, {
             replace: true,
           });
         }, 500); 
@@ -2350,7 +2350,7 @@ export default {
     sendMessage: function(){
 
       const globe = this;
-      this.$axios.post('/sendPesan', this.formMessage).then(response => {
+      this.$axios.post('/praktikan/pesan', this.formMessage).then(response => {
         
         if(response.data.message === "success") {
 
