@@ -794,25 +794,7 @@
               </div>
 
               <div class="w-full h-24 mt-4 mb-8 flex">
-                <div class="w-1/3 h-full flex py-4 px-8 hover:px-10 hover:py-5 animation-enable-short cursor-pointer"
-                    :class="[{ 'hidden' : spaceToggled },
-                            { 'visible' : !spaceToggled }]"
-                    v-on:click="shuffleEmAll()">
-                  <div class="w-full h-full flex font-monda-bold text-4xl bg-yellow-400 rounded-full">
-                    <div class="w-auto select-none h-auto m-auto">
-                      SHUFFLE
-                    </div>
-                  </div>
-                </div>
-                <div class="w-1/3 h-full flex py-4 px-8 hover:px-10 hover:py-5 animation-enable-short cursor-pointer"
-                    v-on:click="showBigView()">
-                  <div class="w-full h-full flex font-monda-bold text-4xl bg-yellow-400 rounded-full">
-                    <div class="w-auto select-none h-auto m-auto">
-                      VIEW
-                    </div>
-                  </div>
-                </div>
-                <div class="w-1/3 h-full flex py-4 px-8 hover:px-10 hover:py-5 animation-enable-short cursor-pointer"
+                <div class="w-full h-full flex py-4 px-8 hover:px-10 hover:py-5 animation-enable-short cursor-pointer"
                     v-on:click="startThePracticum()">
                   <div class="w-full h-full flex font-monda-bold text-4xl bg-yellow-400 rounded-full">
                     <div class="w-auto select-none h-auto m-auto">
@@ -845,20 +827,6 @@
       @confirm="goToNextSection(true)"
     />
 
-    <BigViewOverlay
-      :visible="bigviewShown"
-      :plots="plots"
-      :list-all-asisten="listAllAsisten"
-      :list-all-praktikan="listAllPraktikan"
-      :praktikan-banned="praktikanBanned"
-      :asisten-banned="asistenBanned"
-      :space-toggled="spaceToggled"
-      @close="bigviewShown = false"
-      @shuffle="shuffleEmAll()"
-      @save="console.log('nop')"
-      @toggle-space="toggleSpace"
-    />
-
     <ConfirmationModal
       :open="bigRatingQuestionShown"
       message='Apakah semua praktikan sudah rating ? <br>Jika sudah yakin maka klik "YEAH"'
@@ -884,7 +852,6 @@
 import moment from 'moment';
 import MenuList from '../components/praktikum/MenuList.vue';
 import ConfirmationModal from '../components/praktikum/ConfirmationModal.vue';
-import BigViewOverlay from '../components/praktikum/BigViewOverlay.vue';
 
 const staticMenuDefinitions = [
   { key: 'asisten', label: 'Profil', icon: 'fa-address-card' },
@@ -927,7 +894,6 @@ export default {
   components: {
     MenuList,
     ConfirmationModal,
-    BigViewOverlay,
   },
   props: [
     'comingFrom',
@@ -985,9 +951,6 @@ export default {
       listAllGroup: [],
       totalGroup: '',
 
-      shuffledListAllAsisten: [],
-      shuffledListAllPraktikan: [],
-
       praktikumStart: false,
       countdownStarted: false,
       firstTimeCounting: true,
@@ -995,43 +958,6 @@ export default {
       bigNextQuestionShown: false,
       bigRatingQuestionShown: false,
       soundPlayed: false,
-
-      bigviewShown: false,
-
-      /***************************/
-      /* PLOTTING POSITION
-      /***************************/
-      // 0   -> empty space
-      // 1,2 -> practicant space (different number for grouping)
-      // 3   -> asisstant space
-      // 4   -> info pj space
-      // 5   -> backup space
-      // 6   -> info practicum space
-      // 7   -> projector space
-
-      /* plots[*].substring(0,1) == "Space for State"                       */
-      /* plots[*].substring(1,3) == "Space for Grouping"                    */
-      /* plots[*].substring(3,4) == "Space for practicant person per group" */
-      plots:[
-        ['0000','0000','0000','0000','0000','7000','7000','7000','0000','0000','0000','0000','0000'],
-        ['1001','2012','2011','5000','0000','0000','0000','0000','0000','5000','2021','2022','1031'],
-
-        // TODO: uncomment this to add Practicum and PJ info
-        // ['3000','0000','3020','0000','0000','0000','0000','0000','0000','0000','3020','0000','3030'],
-        // ['1002','1003','2013','0000','0000','0000','0000','0000','0000','0000','2023','1033','1032'],
-        
-        ['3000','0000','3010','0000','0000','0000','0000','0000','0000','0000','3020','0000','3030'],
-        ['1002','1003','2013','0000','0000','0000','0000','0000','0000','0000','2023','1033','1032'],
-        ['0000','0000','0000','0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'],
-        ['0000','0000','0000','0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'],
-        ['2041','1051','1052','0000','2131','2132','1061','2072','2071','0000','2081','2082','1093'],
-        ['3040','0000','3050','0000','0000','3130','3060','3070','0000','0000','3080','0000','3090'],
-        ['2042','2043','1053','0000','0000','1063','1062','2073','0000','0000','2083','1091','1092'],
-        ['0000','0000','0000','0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'],
-        ['0000','0000','0000','0000','0000','0000','0000','0000','0000','0000','0000','0000','0000'],
-        ['2101','2102','2103','0000','0000','1111','1112','1113','0000','0000','2121','2122','2123'],
-        ['0000','3100','0000','0000','0000','0000','3110','0000','0000','0000','0000','3120','0000'],
-      ],
 
       asistenBanned: [],
       praktikanBanned: [],
@@ -1620,74 +1546,6 @@ export default {
       }
     },
 
-    showBigView: function(){
-
-      const globe = this;
-      if(this.chosenKelasID === ""){
-
-        globe.$toasted.global.showError({
-          message: "Pilih kelas terlebih dahulu"
-        });
-        return;
-      }
-
-      if(this.listAllAsisten.length < 1){
-
-        globe.$toasted.global.showError({
-          message: "Tidak terdapat asisten di kelas ini"
-        });
-        return;
-      }
-
-      if(this.listAllPraktikan.length < 1){
-
-        globe.$toasted.global.showError({
-          message: "Tidak terdapat praktikan di kelas ini"
-        });
-        return;
-      }
-
-      this.bigviewShown = true;
-    },
-
-    shuffleEmAll: function(){
-
-      const globe = this;
-      if(this.chosenKelasID === ""){
-
-        globe.$toasted.global.showError({
-          message: "Pilih kelas terlebih dahulu"
-        });
-        return;
-      }
-
-      if(this.listAllAsisten.length < 1){
-
-        globe.$toasted.global.showError({
-          message: "Tidak terdapat asisten di kelas ini"
-        });
-        return;
-      }
-
-      if(this.listAllPraktikan.length < 1){
-
-        globe.$toasted.global.showError({
-          message: "Tidak terdapat praktikan di kelas ini"
-        });
-        return;
-      }
-
-      this.shuffledListAllAsisten = this.shuffleArr(this.listAllAsisten);
-      this.shuffledListAllPraktikan = this.shuffleArr(this.listAllPraktikan);
-
-      this.listAllAsisten = this.shuffledListAllAsisten;
-      this.listAllPraktikan = this.shuffledListAllPraktikan;
-
-      //little bit hacky but works :v
-      this.isMenuShown = true;
-      this.isMenuShown = false;
-    },
-
     rollbackPraktikum: function($force){
 
       const globe = this;
@@ -1901,16 +1759,6 @@ export default {
           });
         }
       });
-    },
-
-    shuffleArr: function($arr){
-
-      for (let i = $arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [$arr[i], $arr[j]] = [$arr[j], $arr[i]];
-      }
-
-      return $arr;
     },
 
     toggleSpace: function($spaceString){
