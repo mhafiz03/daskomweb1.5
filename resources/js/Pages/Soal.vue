@@ -6,7 +6,7 @@
         :class="[{ 'right-0': pageActive },
                 { 'right-min20rem': !pageActive }]" @mouseover="isMenuShown = false">
       <div class="w-full h-full animation-enable overflow-y-auto rounded-tl-large"
-          :class="menuContainerClass" ref="menu">
+          :class="menuContainerClass" ref="menuRef">
         <div
           v-for="item in visibleMenuItems"
           :key="item.id"
@@ -809,6 +809,8 @@
 <script>
 import { MENU_ITEMS, PRIVILEGES, SOAL_TABS } from './Soal/constants';
 
+import { ref, toRefs } from 'vue';
+import { useNavigation } from '@/composables/useNavigation';
 export default {
   props: [
     'comingFrom',
@@ -825,6 +827,16 @@ export default {
     'allFITB',
   ],
 
+  setup(props) {
+    const menuRef = ref(null);
+    const navigation = useNavigation(props, menuRef, 'soal');
+    
+    return {
+      menuRef,
+      ...toRefs(navigation)
+    };
+  },
+
   data() {
     return {
       privileges: { ...PRIVILEGES },
@@ -833,8 +845,6 @@ export default {
 
       pageActive: true,
       isMenuShown: false,
-      changePage: false,
-      currentPage: false,
 
       chosenModulID: '',
       soalMenuShown: true,
@@ -941,8 +951,8 @@ export default {
   mounted() {
     document.body.classList.add('closed');
 
-    if (this.$refs.menu) {
-      this.$refs.menu.scrollTop = this.position;
+    if (this.$refs.menuRef) {
+      this.$refs.menuRef.scrollTop = this.position;
     }
 
     const incomingFrom = [
@@ -1404,7 +1414,7 @@ export default {
       this.changePage = true;
       this.currentPage = false;
 
-      const position = this.$refs.menu ? this.$refs.menu.scrollTop : 0;
+      const position = this.$refs.menuRef ? this.$refs.menuRef.scrollTop : 0;
 
       setTimeout(() => {
         this.$inertia.get(`/asisten/${whereTo}?comingFrom=soal&position=${position}`, {}, {

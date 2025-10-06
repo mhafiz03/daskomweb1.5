@@ -7,7 +7,7 @@
                 { 'right-min20rem': !pageActive }]" @mouseover="isMenuShown = false">
       <div class="w-full h-full animation-enable overflow-y-auto"
           :class="[{ 'rounded-none': changePage && menuProfil },
-                  { 'rounded-tl-large': !changePage || !menuProfil }]" ref="menu">
+                  { 'rounded-tl-large': !changePage || !menuProfil }]" ref="menuRef">
         <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
             :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuProfil },
                     { 'bg-yellow-500 text-white': changePage && menuProfil }]"
@@ -368,6 +368,8 @@
 
 <script>
 import moment from 'moment';
+import { ref, toRefs } from 'vue';
+import { useNavigation } from '@/composables/useNavigation';
 export default {
   props: [
     'comingFrom',
@@ -376,6 +378,16 @@ export default {
     'userRole',
     'allModul',
   ],
+
+  setup(props) {
+    const menuRef = ref(null);
+    const navigation = useNavigation(props, menuRef, 'setpraktikan');
+    
+    return {
+      menuRef,
+      ...toRefs(navigation)
+    };
+  },
 
   data() {
     return {
@@ -392,25 +404,7 @@ export default {
       
       pageActive: true,
       isMenuShown: false,
-      changePage: false,
-      currentPage: false,
 
-      menuPraktikum: false,
-      menuSoal: false,
-      menuListTp: false,
-      menuHistory: false,
-      menuPolling: false,
-      menuKelas: false,
-      menuPlotting: false,
-      menuModul: false,
-      menuProfil: false,
-      menuTp: false,
-      menuKonfigurasi: false,
-      menuNilai: false,
-      menuPelanggaran: false,
-      menuRanking: false,
-      menuAllLaporan: false,
-      menuJawaban: false,
       
       praktikanNim: '',
       chosenModulID: '',
@@ -423,7 +417,7 @@ export default {
   mounted() {
 
     $('body').addClass('closed');
-    this.$refs.menu.scrollTop = this.position;
+    this.$refs.menuRef.scrollTop = this.position;
 
     const globe = this;
 
@@ -453,42 +447,6 @@ export default {
   },
 
   methods: {
-
-    setCurrentMenu: function($whereTo, $bool){
-
-      if($whereTo === "praktikum")
-        this.menuPraktikum = $bool;
-      if($whereTo === "soal")
-        this.menuSoal = $bool;
-      if($whereTo === "listTp")
-        this.menuListTp = $bool;
-      if($whereTo === "konfigurasi")
-        this.menuKonfigurasi = $bool;
-      if($whereTo === "polling")
-        this.menuPolling = $bool;
-      if($whereTo === "kelas")
-        this.menuKelas = $bool;
-      if($whereTo === "modul")
-        this.menuModul = $bool;
-      if($whereTo === "plotting")
-        this.menuPlotting = $bool;
-      if($whereTo === "asisten")
-        this.menuProfil = $bool;
-      if($whereTo === "tp")
-        this.menuTp = $bool;
-      if($whereTo === "nilai")
-        this.menuNilai = $bool;
-      if($whereTo === "history")
-        this.menuHistory = $bool;
-      if($whereTo === "pelanggaran")
-        this.menuPelanggaran = $bool;
-      if($whereTo === "rating")
-        this.menuRanking = $bool;
-      if($whereTo === "allLaporan")
-        this.menuAllLaporan = $bool;
-      if($whereTo === "jawaban")
-        this.menuJawaban = $bool;
-    },
 
     changePass: function(){
 
@@ -554,21 +512,6 @@ export default {
           });
         }
       });
-    },
-
-    travel: function($whereTo){
-
-      this.setCurrentMenu($whereTo, true);
-      this.changePage = true;
-
-      const globe = this;
-      this.currentPage = false;
-      setTimeout(
-        function() {
-          globe.$inertia.get('/asisten/' + $whereTo + '?comingFrom=setpraktikan&position=' + globe.$refs.menu.scrollTop, {}, {
-            replace: true,
-          });
-        }, 501); 
     },
 
     signOut: function(){

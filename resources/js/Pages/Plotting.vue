@@ -7,7 +7,7 @@
                 { 'right-min20rem': !pageActive }]" @mouseover="isMenuShown = false">
       <div class="w-full h-full animation-enable overflow-y-auto"
           :class="[{ 'rounded-none': changePage && menuProfil },
-                  { 'rounded-tl-large': !changePage || !menuProfil }]" ref="menu">
+                  { 'rounded-tl-large': !changePage || !menuProfil }]" ref="menuRef">
         <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
             :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuProfil },
                     { 'bg-yellow-500 text-white': changePage && menuProfil }]"
@@ -481,7 +481,9 @@
 </style>
 
 <script>
-  export default {
+  import { ref, toRefs } from 'vue';
+import { useNavigation } from '@/composables/useNavigation';
+export default {
     props: [
       'comingFrom',
       'currentUser',
@@ -491,6 +493,16 @@
       'allKelas',
       'allAsisten',
     ],
+
+  setup(props) {
+    const menuRef = ref(null);
+    const navigation = useNavigation(props, menuRef, 'plotting');
+    
+    return {
+      menuRef,
+      ...toRefs(navigation)
+    };
+  },
 
   data() {
     return {
@@ -507,30 +519,12 @@
 
       pageActive: true,
       isMenuShown: false,
-      changePage: false,
-      currentPage: false,
 
       formHovered: false,
       buttonHovered: false,
       plottingMenuShown: false,
       popupShown: false,
 
-      menuProfil: false,
-      menuPraktikum: false,
-      menuListTp: false,
-      menuHistory: false,
-      menuPolling: false,
-      menuSoal: false,
-      menuKelas: false,
-      menuModul: false,
-      menuKonfigurasi: false,
-      menuTp: false,
-      menuNilai: false,
-      menuSetPraktikan: false,
-      menuPelanggaran: false,
-      menuRanking: false,
-      menuAllLaporan: false,
-      menuJawaban: false,
 
       hari: ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "TOT"],
 
@@ -551,7 +545,7 @@
   mounted() {
 
     $('body').addClass('closed');
-    this.$refs.menu.scrollTop = this.position;
+    this.$refs.menuRef.scrollTop = this.position;
 
     const globe = this;
 
@@ -593,42 +587,6 @@
 
   methods: {
 
-    setCurrentMenu: function($whereTo, $bool){
-
-      if($whereTo === "praktikum")
-        this.menuPraktikum = $bool;
-      if($whereTo === "soal")
-        this.menuSoal = $bool;
-      if($whereTo === "listTp")
-        this.menuListTp = $bool;
-      if($whereTo === "history")
-        this.menuHistory = $bool;
-      if($whereTo === "polling")
-        this.menuPolling = $bool;
-      if($whereTo === "asisten")
-        this.menuProfil = $bool;
-      if($whereTo === "kelas")
-        this.menuKelas = $bool;
-      if($whereTo === "modul")
-        this.menuModul = $bool;
-      if($whereTo === "konfigurasi")
-        this.menuKonfigurasi = $bool;
-      if($whereTo === "tp")
-        this.menuTp = $bool;
-      if($whereTo === "nilai")
-        this.menuNilai = $bool;
-      if($whereTo === "setpraktikan")
-        this.menuSetPraktikan = $bool;
-      if($whereTo === "pelanggaran")
-        this.menuPelanggaran = $bool;
-      if($whereTo === "rating")
-        this.menuRanking = $bool;
-      if($whereTo === "allLaporan")
-        this.menuAllLaporan = $bool;
-      if($whereTo === "jawaban")
-        this.menuJawaban = $bool;
-    },
-
     openPopup: function(){
 
       if (this.listAllJaga.length > 0) {
@@ -647,21 +605,6 @@
         function() {
           $(".popup").addClass("-z-10");
         }, 500); 
-    },
-
-    travel: function($whereTo){
-
-      this.setCurrentMenu($whereTo, true);
-      this.changePage = true;
-
-      const globe = this;
-      this.currentPage = false;
-      setTimeout(
-        function() {
-          globe.$inertia.get('/asisten/' + $whereTo + '?comingFrom=plotting&position=' + globe.$refs.menu.scrollTop, {}, {
-            replace: true,
-          });
-        }, 501); 
     },
 
     plotChoosen: function ($asisten_id, $kelas_id) {

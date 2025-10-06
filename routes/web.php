@@ -90,7 +90,7 @@ Route::middleware('loggedIn:asisten')->prefix('asisten')->name('asisten.')->grou
     Route::get('/history', [PageController::class, 'history'])->name('history');
     Route::get('/setpraktikan', [PageController::class, 'setpraktikan'])->name('setpraktikan');
     Route::get('/rating', [PageController::class, 'rating'])->name('rating');
-    Route::get('/laporan', [PageController::class, 'allLaporan'])->name('laporan');
+    Route::get('/allLaporan', [PageController::class, 'allLaporan'])->name('laporan');
     
     // Profile
     Route::get('/profil/{asisten_id}', [AsistenController::class, 'show'])->name('profil');
