@@ -206,81 +206,16 @@
           </div>
 
           <!--Jawaban Layout -->
-          <div v-if="isJawaban" class="w-full h-full flex">
-                <div class="w-1/4 h-full flex-row overflow-y-hidden bg-yellow-700 cursor-pointer" style="width: 415px">
-                    <div class="h-1/10 w-full flex justify-center items-center hover:bg-yellow-500 focus:outline-none focus:bg-yellow-500 bg-yellow-300-active animation-enable-short"
-                          :class="[{'bg-yellow-500 bg-yellow-500-Active' : modul.id === currentJawabanJurnal},
-                                   {'opacity-50 cursor-not-allowed hover:bg-yellow-700 focus:bg-yellow-700 bg-yellow-300-nonActive' : !modul.isUnlocked}]"
-                          v-on:click="showJawabanJurnal(modul.id, modul.isUnlocked)" v-for="modul in all_modul" v-bind:key="modul.id">
-                      <div class="h-full w-1/8 flex p-4 pr-0">
-                        <div class="h-full w-full flex font-overpass-mono-bold text-xl rounded-large justify-end items-center">
-                          <img :class="[{'fas fa-lock' : !modul.isUnlocked},
-                                        {'fas fa-unlock-alt' : modul.isUnlocked}]">
-                        </div>
-                      </div>
-                      <div class="h-full w-2/3 flex p-4">
-                        <div class="h-full w-full flex font-overpass-mono-bold text-xl rounded-large justify-start items-center">
-                          <div class="mt-2 text-lg text-left">
-                            {{ modul.judul }}
-                          </div>
-                        </div>
-                      </div>
-                    </div>           
-                </div>
-                <div class="w-3/4 h-full flex" v-scrollbar>
-                    <div class="w-full h-12full m-auto overflow-y-auto animation-enable-medium scrollbar-hide"
-                          :class="[{'transform -translate-x-full' : jawabanChanged}]">
-                        <div v-if="allJawabanJurnal.length > 0" 
-                              class="w-full h-full flex-row">
-                            <div v-for="(jawaban, index) in allJawabanJurnal" v-bind:key="index"
-                                class="w-full flex-row h-auto mb-8">
-                              <div class="w-full h-auto flex mb-2">
-                                <div class="h-full w-12 flex font-merri-bold text-xl">
-                                  <div class="m-auto w-auto h-auto">{{ index+1 }}</div>
-                                </div>
-                                <div class="h-12 px-1 w-4">
-                                  <div class="h-full w-full bg-gray-900"/>
-                                </div>
-                                <div class="h-full w-16full break-words whitespace-pre-wrap flex px-2 font-monda text-2xl">
-                                  <span>{{ jawaban.soal }}</span>
-                                </div>
-                              </div>
-                              <div class="w-full h-auto flex px-5">
-                                <textarea v-model="jawaban.jawaban" cols="30" rows="15"
-                                      class="font-overpass-mono-bold resize-none text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                                      type="text" disabled/>
-                              </div>
-                            </div>
-                        </div>
-                        <template v-else-if="currentUser.kelas.substring(6, 10) !== 'INT'">
-                          <div v-if="jawabanShown === true" class="w-full h-full flex flex-col justify-center items-center m-auto font-overpass-mono-bold animation-enable">
-                            <div class="text-4xl">
-                              Jawaban kamu tidak ditemukan :'(
-                            </div>
-                            <div class="mt-3 text-base text-gray-600">
-                              *Jika merasa mengerjakan namun jawaban kamu tidak ada, silahkan hubungi asisten jaga modul tersebut*
-                            </div>
-                          </div>
-                          <div v-else class="w-full h-full flex justify-center items-center m-auto font-overpass-mono-bold text-4xl animation-enable">
-                            Silahkan Pilih Modul ^_^
-                          </div>
-                        </template>
-                        <template v-else-if="currentUser.kelas.substring(6, 10) === 'INT'">
-                          <div v-if="jawabanShown === true" class="w-full h-full flex flex-col justify-center items-center m-auto font-overpass-mono-bold animation-enable">
-                            <div class="text-4xl">
-                              Your answer is not found :'(
-                            </div>
-                            <div class="mt-3 text-base text-gray-600">
-                              *If you have submitted the answer but it's not found, please contact your assisstant in this module*
-                            </div>
-                          </div>
-                          <div v-else class="w-full h-full flex justify-center items-center m-auto font-overpass-mono-bold text-4xl animation-enable">
-                            Please select a module ^_^
-                          </div>
-                        </template>
-                    </div>
-                </div>     
-          </div>
+          <JawabanSection
+            v-if="isJawaban"
+            :modules="all_modul"
+            :current-module-id="currentJawabanJurnal"
+            :answers="allJawabanJurnal"
+            :answers-visible="jawabanShown"
+            :answers-refreshing="jawabanChanged"
+            :current-user="currentUser"
+            @select-module="onJawabanModuleSelect"
+          />
 
           <!-- Praktikum Layout -->
           <PraktikumSection
@@ -593,8 +528,9 @@
 
 <script>
 import { useToast } from '@/composables/useToast';
-import QuestionBlock from '@/components/praktikan/sections/QuestionBlock.vue';
-import PraktikumSection from '@/components/praktikan/sections/PraktikumSection.vue';
+import QuestionBlock from '@/components/praktikan/QuestionBlock.vue';
+import PraktikumSection from '@/components/praktikan/PraktikumSection.vue';
+import JawabanSection from '@/components/praktikan/JawabanSection.vue';
 export default {
   props: [
     'comingFrom',
@@ -611,6 +547,7 @@ export default {
   components: {
     QuestionBlock,
     PraktikumSection,
+    JawabanSection,
   },
 
   data() {
@@ -1606,16 +1543,16 @@ export default {
       $('.jawabanIcon').addClass('w-3/12');
     },
 
-    showJawabanJurnal: function($modul_id, $modul_isUnlocked){
+    onJawabanModuleSelect({ id, isUnlocked }) {
 
-      this.jawabanChanged = Boolean($modul_isUnlocked);
+      this.jawabanChanged = Boolean(isUnlocked);
 
       setTimeout(() => {
-        if($modul_isUnlocked){
+        if (isUnlocked) {
 
           this.jawabanShown = true;
-          this.currentJawabanJurnal = $modul_id;
-          this.$axios.post(`/praktikan/jawaban/jurnal/${this.currentUser.id}/${$modul_id}`).then(response => {
+          this.currentJawabanJurnal = id;
+          this.$axios.post(`/praktikan/jawaban/jurnal/${this.currentUser.id}/${id}`).then(response => {
             
             if(response.data.message === "success"){
     
