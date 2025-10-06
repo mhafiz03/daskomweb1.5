@@ -283,488 +283,46 @@
           </div>
 
           <!-- Praktikum Layout -->
-          <div v-if="isPraktikum" class="w-full h-full flex">
-
-            <!-- When polling enabled -->
-            <div v-if="isPollingEnabled" class="w-full h-full flex">
-              <div v-if="pollingComplete_mutable" class="font-monda-bold h-auto w-auto m-auto text-center text-5xl"> 
-                <span>Polling telah selesai<br>Selamat anda telah menyelesaikan praktikum<br>Dasar Komputer 2022/2023 🎉🎉</span>
-              </div>
-              <div v-if="!pollingComplete_mutable" class="w-full h-full py-4 relative">
-
-                <div class="absolute top-0 m-4 right-0 animation-enable-short rounded-lg bg-green-400 p-3 hover:p-4 hover:bg-green-500 cursor-pointer pointer-events-auto w-auto h-auto flex"
-                    v-on:click="savePolling()">
-                  <div class="font-overpass-mono-bold text-white text-center text-xl h-auto w-auto pointer-events-none m-auto">
-                    <span>SAVE</span>
-                  </div>
-                </div>
-
-                <div class="w-full h-3/4 flex-row">
-                  <div class="w-full h-8 flex">
-                    <div class="w-auto mx-auto h-full flex">
-                      <div class="font-monda-bold h-auto w-auto m-auto text-center text-2xl">
-                        <span>{{ allAsistenPolling[chosenAsisten].nama }} ({{ allAsistenPolling[chosenAsisten].kode }})</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="w-full h-full flex">
-                    <div class="w-120full mx-auto h-full flex">
-                      <div class="w-16 h-full flex">
-                        <div class="w-12 h-12 p-0 hover:p-1 mr-auto my-auto animation-enable-short pointer-events-auto">
-                          <span class="w-full h-full cursor-pointer text-black"
-                              :class="[{ 'opacity-100': chosenAsisten > 0 },
-                                { 'opacity-25': chosenAsisten == 0 }]"
-                            v-on:click="chosenAsisten -= chosenAsisten > 0 ? 1 : 0">
-                            <img class="w-full h-full fas fa-caret-left"/>
-                          </span>
-                        </div>
-                      </div>
-
-                      <div class="w-full h-12full rounded-large flex bg-green-600 my-auto shadow-xl">
-                        <div class="w-1/3 h-full rounded-l-large flex bg-green-400">
-                          <img class="select-none w-full h-full bg-center bg-cover rounded-l-large" 
-                            :style="'background-image: url(/assets/' + allAsistenPolling[chosenAsisten].kode + '.jpg);'">
-                        </div>
-                        <div class="w-2/3 h-full flex">
-                          <div class="font-merri-bold h-auto w-auto m-auto text-center text-xl text-white p-4">
-                            <span>{{ allAsistenPolling[chosenAsisten].deskripsi }}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="w-16 h-full flex">
-                        <div class="w-12 h-12 p-0 hover:p-1 mr-auto my-auto animation-enable-short pointer-events-auto">
-                          <span class="w-full h-full cursor-pointer text-black"
-                              :class="[{ 'opacity-100': chosenAsisten < (allAsisten.length-1) },
-                                { 'opacity-25': chosenAsisten == (allAsisten.length-1) }]"
-                            v-on:click="chosenAsisten += chosenAsisten < (allAsisten.length-1) ? 1 : 0">
-                            <img class="w-full h-full fas fa-caret-right"/>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="w-full h-1/4 flex overflow-y-hidden overflow-x-scroll">
-                  <div class="animation-enable-short w-auto h-full flex m-auto">
-                    <div v-for="(polling, index) in allPolling" v-bind:key="polling.id"
-                        class="animation-enable-short relative w-auto h-auto my-auto flex mx-2">
-                      <div class="animation-enable-short w-auto h-auto rounded-lg flex bg-teal-200 hover:bg-teal-300 p-3 hover:p-4 pointer-events-auto cursor-pointer"
-                          v-on:click="setPilihanPolling(index, allAsistenPolling[chosenAsisten].id)">
-                        <div class="font-overpass-bold h-auto w-auto m-auto text-center text-lg text-black pointer-events-none"> 
-                          <span>{{ polling.judul }} [{{ polling.asisten_id == undefined ? '' : allAsisten.find(x=> x.id === polling.asisten_id).kode }}]</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- When polling disabled -->
-            <div v-if="!isPollingEnabled" class="w-full h-full flex">
-              <div v-if="current_praktikum.status === '' || 
-                        current_praktikum.status === 777" 
-                  class="w-full h-full flex">
-                <div class="font-monda-bold h-auto w-auto m-auto text-center text-5xl">
-                  Tidak ada <br> Praktikum saat ini
-                </div> 
-              </div>
-              
-              <!-- Praktikum just been started by Praktikum PJ -->
-              <div v-if="current_praktikum.status === 0"
-                  class="w-full h-full flex-row">
-                <div class="w-full h-24full flex">
-                  <div class="font-overpass text-3xl m-auto px-16">
-                    <span>Bersiap untuk praktikum modul <br><span class="font-merri-bold text-5xl"> {{ current_modul.judul }} </span></span>
-                  </div>
-                </div>
-                <div v-if="programmingQuote !== 'nothing'" class="w-full h-24 flex">
-                  <div class="font-overpass-mono-thin text-sm m-auto flex">
-                    <div class="m-auto text-center">"{{ programmingQuote }}"<br>by {{ quoteAuthor }}</div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Soal TA already started by Praktikum PJ -->
-              <div v-if="current_praktikum.status === 1"
-                  class="w-full h-full flex">
-                <div class="w-1/4 h-full flex-row overflow-y-hidden">
-                  <div class="w-full h-2/3 flex bg-yellow-700 px-2 overflow-x-hidden rounded-tl-large overflow-y-auto">
-                    <div class="h-auto text-white w-auto m-auto text-center font-monda-bold text-3xl">
-                      Modul <br> <span class="font-merri">{{ current_modul.judul }}</span>
-                    </div>
-                  </div>
-                  <div class="w-full h-1/3 flex bg-yellow-600 rounded-bl-large">
-                    <div class="h-auto text-white text-center w-auto m-auto font-monda-bold text-2xl">
-                      TES <br> AWAL
-                    </div>
-                  </div>
-                </div>
-                <div class="w-3/4 h-full flex">
-                  <div class="w-full h-full overflow-y-auto">
-                    <div class="w-full h-auto flex-row">
-                      <QuestionBlock
-                          mode="options"
-                          :questions="soalTA"
-                          :options-list="jawabanTA"
-                          question-key="pertanyaan"
-                          :on-option-select="payload => onQuestionOptionSelect('TA', payload)"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Soal Jurnal already started by Praktikum PJ -->
-              <div v-if="current_praktikum.status === 2"
-                  class="w-full h-full flex">
-                <div class="w-full h-full flex overflow-hidden"
-                      :class="[{ 'hidden' : !showNilaiTA },
-                                { 'visible' : showNilaiTA }]">
-                  <div class="w-24full h-16full m-auto flex-row">
-                    <div class="w-full h-1/3 flex">
-                      <span class="w-auto h-auto mt-auto font-overpass text-3xl text-black">
-                        Nilai TA Kamu 
-                          <span :class="[{ 'text-red-500' : nilaiTA <= 50 },
-                                        { 'text-green-500' : nilaiTA > 50 }]">
-                            {{ nilaiTA != '' ? nilaiTA : "ERROR" }}
-                          </span>
-                      </span>
-                    </div>
-                    <div class="w-full h-2/3 flex-row">
-                      <span class="w-auto h-auto mb-auto font-monda-bold text-4xl text-black">
-                        {{ generateScoreText(nilaiTA) }}
-                      </span>
-
-                      <div class="w-64 h-24 flex">
-                        <div class="h-full w-full flex p-4 hover:p-5 cursor-pointer animation-enable-short"
-                            v-on:click="showNilaiTA = false">
-                          <div class="h-full w-full flex font-merri text-xl bg-gray-800 rounded-lg text-center m-auto">
-                            <div class="m-auto text-white">
-                              Lanjut Ke Jurnal
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="w-1/4 h-full flex-row overflow-y-hidden"
-                      :class="[{ 'visible' : !showNilaiTA },
-                                { 'hidden' : showNilaiTA }]">
-                  <div class="w-full h-2/3 flex bg-yellow-700 px-2 overflow-x-hidden rounded-tl-large overflow-y-auto">
-                    <div class="h-auto text-white w-auto m-auto text-center font-monda-bold text-3xl">
-                      Modul <br> <span class="font-merri">{{ current_modul.judul }}</span>
-                    </div>
-                  </div>
-                  <div class="w-full h-1/3 flex-row bg-yellow-600 rounded-bl-large">
-                    <div class="h-1/2 text-white flex text-center w-auto m-auto font-monda-bold text-2xl">
-                      <div class="m-auto">
-                        JURNAL
-                      </div>
-                    </div>
-                    <div class="h-1/2 w-full flex"
-                        v-if="modulShown">
-                      <div class="h-full w-full flex p-4 hover:p-5 cursor-pointer animation-enable-short"
-                          v-on:click="modulShown = false">
-                        <div class="h-full w-full flex font-overpass-mono-bold text-xl bg-gray-300 rounded-large text-center m-auto">
-                          <div class="m-auto">
-                            Lihat Soal
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="h-1/2 w-full flex"
-                        v-if="!modulShown">
-                      <div class="h-full w-full flex p-4 hover:p-5 cursor-pointer animation-enable-short"
-                          v-on:click="modulShown = true">
-                        <div class="h-full w-full flex font-overpass-mono-bold text-xl bg-gray-300 rounded-large text-center m-auto">
-                          <div class="m-auto">
-                            Lihat Modul
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="w-3/4 h-full flex" 
-                      :class="[{ 'visible' : !showNilaiTA },
-                                { 'hidden' : showNilaiTA }]"
-                      v-if="!modulShown">
-                  <div class="w-full h-full overflow-y-auto">
-                    <div class="w-full h-auto flex-row">
-                      <QuestionBlock
-                          :questions="soalFitb"
-                          :answers="jawabanFitb"
-                          :on-answer-change="payload => onTextAnswerChange('jawabanFitb', payload)"
-                      />
-                      <QuestionBlock
-                          :questions="soalJurnal"
-                          :answers="jawabanJurnal"
-                          :numbering-offset="soalFitb.length"
-                          :on-answer-change="payload => onTextAnswerChange('jawabanJurnal', payload)"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="w-3/4 h-full flex" 
-                    v-if="modulShown">
-                  <div class="w-full h-full font-overpass text-xl whitespace-pre-wrap p-4 text-justify break-words overflow-y-auto">
-                    <span>{{ current_modul.isi }}</span>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Soal RUNMOD already started by Praktikum PJ -->
-              <!-- JUST FOR SPECIAL CASE (RUNMOD) -->
-              <div v-if="current_praktikum.status === 123"
-                  class="w-full h-full flex">  
-                <div class="w-1/4 h-full flex-row overflow-y-hidden">
-                  <div class="w-full h-2/3 flex bg-yellow-700 px-2 overflow-x-hidden rounded-tl-large overflow-y-auto">
-                    <div class="h-auto text-white w-auto m-auto text-center font-monda-bold text-3xl">
-                      Modul <br> <span class="font-merri">{{ current_modul.judul }}</span>
-                    </div>
-                  </div>
-                  <div class="w-full h-1/3 flex-row bg-yellow-600 rounded-bl-large">
-                    <div class="h-1/2 text-white flex text-center w-auto m-auto font-monda-bold text-2xl">
-                      <div class="m-auto">
-                        JURNAL
-                      </div>
-                    </div>
-                    <div class="h-1/2 w-full flex"
-                        v-if="modulShown">
-                      <div class="h-full w-full flex p-4 hover:p-5 cursor-pointer animation-enable-short"
-                          v-on:click="modulShown = false">
-                        <div class="h-full w-full flex font-overpass-mono-bold text-xl bg-gray-300 rounded-large text-center m-auto">
-                          <div class="m-auto">
-                            Lihat Soal
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="h-1/2 w-full flex"
-                        v-if="!modulShown">
-                      <div class="h-full w-full flex p-4 hover:p-5 cursor-pointer animation-enable-short"
-                          v-on:click="modulShown = true">
-                        <div class="h-full w-full flex font-overpass-mono-bold text-xl bg-gray-300 rounded-large text-center m-auto">
-                          <div class="m-auto">
-                            Lihat Modul
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="w-3/4 h-full flex" 
-                    v-if="!modulShown">
-                  <div class="w-full h-full overflow-y-auto">
-                    <div class="w-full h-auto flex-row">
-                      <QuestionBlock
-                          :questions="soalRunmod"
-                          :answers="jawabanRunmod"
-                          :on-answer-change="payload => onTextAnswerChange('jawabanRunmod', payload)"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="w-3/4 h-full flex" 
-                    v-if="modulShown">
-                  <div class="w-full h-full font-overpass text-xl whitespace-pre-wrap p-4 text-justify break-words overflow-y-auto">
-                    <span>{{ current_modul.isi }}</span>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Soal JURNAL already started by Praktikum PJ -->
-              <div v-if="current_praktikum.status === 3"
-                  class="w-full h-full flex">
-                <div class="w-1/4 h-full flex-row overflow-y-hidden">
-                  <div class="w-full h-2/3 flex bg-yellow-700 px-2 overflow-x-hidden rounded-tl-large overflow-y-auto">
-                    <div class="h-auto text-white w-auto m-auto text-center font-monda-bold text-3xl">
-                      Modul <br> <span class="font-merri">{{ current_modul.judul }}</span>
-                    </div>
-                  </div>
-                  <div class="w-full h-1/3 flex-row bg-yellow-600 rounded-bl-large">
-                    <div class="h-1/2 text-white flex text-center w-auto m-auto font-monda-bold text-2xl">
-                      <div class="m-auto">
-                        MANDIRI
-                      </div>
-                    </div>
-                    <div class="h-1/2 w-full flex"
-                        v-if="modulShown">
-                      <div class="h-full w-full flex p-4 hover:p-5 cursor-pointer animation-enable-short"
-                          v-on:click="modulShown = false">
-                        <div class="h-full w-full flex font-overpass-mono-bold text-xl bg-gray-300 rounded-large text-center m-auto">
-                          <div class="m-auto">
-                            Lihat Soal
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="h-1/2 w-full flex"
-                        v-if="!modulShown">
-                      <div class="h-full w-full flex p-4 hover:p-5 cursor-pointer animation-enable-short"
-                          v-on:click="modulShown = true">
-                        <div class="h-full w-full flex font-overpass-mono-bold text-xl bg-gray-300 rounded-large text-center m-auto">
-                          <div class="m-auto">
-                            Lihat Modul
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="w-3/4 h-full flex" 
-                    v-if="!modulShown">
-                  <div class="w-full h-full overflow-y-auto">
-                    <div class="w-full h-auto flex-row">
-                      <QuestionBlock
-                          :questions="soalMandiri"
-                          :answers="jawabanMandiri"
-                          :on-answer-change="payload => onTextAnswerChange('jawabanMandiri', payload)"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="w-3/4 h-full flex" 
-                    v-if="modulShown">
-                  <div class="w-full h-full font-overpass text-xl whitespace-pre-wrap p-4 text-justify break-words overflow-y-auto">
-                    <span>{{ current_modul.isi }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Soal TK already started by Praktikum PJ -->
-              <div v-if="current_praktikum.status === 4"
-                  class="w-full h-full flex">
-                <div class="w-1/4 h-full flex-row overflow-y-hidden">
-                  <div class="w-full h-2/3 flex bg-yellow-700 px-2 overflow-x-hidden rounded-tl-large overflow-y-auto">
-                    <div class="h-auto text-white w-auto m-auto text-center font-monda-bold text-3xl">
-                      Modul <br> <span class="font-merri">{{ current_modul.judul }}</span>
-                    </div>
-                  </div>
-                  <div class="w-full h-1/3 flex bg-yellow-600 rounded-bl-large">
-                    <div class="h-auto text-white text-center w-auto m-auto font-monda-bold text-2xl">
-                      TES <br> AKHIR
-                    </div>
-                  </div>
-                </div>
-                <div class="w-3/4 h-full flex">
-                  <div class="w-full h-full overflow-y-auto">
-                    <div class="w-full h-auto flex-row">
-                      <QuestionBlock
-                          mode="options"
-                          :questions="soalTK"
-                          :options-list="jawabanTK"
-                          question-key="pertanyaan"
-                          :on-option-select="payload => onQuestionOptionSelect('TK', payload)"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- All Praktikum Proses have done -->
-              <!-- Show laporan praktikan's layout -->
-              <div v-if="current_praktikum.status !== 777 &&
-                          current_praktikum.status !== 0 &&
-                          current_praktikum.status !== '' &&
-                          current_praktikum.status !== 1 &&
-                          current_praktikum.status !== 2 &&
-                          current_praktikum.status !== 3 &&
-                          current_praktikum.status !== 4 && 
-                          current_praktikum.status !== 123"
-                  class="w-full h-full flex">
-                <div class="w-full h-full flex overflow-hidden"
-                      :class="[{ 'hidden' : !showNilaiTK },
-                                { 'visible' : showNilaiTK }]">
-                  <div class="w-24full h-16full m-auto flex-row">
-                    <div class="w-full h-1/3 flex">
-                      <span class="w-auto h-auto mt-auto font-overpass text-3xl text-black">
-                        Nilai TK Kamu 
-                          <span :class="[{ 'text-red-500' : nilaiTK <= 50 },
-                                        { 'text-green-500' : nilaiTK > 50 }]">
-                            {{ nilaiTK != '' ? nilaiTK : "ERROR" }}
-                          </span>
-                      </span>
-                    </div>
-                    <div class="w-full h-2/3 flex-row">
-                      <span class="w-auto h-auto mb-auto font-monda-bold text-4xl text-black">
-                        {{ generateScoreText(nilaiTK) }}
-                      </span>
-
-                      <div class="w-64 h-24 flex">
-                        <div class="h-full w-full flex p-4 hover:p-5 cursor-pointer animation-enable-short"
-                            v-on:click="showNilaiTK = false">
-                          <div class="h-full w-full flex font-merri text-xl bg-gray-800 rounded-lg text-center m-auto">
-                            <div class="m-auto text-white">
-                              Lanjut Ke Feedback
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="w-full h-full flex-row overflow-y-auto overflow-x-hidden"
-                      :class="[{ 'visible' : !showNilaiTK },
-                                { 'hidden' : showNilaiTK }]">
-                  <div class="w-full h-24 flex mt-4">
-                    <div class="w-1/2 h-full flex">
-                      <select v-model="laporanPraktikan.asisten_id" 
-                            class="block font-monda-bold text-4xl appearance-none w-2/3 ml-auto mr-2 my-auto h-3/4 bg-gray-600 border border-gray-600 text-white py-2 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-gray-500 focus:border-teal-500" id="grid-state">
-                        <option value="" disabled selected>Pilih Asisten Jaga</option>
-                        <option v-for="asisten in allAsisten" v-bind:key="asisten.id" :value="asisten.id">{{ asisten.kode }} [{{ asisten.nama }}]</option>
-                      </select>
-                    </div>
-                    <div class="w-1/2 h-full flex">
-                      <star-rating class="mr-auto ml-2 my-auto"
-                        style="width: 250px;" 
-                        v-model="laporanPraktikan.rating_asisten"
-                        :increment="0.01" 
-                        :fixed-points="2"
-                        :show-rating="false"
-                        :star-size='50'/>
-                    </div>
-                  </div>
-                  <div class="w-3/4 h-2 bg-black m-auto mt-4 rounded-full"/>
-                  <div class="w-3/4 mx-auto h-auto flex mt-4">
-                    <div class="w-1/2 h-auto flex-row">
-                      <div class="w-auto h-auto m-auto font-overpass-bold text-3xl text-center break-words">
-                        Bagaimana menurutmu <br> praktikum saat ini ?
-                      </div>
-                      <div class="w-full h-auto flex mt-2">
-                        <star-rating class="m-auto"
-                          style="width: 250px;" 
-                          v-model="laporanPraktikan.rating_praktikum"
-                          :increment="0.01" 
-                          :fixed-points="2"
-                          :show-rating="false"
-                          :star-size='50'/>
-                      </div>
-                    </div>
-                    <div class="w-1/2 h-auto flex">
-                      <textarea v-model="laporanPraktikan.pesan" cols="30" rows="5" 
-                            class="font-overpass-mono-bold resize-none text-2xl bg-gray-600 appearance-none border-2 border-gray-300 rounded w-full h-full py-2 px-4 text-white leading-tight focus:outline-none focus:bg-gray-700 focus:border-teal-500" 
-                            type="text" placeholder="Ketikkan feedback mengenai praktikum / asisten saat ini ..."/>
-                    </div>
-                  </div>
-                  <div class="w-full h-24 flex mt-4 mb-8">
-                    <div class="w-1/2 h-full mx-auto p-4 hover:p-5 cursor-pointer animation-enable-short"
-                        v-on:click="finishPraktikum()">
-                      <div class="w-full h-full flex rounded-full font-overpass-bold text-xl text-white pt-1 bg-green-600">
-                        <div class="m-auto">
-                          SELESAI
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <PraktikumSection
+            v-if="isPraktikum"
+            :is-polling-enabled="isPollingEnabled"
+            :polling-complete="pollingComplete_mutable"
+            :current-user="currentUser"
+            :all-asisten="allAsisten"
+            :all-asisten-polling="allAsistenPolling"
+            :all-polling="allPolling"
+            :current-praktikum="current_praktikum"
+            :current-modul="current_modul"
+            :programming-quote="programmingQuote"
+            :quote-author="quoteAuthor"
+            :modul-shown="modulShown"
+            :show-nilai-ta="showNilaiTA"
+            :show-nilai-tk="showNilaiTK"
+            :soal-fitb="soalFitb"
+            :jawaban-fitb="jawabanFitb"
+            :soal-jurnal="soalJurnal"
+            :jawaban-jurnal="jawabanJurnal"
+            :soal-runmod="soalRunmod"
+            :jawaban-runmod="jawabanRunmod"
+            :soal-mandiri="soalMandiri"
+            :jawaban-mandiri="jawabanMandiri"
+            :soal-ta="soalTA"
+            :jawaban-ta="jawabanTA"
+            :soal-tk="soalTK"
+            :jawaban-tk="jawabanTK"
+            :laporan-praktikan="laporanPraktikan"
+            :nilai-ta="nilaiTA"
+            :nilai-tk="nilaiTK"
+            :generate-score-text="generateScoreText"
+            @polling-saved="handlePollingSaved"
+            @finish-praktikum="finishPraktikum"
+            @text-answer-change="handleTextAnswerChange"
+            @question-option-select="handleQuestionOptionSelect"
+            @update:modulShown="value => modulShown = value"
+            @update:showNilaiTa="value => showNilaiTA = value"
+            @update:showNilaiTk="value => showNilaiTK = value"
+            @update:laporanPraktikan="value => laporanPraktikan = value"
+          />
         </div>
       </div>
     </div>
@@ -1036,6 +594,7 @@
 <script>
 import { useToast } from '@/composables/useToast';
 import QuestionBlock from '@/components/praktikan/sections/QuestionBlock.vue';
+import PraktikumSection from '@/components/praktikan/sections/PraktikumSection.vue';
 export default {
   props: [
     'comingFrom',
@@ -1051,6 +610,7 @@ export default {
 
   components: {
     QuestionBlock,
+    PraktikumSection,
   },
 
   data() {
@@ -1074,10 +634,6 @@ export default {
 
       pollingComplete_mutable: this.pollingComplete,
       praktikumExist: false,
-
-      pilihanPolling: this.allPolling,
-
-      chosenAsisten: 0,
 
       current_praktikum: {
         kelas_id: '',
@@ -1218,7 +774,7 @@ export default {
 
       if(response.data.message === "success") {
 
-        globe.isPollingEnabled = response.data.isPollingEnabled;
+        globe.isPollingEnabled = Boolean(response.data.isPollingEnabled);
 
       } else {
         globe.toast.error(response.data.message
@@ -1507,6 +1063,24 @@ export default {
         return globe.goodScoreText[Math.floor(Math.random() * globe.goodScoreText.length)];
       else 
         return globe.badScoreText[Math.floor(Math.random() * globe.badScoreText.length)];
+    },
+
+    handleTextAnswerChange(event) {
+
+      if (!event || !event.arrayName) {
+        return;
+      }
+
+      this.onTextAnswerChange(event.arrayName, event.payload || {});
+    },
+
+    handleQuestionOptionSelect(event) {
+
+      if (!event || !event.type) {
+        return;
+      }
+
+      this.onQuestionOptionSelect(event.type, event.payload || {});
     },
 
     onTextAnswerChange(arrayName, payload) {
@@ -1981,70 +1555,42 @@ export default {
       }
     },
 
-    chooseJawaban: function($soalType, $jawaban, $soalId, $soalIndex, $jawabanIndex){
+    chooseJawaban: function($soalType, $jawaban, $soalId, $soalIndex, $jawabanIndex) {
+      // Determine which array to use based on soal type
+      const jawabanArray = $soalType === "TA" ? this.jawabanTA : this.jawabanTK;
       
-      const globe = this;
-
-      if($soalType === "TA"){
-        for (let index = 0; index < this.chosenJawaban.length; index++) {
-          if(this.chosenJawaban[index].soal_id === $soalId){
-            if(this.chosenJawaban[index].jawaban !== ''){
-              for (let i = 0; i < this.jawabanTA[index].length; i++) {
-                if(this.jawabanTA[index][i] === this.chosenJawaban[index].jawaban){
-                  $('.jawaban-'+index+i).addClass('bg-green-200 hover:bg-green-300');
-                  $('.jawaban-'+index+i).removeClass('bg-green-500 text-white');
-                }
-              }
+      // Find the corresponding chosen jawaban entry
+      const chosenJawabanIndex = this.chosenJawaban.findIndex(item => item.soal_id === $soalId);
+      
+      if (chosenJawabanIndex !== -1) {
+        const currentAnswer = this.chosenJawaban[chosenJawabanIndex].jawaban;
+        
+        // If there's a previous answer, reset its styling
+        if (currentAnswer !== '') {
+          for (let i = 0; i < jawabanArray[chosenJawabanIndex].length; i++) {
+            if (jawabanArray[chosenJawabanIndex][i] === currentAnswer) {
+              const previousSelector = `.jawaban-${chosenJawabanIndex}${i}`;
+              $(previousSelector)
+                .addClass('bg-green-200 hover:bg-green-300')
+                .removeClass('bg-green-500 text-white');
+              break;
             }
-
-            this.chosenJawaban[index].jawaban = $jawaban;
           }
         }
-      } else if($soalType === "TK") {
-        for (let index = 0; index < this.chosenJawaban.length; index++) {
-          if(this.chosenJawaban[index].soal_id === $soalId){
-            if(this.chosenJawaban[index].jawaban !== ''){
-              for (let i = 0; i < this.jawabanTK[index].length; i++) {
-                if(this.jawabanTK[index][i] === this.chosenJawaban[index].jawaban){
-                  $('.jawaban-'+index+i).addClass('bg-green-200 hover:bg-green-300');
-                  $('.jawaban-'+index+i).removeClass('bg-green-500 text-white');
-                }
-              }
-            }
-
-            this.chosenJawaban[index].jawaban = $jawaban;
-          }
-        }
+        
+        // Update the answer in the chosen jawaban array
+        this.chosenJawaban[chosenJawabanIndex].jawaban = $jawaban;
       }
-
-      $('.jawaban-'+$soalIndex+$jawabanIndex).removeClass('bg-green-200 hover:bg-green-300');
-      $('.jawaban-'+$soalIndex+$jawabanIndex).addClass('bg-green-500 text-white');
-    },  
-
-    setPilihanPolling: function($poll_index, $asisten_id){
       
-      let global = this;
-      
-      this.$set(this.pilihanPolling[$poll_index], 'praktikan_id', this.currentUser.id);
-      this.$set(this.pilihanPolling[$poll_index], 'asisten_id', $asisten_id);
+      // Update styling for the newly selected answer
+      const currentSelector = `.jawaban-${$soalIndex}${$jawabanIndex}`;
+      $(currentSelector)
+        .removeClass('bg-green-200 hover:bg-green-300')
+        .addClass('bg-green-500 text-white');
     },
 
-    savePolling: function(){
-      
-      let globe = this;
-
-      globe.$axios.post('/savePolling', this.pilihanPolling).then(response => {
-
-        if(response.data.message === "success") {
-
-          globe.pollingComplete_mutable = true;
-
-        } else {
-
-          globe.toast.error(response.data.message
-          );
-        }
-      });
+    handlePollingSaved() {
+      this.pollingComplete_mutable = true;
     },
 
     showPraktikum: function(){
