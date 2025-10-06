@@ -538,7 +538,6 @@ export default {
         this.comingFrom === 'kelas' ||
         this.comingFrom === 'polling' ||
         this.comingFrom === 'tp' ||
-        this.comingFrom === 'listTp' ||
         this.comingFrom === 'history'||
         this.comingFrom === 'nilai'||
         this.comingFrom === 'pelanggaran'||

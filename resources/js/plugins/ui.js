@@ -61,8 +61,6 @@ import { faLine, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-ico
 import StarRating from '../components/StarRating.vue';
 import ToggleSwitch from '../components/ToggleSwitch.vue';
 import ChartView from '../components/ChartView.vue';
-import QrcodeVue from 'qrcode.vue';
-import { QrcodeStream } from 'vue-qrcode-reader';
 
 library.add(
     faExclamationCircle,
@@ -210,6 +208,4 @@ export default function installUi(app) {
     app.component('StarRating', StarRating);
     app.component('ToggleButton', ToggleSwitch);
     app.component('Chart', ChartView);
-    app.component('QrcodeVue', QrcodeVue);
-    app.component('QrcodeStream', QrcodeStream);
 }

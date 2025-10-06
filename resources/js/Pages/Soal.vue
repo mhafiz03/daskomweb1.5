@@ -978,7 +978,6 @@ export default {
       'konfigurasi',
       'tp',
       'polling',
-      'listTp',
       'nilai',
       'history',
       'pelanggaran',

@@ -457,7 +457,6 @@ export default {
         this.comingFrom === 'kelas' ||
         this.comingFrom === 'polling' ||
         this.comingFrom === 'konfigurasi' ||
-        this.comingFrom === 'listTp' ||
         this.comingFrom === 'history'||
         this.comingFrom === 'nilai'||
         this.comingFrom === 'pelanggaran'||

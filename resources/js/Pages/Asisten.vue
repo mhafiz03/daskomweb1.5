@@ -552,7 +552,6 @@ export default {
 
       menuPraktikum: false,
       menuSoal: false,
-      menuListTp: false,
       menuHistory: false,
       menuPolling: false,
       menuKelas: false,
@@ -619,7 +618,6 @@ export default {
               this.comingFrom === 'konfigurasi' ||
               this.comingFrom === 'tp'||
               this.comingFrom === 'polling' ||
-              this.comingFrom === 'listTp' ||
               this.comingFrom === 'history' ||
               this.comingFrom === 'nilai' ||
               this.comingFrom === 'pelanggaran' ||
@@ -669,8 +667,6 @@ export default {
         this.menuPraktikum = $bool;
       if($whereTo === "soal")
         this.menuSoal = $bool;
-      if($whereTo === "listTp")
-        this.menuListTp = $bool;
       if($whereTo === "history")
         this.menuHistory = $bool;
       if($whereTo === "polling")

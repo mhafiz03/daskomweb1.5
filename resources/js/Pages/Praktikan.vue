@@ -1149,8 +1149,6 @@
 </style>
 
 <script>
-import CryptoJS from 'crypto-js';
-
 export default {
   props: [
     'comingFrom',
@@ -1658,35 +1656,6 @@ export default {
         }
       }); 
     },
-
-    /* Generating QR code function for TP
-    generateQRCODE: function(){
-
-      const globe = this;
-      globe.$axios.post('/sendTempJawabanTP', globe.jawabanTP).then(response => {
-
-        if(response.data.message === "success") {
-
-          if(response.data.allJawaban_id !== null) {
-
-            globe.qrcodeShown = true;
-            globe.qrcodeData.allJawaban_id = response.data.allJawaban_id;
-            globe.qrcodeData.praktikan_id = globe.currentUser.id;
-            globe.qrcodeData.kelas_id = globe.currentUser.kelas_id;
-            
-            // Encryption of the data
-            const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(globe.qrcodeData), 'daskom_aja');
-            globe.ecnryptedData = ciphertext.toString();
-
-            //////////////////////////////////////////////////////////////////////////
-            // This is how to decrypt the data
-            // var bytes  = CryptoJS.AES.decrypt(ciphertext.toString(), 'daskom_aja');
-            // var decryptedData = bytes.toString(CryptoJS.enc.Utf8);
-            //////////////////////////////////////////////////////////////////////////
-          }
-        }
-      }); 
-    },     */
     
     finishPraktikum: function(){
 

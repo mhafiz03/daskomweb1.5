@@ -18,7 +18,6 @@ export function useNavigation(config = {}) {
   const menuState = reactive({
     menuPraktikum: false,
     menuSoal: false,
-    menuListTp: false,
     menuHistory: false,
     menuPolling: false,
     menuProfil: false,
@@ -49,7 +48,6 @@ export function useNavigation(config = {}) {
     asisten: { route: '', menu: 'menuProfil' },
     praktikum: { route: 'praktikum', menu: 'menuPraktikum' },
     soal: { route: 'soal', menu: 'menuSoal' },
-    listTp: { route: 'listtp', menu: 'menuListTp' },
     history: { route: 'history', menu: 'menuHistory' },
     polling: { route: 'polling', menu: 'menuPolling' },
     kelas: { route: 'kelas', menu: 'menuKelas' },
@@ -102,7 +100,7 @@ export function useNavigation(config = {}) {
       // Pages that should show animation when entering
       const animatedPages = [
         'asisten', 'none', 'kelas', 'soal', 'plotting', 'modul',
-        'konfigurasi', 'tp', 'polling', 'listTp', 'history',
+        'konfigurasi', 'tp', 'polling', 'history',
         'nilai', 'pelanggaran', 'setpraktikan', 'rating',
         'allLaporan', 'laporan', 'jawaban'
       ];
