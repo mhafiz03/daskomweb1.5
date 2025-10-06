@@ -174,22 +174,16 @@ export default {
   },
 
   mounted() {
-
     $('body').addClass('closed');
-    
-    console.log('[SetPraktikan mounted] menuRef:', this.menuRef);
-    console.log('[SetPraktikan mounted] position prop:', this.position);
     
     // Restore scroll position if provided
     if (this.menuRef && this.position != null) {
       this.$nextTick(() => {
         const target = Number(this.position) || 0;
-        console.log('[SetPraktikan mounted] Restoring scroll to:', target);
-        console.log('[SetPraktikan mounted] menuRef element:', this.menuRef);
+        
         // menuRef is auto-unwrapped in Options API, so we can access properties directly
         if (this.menuRef && this.menuRef.scrollTop !== undefined) {
           this.menuRef.scrollTop = target;
-          console.log('[SetPraktikan mounted] After restore, scrollTop:', this.menuRef.scrollTop);
         }
       });
     }

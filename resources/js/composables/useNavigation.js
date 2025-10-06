@@ -59,7 +59,8 @@ export function useNavigation(config = {}) {
     setpraktikan: { route: 'setpraktikan', menu: 'menuSetPraktikan' },
     pelanggaran: { route: 'pelanggaran', menu: 'menuPelanggaran' },
     rating: { route: 'rating', menu: 'menuRanking' },
-    laporan: { route: 'allLaporan', menu: 'menuAllLaporan' },
+    laporan: { route: 'laporan', menu: 'menuAllLaporan' },
+    allLaporan: { route: 'laporan', menu: 'menuAllLaporan' }, // Alias for laporan
     jawaban: { route: 'jawaban', menu: 'menuJawaban' },
     
     // Praktikan routes

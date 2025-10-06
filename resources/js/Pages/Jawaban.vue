@@ -471,7 +471,6 @@ export default {
 
     setActive: function($modul){
       const globe = this;
-      console.log($modul);
         this.$axios.post('/asisten/modul/jawaban-config', $modul).then(response => {
           if(response.data.message === "success" && $modul.isUnlocked === true) {
             globe.toast.success("Jawaban berhasil diaktifkan"
