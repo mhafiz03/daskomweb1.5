@@ -376,11 +376,21 @@ export default {
 
   setup(props) {
     const menuRef = ref(null);
-    const navigation = useNavigation(props, menuRef, 'allLaporan');
-    
+
+    // Initialize navigation composable
+    const navigation = useNavigation({
+      userType: 'asisten',
+      menuRef: menuRef,
+      currentPage: 'allLaporan'
+    });
+
+    // Initialize menu state based on comingFrom prop
+    navigation.initializeMenu(props.comingFrom, true);
+
+    // Return all navigation state and methods
     return {
       menuRef,
-      ...toRefs(navigation)
+      ...toRefs(navigation),
     };
   },
 
@@ -409,7 +419,13 @@ export default {
   mounted() {
 
     $('body').addClass('closed');
-    this.$refs.menuRef.scrollTop = this.position;
+    
+    // Restore scroll position if provided
+    if (this.$refs.menuRef && this.position != null) {
+      this.$nextTick(() => {
+        this.$refs.menuRef.scrollTop = this.position;
+      });
+    }
 
     const globe = this;
 

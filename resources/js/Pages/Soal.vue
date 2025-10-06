@@ -829,11 +829,21 @@ export default {
 
   setup(props) {
     const menuRef = ref(null);
-    const navigation = useNavigation(props, menuRef, 'soal');
-    
+
+    // Initialize navigation composable
+    const navigation = useNavigation({
+      userType: 'asisten',
+      menuRef: menuRef,
+      currentPage: 'soal'
+    });
+
+    // Initialize menu state based on comingFrom prop
+    navigation.initializeMenu(props.comingFrom, true);
+
+    // Return all navigation state and methods
     return {
       menuRef,
-      ...toRefs(navigation)
+      ...toRefs(navigation),
     };
   },
 
@@ -952,7 +962,10 @@ export default {
     document.body.classList.add('closed');
 
     if (this.$refs.menuRef) {
-      this.$refs.menuRef.scrollTop = this.position;
+      if (this.$refs.menuRef && this.position != null) {
+      this.$nextTick(() => {
+      });
+    }
     }
 
     const incomingFrom = [

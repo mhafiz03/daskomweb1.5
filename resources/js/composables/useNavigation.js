@@ -140,7 +140,8 @@ export function useNavigation(config = {}) {
     transitionState.currentPage = false;
 
     // Get scroll position if menu ref exists
-    const scrollPosition = menuRef?.value?.scrollTop || 0;
+    // Handle both ref.value (from setup) and direct ref access
+    const scrollPosition = (menuRef?.value?.scrollTop ?? menuRef?.scrollTop) || 0;
 
     // Build URL based on user type
     let url = '';
