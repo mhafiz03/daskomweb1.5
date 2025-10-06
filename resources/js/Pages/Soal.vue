@@ -1414,24 +1414,6 @@ export default {
       });
     },
 
-    travel(whereTo) {
-      if (whereTo === 'soal') {
-        return;
-      }
-
-      this.setCurrentMenu(whereTo);
-      this.changePage = true;
-      this.currentPage = false;
-
-      const position = this.$refs.menuRef ? this.$refs.menuRef.scrollTop : 0;
-
-      setTimeout(() => {
-        this.$inertia.get(`/asisten/${whereTo}?comingFrom=soal&position=${position}`, {}, {
-          replace: true,
-        });
-      }, 501);
-    },
-
     signOut() {
       this.pageActive = false;
       this.currentPage = false;

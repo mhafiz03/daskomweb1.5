@@ -1,5 +1,5 @@
 export const PRIVILEGES = {
-  kelas: [],
+  kelas: [1, 2, 4, 5],
   plotting: [1, 2, 4, 5],
   modul: [1, 2, 4, 15, 7],
   konfigurasi: [1, 2, 4, 18, 7],
