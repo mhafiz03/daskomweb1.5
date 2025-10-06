@@ -11,7 +11,7 @@
         <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
             :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuProfil },
                     { 'bg-yellow-500 text-white': changePage && menuProfil }]"
-            v-on:click="travel('asisten')">
+            v-on:click="travel('')">
           <div class="w-7/12 my-2 flex">
             <div class="w-4/6"/>
             <img class="select-none m-auto w-2/6 h-auto fas fa-address-card">
@@ -107,7 +107,7 @@
           <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
               :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuAllLaporan },
                       { 'bg-yellow-500 text-white': changePage && menuAllLaporan }]"
-              v-on:click='travel("allLaporan")'>
+              v-on:click='travel("laporan")'>
             <div class="w-7/12 my-2 flex">
               <div class="w-4/6"/>
               <img class="select-none m-auto w-2/6 h-auto fas fa-file-medical-alt">
@@ -305,7 +305,6 @@
             <div class="w-1/2 h-full flex ml-10 mt-2">
               <div class="w-auto h-auto my-auto">
                 <toggle-button v-model="formConfig.tp_activation"
-                  :value="formConfig.tp_activation"
                   :sync="true"
                   :labels="true"
                   :width="125"
@@ -325,7 +324,6 @@
             <div class="w-1/2 h-full flex ml-10 mt-2">
               <div class="w-auto h-auto my-auto">
                 <toggle-button v-model="formConfig.runmod_activation"
-                  :value="formConfig.runmod_activation"
                   :sync="true"
                   :labels="true"
                   :width="125"
@@ -345,7 +343,6 @@
             <div class="w-1/2 h-full flex ml-10 mt-2">
               <div class="w-auto h-auto my-auto">
                 <toggle-button v-model="formConfig.registrationPraktikan_activation"
-                  :value="formConfig.registrationPraktikan_activation"
                   :sync="true"
                   :labels="true"
                   :width="125"
@@ -366,7 +363,6 @@
               <div class="w-1/2 h-full flex ml-10 mt-2">
                 <div class="w-auto h-auto my-auto">
                   <toggle-button v-model="formConfig.registrationAsisten_activation"
-                    :value="formConfig.registrationAsisten_activation"
                     :sync="true"
                     :labels="true"
                     :width="125"
@@ -387,7 +383,6 @@
             <div class="w-1/2 h-full flex ml-10 mt-2">
               <div class="w-auto h-auto my-auto">
                 <toggle-button v-model="formConfig.tubes_activation"
-                  :value="formConfig.tubes_activation"
                   :sync="true"
                   :labels="true"
                   :width="125"
@@ -408,7 +403,6 @@
             <div class="w-1/2 h-full flex ml-10 mt-2">
               <div class="w-auto h-auto my-auto">
                 <toggle-button v-model="formConfig.polling_activation"
-                  :value="formConfig.polling_activation"
                   :sync="true"
                   :labels="true"
                   :width="125"
@@ -491,12 +485,12 @@ export default {
 
       formConfig: {
 
-        runmod_activation: this.currentConfig === 'nope' ? false : this.currentConfig.runmod_activation,
-        registrationPraktikan_activation: this.currentConfig === 'nope' ? false : this.currentConfig.registrationPraktikan_activation,
-        registrationAsisten_activation: this.currentConfig === 'nope' ? false : this.currentConfig.registrationAsisten_activation,
-        tp_activation: this.currentConfig === 'nope' ? false : this.currentConfig.tp_activation,
-        tubes_activation: this.currentConfig === 'nope' ? false : this.currentConfig.tubes_activation,
-        polling_activation: this.currentConfig === 'nope' ? false : this.currentConfig.polling_activation,
+        runmod_activation: this.currentConfig === 'nope' ? false : !!this.currentConfig.runmod_activation,
+        registrationPraktikan_activation: this.currentConfig === 'nope' ? false : !!this.currentConfig.registrationPraktikan_activation,
+        registrationAsisten_activation: this.currentConfig === 'nope' ? false : !!this.currentConfig.registrationAsisten_activation,
+        tp_activation: this.currentConfig === 'nope' ? false : !!this.currentConfig.tp_activation,
+        tubes_activation: this.currentConfig === 'nope' ? false : !!this.currentConfig.tubes_activation,
+        polling_activation: this.currentConfig === 'nope' ? false : !!this.currentConfig.polling_activation,
       },
 
       menuPraktikum: false,

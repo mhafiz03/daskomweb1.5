@@ -11,7 +11,7 @@
         <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
             :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuProfil },
                     { 'bg-yellow-500 text-white': changePage && menuProfil }]"
-            v-on:click="travel('asisten')">
+            v-on:click="travel('')">
           <div class="w-7/12 my-2 flex">
             <div class="w-4/6"/>
             <img class="select-none m-auto w-2/6 h-auto fas fa-address-card">
@@ -106,7 +106,7 @@
           <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
               :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuAllLaporan },
                       { 'bg-yellow-500 text-white': changePage && menuAllLaporan }]"
-              v-on:click='travel("allLaporan")'>
+              v-on:click='travel("laporan")'>
             <div class="w-7/12 my-2 flex">
               <div class="w-4/6"/>
               <img class="select-none m-auto w-2/6 h-auto fas fa-file-medical-alt">
@@ -304,7 +304,7 @@
                     <span>{{ history.hari.toUpperCase() }} - {{ history.shift }}  (Rp.25000)</span>
                   </div>
                   <div class="w-1/2 h-auto text-right my-auto whitespace-pre-wrap break-words font-monda-bold text-2xl text-yellow-400">
-                    <span>{{ history.created_at | moment }}</span>
+                    <span>{{ history.created_at }}</span>
                   </div>
                 </div>
                 <div class="w-full h-12full flex bg-gray-300 rounded-lg">

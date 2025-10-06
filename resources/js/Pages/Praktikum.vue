@@ -188,7 +188,7 @@
           <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
               :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuProfil },
                       { 'bg-yellow-500 text-white': changePage && menuProfil }]"
-              v-on:click="travel('asisten')">
+              v-on:click="travel('')">
             <div class="w-7/12 my-2 flex">
               <div class="w-4/6"/>
               <img class="select-none m-auto w-2/6 h-auto fas fa-address-card">
@@ -283,7 +283,7 @@
             <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
                 :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuAllLaporan },
                         { 'bg-yellow-500 text-white': changePage && menuAllLaporan }]"
-                v-on:click='travel("allLaporan")'>
+                v-on:click='travel("laporan")'>
               <div class="w-7/12 my-2 flex">
                 <div class="w-4/6"/>
                 <img class="select-none m-auto w-2/6 h-auto fas fa-file-medical-alt">
@@ -956,6 +956,24 @@ export default {
       menuDisabled: false,
       activeMenu: 'praktikum',
 
+      menuPraktikum: false,
+      menuSoal: false,
+      menuListTp: false,
+      menuHistory: false,
+      menuPolling: false,
+      menuProfil: false,
+      menuKelas: false,
+      menuPlotting: false,
+      menuModul: false,
+      menuKonfigurasi: false,
+      menuTp: false,
+      menuNilai: false,
+      menuSetPraktikan: false,
+      menuPelanggaran: false,
+      menuRanking: false,
+      menuAllLaporan: false,
+      menuJawaban: false,
+
       listAllAsisten: [],
       listAllPraktikan: [],
       listAllGroup: [],
@@ -1262,7 +1280,7 @@ export default {
         this.menuPelanggaran = $bool;
       if($whereTo === "rating")
         this.menuRanking = $bool;
-      if($whereTo === "allLaporan")
+      if($whereTo === "laporan")
         this.menuAllLaporan = $bool;
       if($whereTo === "jawaban")
         this.menuJawaban = $bool;

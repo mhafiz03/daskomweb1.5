@@ -240,7 +240,7 @@
           <div class="w-full p-4 h-24 flex select-none cursor-pointer hover:text-white animation-enable"
               :class="[{ 'bg-yellow-400 hover:bg-yellow-600': !changePage || !menuAllLaporan },
                       { 'bg-yellow-500 text-white': changePage && menuAllLaporan }]"
-              v-on:click='travel("allLaporan")'>
+              v-on:click='travel("laporan")'>
             <div class="w-7/12 my-2 flex">
               <div class="w-4/6"/>
               <img class="select-none m-auto w-2/6 h-auto fas fa-file-medical-alt">
@@ -539,8 +539,6 @@ export default {
       allLaporanPriviledge: [1,2,4,5,6],
       jawabanPriviledge: [1,2,7,11,15],
       soalPriviledge: "all",
-
-     
 
       pageActive: false,
       isMenuShown: false,
