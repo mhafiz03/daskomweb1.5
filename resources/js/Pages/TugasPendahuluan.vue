@@ -377,6 +377,7 @@
 <script>
 import { ref, toRefs } from 'vue';
 import { useNavigation } from '@/composables/useNavigation';
+import { useToast } from '@/composables/useToast';
 export default {
   props: [
     'comingFrom',
@@ -399,9 +400,11 @@ export default {
 
     // Initialize menu state based on comingFrom prop
     navigation.initializeMenu(props.comingFrom, true);
+    const toast = useToast();
 
     // Return all navigation state and methods
     return {
+      toast,
       menuRef,
       ...toRefs(navigation),
     };
@@ -489,26 +492,22 @@ export default {
           this.$axios.post('/asisten/tp/activate/'+this.listAllTP[index].modul_id).then(response => {
             if(response.data.message === "success") {
 
-              globe.$toasted.global.showSuccess({
-                message: "Pembahasan TP berhasil diaktifkan"
-              });
+              globe.toast.success("Pembahasan TP berhasil diaktifkan"
+              );
             } else {
-              globe.$toasted.global.showError({
-                message: response.data.message
-              });
+              globe.toast.error(response.data.message
+              );
             }
           })
         } else
           this.$axios.post('/asisten/tp/deactivate/'+this.listAllTP[index].modul_id).then(response => {
             if(response.data.message === "success") {
 
-              globe.$toasted.global.showSuccess({
-                message: "Pembahasan TP berhasil dinonaktifkan"
-              });
+              globe.toast.success("Pembahasan TP berhasil dinonaktifkan"
+              );
             } else {
-              globe.$toasted.global.showError({
-                message: response.data.message
-              });
+              globe.toast.error(response.data.message
+              );
             }
           })
       }
@@ -536,9 +535,7 @@ export default {
             const element = globe.listAllTP[index];
             if(element.modul_id === globe.formTP.modul_id){
               element.pembahasan = globe.formTP.pembahasan;
-              globe.$toasted.global.showSuccess({
-                message: 'Pembahasan TP modul "'+ element.judul +'"<br>berhasil diperbaharui'
-              });
+              globe.toast.success('Pembahasan TP modul "'+ element.judul +'"<br>berhasil diperbaharui');
               return;
             }
           }
@@ -551,13 +548,11 @@ export default {
             isActive: false,
           })
 
-          globe.$toasted.global.showSuccess({
-            message: "Pembahasan TP berhasil ditambahkan"
-          });
+          globe.toast.success("Pembahasan TP berhasil ditambahkan"
+          );
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       }).catch(function (error) {
         if (error.response) {
@@ -565,13 +560,11 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.modul_id != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.modul_id[0]
-              });
+              globe.toast.error(error.response.data.errors.modul_id[0]
+              );
             if(error.response.data.errors.pembahasan != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.pembahasan[0]
-              });
+              globe.toast.error(error.response.data.errors.pembahasan[0]
+              );
           }
         }
       });

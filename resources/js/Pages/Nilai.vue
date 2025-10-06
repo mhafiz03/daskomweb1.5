@@ -581,6 +581,7 @@
 <script>
 import { ref, toRefs } from 'vue';
 import { useNavigation } from '@/composables/useNavigation';
+import { useToast } from '@/composables/useToast';
 export default {
   props: [
     'comingFrom',
@@ -602,9 +603,11 @@ export default {
 
     // Initialize menu state based on comingFrom prop
     navigation.initializeMenu(props.comingFrom, true);
+    const toast = useToast();
 
     // Return all navigation state and methods
     return {
+      toast,
       menuRef,
       ...toRefs(navigation),
     };
@@ -825,9 +828,8 @@ export default {
             this.formNilai.diskon = response.data.nilai.diskon;
             this.formNilai.rating = response.data.nilai.rating;
           } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
+            globe.toast.error(response.data.message
+            );
           }
         });
 
@@ -846,9 +848,8 @@ export default {
             this.formNilai.ta = response.data.nilaiTa;
             this.formNilai.tk = response.data.nilaiTk;
           } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
+            globe.toast.error(response.data.message
+            );
           }
         });
       }
@@ -860,9 +861,8 @@ export default {
           globe.allJawabanTp = response.data.allJawabanTp;
           globe.allJawabanJurnal = response.data.allJawabanJurnal;
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       });
     },
@@ -872,37 +872,32 @@ export default {
       const globe = this;
 
       if(this.formNilai.tp === '') {
-        globe.$toasted.global.showError({
-          message: "Input nilai TP terlebih dahulu"
-        });
+        globe.toast.error("Input nilai TP terlebih dahulu"
+        );
         return;
       }
 
       if(this.formNilai.jurnal === '') {
-        globe.$toasted.global.showError({
-          message: "Input nilai Jurnal terlebih dahulu"
-        });
+        globe.toast.error("Input nilai Jurnal terlebih dahulu"
+        );
         return;
       }
 
       if(this.formNilai.skill === '') {
-        globe.$toasted.global.showError({
-          message: "Input skill terlebih dahulu"
-        });
+        globe.toast.error("Input skill terlebih dahulu"
+        );
         return;
       }
 
       if(this.formNilai.rating === 0) {
-        globe.$toasted.global.showError({
-          message: "Input rating terlebih dahulu dengan mengklik nilai skill"
-        });
+        globe.toast.error("Input rating terlebih dahulu dengan mengklik nilai skill"
+        );
         return;
       }
 
       if(this.formNilai.diskon === '') {
-        globe.$toasted.global.showError({
-          message: "Input diskon terlebih dahulu <br> Inputkan 0 jika tidak ada diskon"
-        });
+        globe.toast.error("Input diskon terlebih dahulu <br> Inputkan 0 jika tidak ada diskon"
+        );
         return;
       }
 
@@ -924,13 +919,11 @@ export default {
           globe.formNilai.praktikan_id = '';
           globe.listAllLaporan[globe.chosenIndex].nilaiExists = true;
           globe.nilaiShown = false;
-          globe.$toasted.global.showSuccess({
-            message: "Nilai berhasil di input"
-          });
+          globe.toast.success("Nilai berhasil di input"
+          );
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       });
     }

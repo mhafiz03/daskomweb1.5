@@ -483,6 +483,7 @@
 <script>
   import { ref, toRefs } from 'vue';
 import { useNavigation } from '@/composables/useNavigation';
+import { useToast } from '@/composables/useToast';
 export default {
     props: [
       'comingFrom',
@@ -506,9 +507,11 @@ export default {
 
     // Initialize menu state based on comingFrom prop
     navigation.initializeMenu(props.comingFrom, true);
+    const toast = useToast();
 
     // Return all navigation state and methods
     return {
+      toast,
       menuRef,
       ...toRefs(navigation),
     };
@@ -678,9 +681,8 @@ export default {
         
         if(response.data.message === "success") {
           
-          globe.$toasted.global.showSuccess({
-            message: "Jadwal Jaga berhasil reset"
-          });
+          globe.toast.success("Jadwal Jaga berhasil reset"
+          );
 
           globe.listAllJaga = [];
           globe.closePopup();
@@ -689,9 +691,8 @@ export default {
           this.formJaga.kelas_id = '';
           this.plottingMenuShown = false;
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       })
 
@@ -702,18 +703,16 @@ export default {
       const globe = this;
 
       if(this.formJaga.asisten_id === null || this.formJaga.kelas_id === null){
-        globe.$toasted.global.showError({
-          message: "Pilih asisten & kelas terlebih dahulu"
-        });
+        globe.toast.error("Pilih asisten & kelas terlebih dahulu"
+        );
       }
 
       this.$axios.delete('/asisten/jadwal-jaga', { data: this.formJaga }).then(response => {
 
         if(response.data.message === "success") {
 
-          globe.$toasted.global.showSuccess({
-            message: "Jadwal Jaga berhasil dihapus"
-          });
+          globe.toast.success("Jadwal Jaga berhasil dihapus"
+          );
 
           var i;
           for(i=0; i<globe.listAllJaga.length; i++){
@@ -728,9 +727,8 @@ export default {
           this.formJaga.kelas_id = '';
           this.plottingMenuShown = false;
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       }).catch(function (error) {
         if (error.response) {
@@ -738,17 +736,14 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.hari != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.hari[0]
-              });
+              globe.toast.error(error.response.data.errors.hari[0]
+              );
             if(error.response.data.errors.shift != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.shift[0]
-              });
+              globe.toast.error(error.response.data.errors.shift[0]
+              );
             if(error.response.data.errors.asisten_id != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.asisten_id[0]
-              });
+              globe.toast.error(error.response.data.errors.asisten_id[0]
+              );
           }
         }
       });
@@ -762,9 +757,8 @@ export default {
         if(response.data.message === "success") {
 
           $("#jagaForm")[0].reset();
-          globe.$toasted.global.showSuccess({
-            message: "Jadwal Jaga berhasil ditambahkan"
-          });
+          globe.toast.success("Jadwal Jaga berhasil ditambahkan"
+          );
 
           var kode;
           globe.allAsisten.forEach(element => {
@@ -797,9 +791,8 @@ export default {
             }, 500
           ); 
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       }).catch(function (error) {
         if (error.response) {
@@ -807,17 +800,14 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.hari != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.hari[0]
-              });
+              globe.toast.error(error.response.data.errors.hari[0]
+              );
             if(error.response.data.errors.shift != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.shift[0]
-              });
+              globe.toast.error(error.response.data.errors.shift[0]
+              );
             if(error.response.data.errors.asisten_id != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.asisten_id[0]
-              });
+              globe.toast.error(error.response.data.errors.asisten_id[0]
+              );
           }
         }
       });

@@ -334,6 +334,7 @@
 <script>
 import { ref, toRefs } from 'vue';
 import { useNavigation } from '@/composables/useNavigation';
+import { useToast } from '@/composables/useToast';
 export default {
   props: [
     'comingFrom',
@@ -356,9 +357,10 @@ export default {
 
     // Initialize menu state based on comingFrom prop
     navigation.initializeMenu(props.comingFrom, true);
-
+    const toast = useToast();
     // Return all navigation state and methods
     return {
+      toast,
       menuRef,
       ...toRefs(navigation),
     };
@@ -385,7 +387,7 @@ export default {
       
       processing: false,
 
-    }
+    };
   },
 
   mounted() {
@@ -472,18 +474,15 @@ export default {
       console.log($modul);
         this.$axios.post('/asisten/modul/jawaban-config', $modul).then(response => {
           if(response.data.message === "success" && $modul.isUnlocked === true) {
-            globe.$toasted.global.showSuccess({
-              message: "Jawaban berhasil diaktifkan"
-            });
+            globe.toast.success("Jawaban berhasil diaktifkan"
+            );
           } else if(response.data.message === "success" && $modul.isUnlocked === false) {
-            globe.$toasted.global.showSuccess({
-              message: "Jawaban berhasil dinon-aktifkan"
-            });
+            globe.toast.success("Jawaban berhasil dinon-aktifkan"
+            );
           }
           else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
+            globe.toast.error(response.data.message
+            );
           }
         })
     },

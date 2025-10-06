@@ -84,6 +84,7 @@
 </template>
 
 <script>
+import { useToast } from '@/composables/useToast';
 export default {
   props: [
     'currentUser',
@@ -107,16 +108,14 @@ export default {
       const globe = this;
 
       if(this.praktikanNim === '') {
-        globe.$toasted.global.showError({
-          message: "Isikan nim nya terlebih dahulu"
-        });
+        toast.error("Isikan nim nya terlebih dahulu"
+        );
         return;
       }
 
       if(this.chosenModulID === ''){
-        globe.$toasted.global.showError({
-          message: "Pilih modul nya terlebih dahulu"
-        });
+        toast.error("Pilih modul nya terlebih dahulu"
+        );
         return;
       }
 
@@ -128,9 +127,8 @@ export default {
           globe.allTpData = response.data.all_tp;
 
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          toast.error(response.data.message
+          );
         }
       });
     },

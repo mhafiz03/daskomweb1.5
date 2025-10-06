@@ -853,6 +853,7 @@ import moment from 'moment';
 import MenuList from '../components/praktikum/MenuList.vue';
 import ConfirmationModal from '../components/praktikum/ConfirmationModal.vue';
 
+import { useToast } from '@/composables/useToast';
 const staticMenuDefinitions = [
   { key: 'asisten', label: 'Profil', icon: 'fa-address-card' },
   { key: 'praktikum', label: 'Praktikum', icon: 'fa-code' },
@@ -914,12 +915,14 @@ export default {
       menuRef: menuRef,
       currentPage: 'praktikum'
     });
-
+    
     // Initialize menu state based on comingFrom prop
     navigation.initializeMenu(props.comingFrom, true);
+    const toast = useToast();
 
     // Return all navigation state and methods
     return {
+      toast,
       menuRef,
       ...toRefs(navigation),
     };
@@ -927,7 +930,7 @@ export default {
 
   data() {
     return {
-      kelasPriviledge: [],
+      kelasPriviledge: [1,2,4,5],
       plottingPriviledge: [1,2,4,5],
       modulPriviledge: [1,2,4,15,7],
       konfigurasiPriviledge: [1,2,4,18,7],
@@ -1149,9 +1152,8 @@ export default {
               globe.formLaporanPj.id = response.data.latestLaporanID;
 
             } else {
-              globe.$toasted.global.showError({
-                message: response.data.message
-              });
+              globe.toast.error(response.data.message
+              );
             }
           });
 
@@ -1166,17 +1168,15 @@ export default {
               globe.formHistoryJaga.modul_id = globe.chosenModulID;
 
             } else {
-              globe.$toasted.global.showError({
-                message: response.data.message
-              });
+              globe.toast.error(response.data.message
+              );
             }
           });
         }
 
       } else {
-        globe.$toasted.global.showError({
-          message: response.data.message
-        });
+        globe.toast.error(response.data.message
+        );
       }
     });
   },
@@ -1232,10 +1232,7 @@ export default {
             for (let index = 0; index < tempArr.length; index++) {
               const data = tempArr[index];
               if(data === ""){
-                globe.$toasted.global.showError({
-                  message: 'Tidak perlu tanda "-" pada awal dan akhir isian'
-                });
-                console.log('Tidak perlu tanda "-" pada awal dan akhir isian');
+                globe.toast.error('Tidak perlu tanda "-" pada awal dan akhir isian');
                 return;
               }
             }
@@ -1247,10 +1244,7 @@ export default {
             for (let index = 0; index < tempArr.length; index++) {
               const data = tempArr[index];
               if(data === ""){
-                globe.$toasted.global.showError({
-                  message: 'Tidak perlu tanda "-" pada awal dan akhir isian'
-                });
-                console.log('Tidak perlu tanda "-" pada awal dan akhir isian');
+                globe.toast.error('Tidak perlu tanda "-" pada awal dan akhir isian');
                 return;
               }
             }
@@ -1262,10 +1256,7 @@ export default {
             for (let index = 0; index < tempArr.length; index++) {
               const data = tempArr[index];
               if(data === ""){
-                globe.$toasted.global.showError({
-                  message: 'Tidak perlu tanda "-" pada awal dan akhir isian'
-                });
-                console.log('Tidak perlu tanda "-" pada awal dan akhir isian');
+                globe.toast.error('Tidak perlu tanda "-" pada awal dan akhir isian');
                 return;
               }
             }
@@ -1277,10 +1268,7 @@ export default {
             for (let index = 0; index < tempArr.length; index++) {
               const data = tempArr[index];
               if(data === ""){
-                globe.$toasted.global.showError({
-                  message: 'Tidak perlu tanda "-" pada awal dan akhir isian'
-                });
-                console.log('Tidak perlu tanda "-" pada awal dan akhir isian');
+                globe.toast.error('Tidak perlu tanda "-" pada awal dan akhir isian');
                 return;
               }
             }
@@ -1293,10 +1281,7 @@ export default {
             for (let index = 0; index < tempArr.length; index++) {
               const data = tempArr[index];
               if(data === ""){
-                globe.$toasted.global.showError({
-                  message: 'Tidak perlu tanda "-" pada awal dan akhir isian'
-                });
-                console.log('Tidak perlu tanda "-" pada awal dan akhir isian');
+                globe.toast.error('Tidak perlu tanda "-" pada awal dan akhir isian');
                 return;
               }
             }
@@ -1308,26 +1293,20 @@ export default {
                     
           let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index); // Checking for duplicates
           if(findDuplicates(sumAllAsisten_kode).length > 0){
-            globe.$toasted.global.showError({
-              message: "Satu asisten tidak boleh berada dalam kolom yang berbeda"
-            });
-            console.log('Satu asisten tidak boleh berada dalam kolom yang berbeda');
+            globe.toast.error("Satu asisten tidak boleh berada dalam kolom yang berbeda"
+            );
             return;
           }
 
           if(sumAllAsisten_kode.length === 0){
-            globe.$toasted.global.showError({
-              message: "Isi data terlebih dahulu"
-            });
-            console.log("Isi data terlebih dahulu");
+            globe.toast.error("Isi data terlebih dahulu"
+            );
             return;
           }
 
           if(sumAllPraktikan_Alfa.length === 0 && globe.formPraktikan_Alfa.allpraktikan_nim !== "*"){
-            globe.$toasted.global.showError({
-              message: "Ketikkan '*' pada praktikan alfa <br> jika tidak ada praktikan yang alfa"
-            });
-            console.log("Ketikkan '*' pada praktikan alfa <br> jika tidak ada praktikan yang alfa");
+            globe.toast.error("Ketikkan '*' pada praktikan alfa <br> jika tidak ada praktikan yang alfa"
+            );
             return;
           } else if(globe.formPraktikan_Alfa.allpraktikan_nim !== "*"){
 
@@ -1341,20 +1320,15 @@ export default {
               });
 
               if(!isExist){
-                globe.$toasted.global.showError({
-                  message: 'Praktikan dengan nim "'+ praktikan +'" tidak ada dalam kelas ini'
-                });
-                console.log('Praktikan dengan nim "'+ praktikan +'" tidak ada dalam kelas ini');
+                globe.toast.error('Praktikan dengan nim "'+ praktikan +'" tidak ada dalam kelas ini');
                 return;
               }
             }
           }
 
           if(sumAllAsisten_kode.includes(globe.currentUser.kode)){
-            globe.$toasted.global.showError({
-              message: "Asisten PJ tidak perlu ditulis disini"
-            });
-            console.log("Asisten PJ tidak perlu ditulis disini");
+            globe.toast.error("Asisten PJ tidak perlu ditulis disini"
+            );
             return;
           }
 
@@ -1371,10 +1345,8 @@ export default {
             const element = diff_FromList[index];
 
             if(sumAllAsisten_kode.includes(element)){
-              globe.$toasted.global.showError({
-                message: "Asisten "+diff_FromList+" tidak ada dalam praktikum ini"
-              });
-              console.log("Asisten "+diff_FromList+" tidak ada dalam praktikum ini");
+              globe.toast.error("Asisten "+diff_FromList+" tidak ada dalam praktikum ini"
+              );
               return;
             }
           }
@@ -1382,10 +1354,8 @@ export default {
           for (let index = 0; index < diff_FromSum.length; index++) {
             const element = diff_FromSum[index];
             if(listAllAsistenKode.includes(element)){
-              globe.$toasted.global.showError({
-                message: "Asisten "+diff_FromSum+" belum dimasukkan"
-              });
-              console.log("Asisten "+diff_FromSum+" belum dimasukkan");
+              globe.toast.error("Asisten "+diff_FromSum+" belum dimasukkan"
+              );
               return;
             }
           }
@@ -1435,9 +1405,8 @@ export default {
                                 // Do nothing as its working as it supposed to be
 
                               } else {
-                                globe.$toasted.global.showError({
-                                  message: response.data.message
-                                });
+                                globe.toast.error(response.data.message
+                                );
                               }
                             });
                           }
@@ -1452,14 +1421,12 @@ export default {
 
                                 if(response.data.message === "success") {
 
-                                  globe.$toasted.global.showSuccess({
-                                    message: "Praktikum berhasil tersimpan"
-                                  });
+                                  globe.toast.success("Praktikum berhasil tersimpan"
+                                  );
 
                                 } else {
-                                  globe.$toasted.global.showError({
-                                    message: response.data.message
-                                  });
+                                  globe.toast.error(response.data.message
+                                  );
                                 }
                               });
                               globe.$axios.delete('/asisten/praktikum/stop').then(response => {
@@ -1470,37 +1437,32 @@ export default {
                               });
 
                             } else {
-                              globe.$toasted.global.showError({
-                                message: response.data.message
-                              });
+                              globe.toast.error(response.data.message
+                              );
                             }
                           });
 
                         } else {
-                          globe.$toasted.global.showError({
-                            message: response.data.message
-                          });
+                          globe.toast.error(response.data.message
+                          );
                         }
                       });
 
                     } else {
-                      globe.$toasted.global.showError({
-                        message: response.data.message
-                      });
+                      globe.toast.error(response.data.message
+                      );
                     }
                   });
 
                 } else {
-                  globe.$toasted.global.showError({
-                    message: response.data.message
-                  });
+                  globe.toast.error(response.data.message
+                  );
                 }
               });
 
             } else {
-              globe.$toasted.global.showError({
-                message: response.data.message
-              });
+              globe.toast.error(response.data.message
+              );
             }
           });
         }
@@ -1519,9 +1481,8 @@ export default {
             //DO NOTHING (it runs as we expected)
 
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       });
 
@@ -1574,9 +1535,8 @@ export default {
             //DO NOTHING (it runs as we expected)
 
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       });
     },
@@ -1596,9 +1556,8 @@ export default {
               //DO NOTHING (it runs as we expected)
 
           } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
+            globe.toast.error(response.data.message
+            );
           }
         });
       }
@@ -1628,41 +1587,36 @@ export default {
           }
         } else {
         
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       });
       
       if(this.chosenKelasID === ""){
 
-        globe.$toasted.global.showError({
-          message: "Pilih kelas terlebih dahulu"
-        });
+        globe.toast.error("Pilih kelas terlebih dahulu"
+        );
         return;
       }
 
       if(this.listAllAsisten.length < 1){
 
-        globe.$toasted.global.showError({
-          message: "Tidak terdapat asisten di kelas ini"
-        });
+        globe.toast.error("Tidak terdapat asisten di kelas ini"
+        );
         return;
       }
 
       if(this.listAllPraktikan.length < 1){
 
-        globe.$toasted.global.showError({
-          message: "Tidak terdapat praktikan di kelas ini"
-        });
+        globe.toast.error("Tidak terdapat praktikan di kelas ini"
+        );
         return;
       }
 
       if(this.chosenModulID === ''){
 
-        globe.$toasted.global.showError({
-          message: "Pilih modul terlebih dahulu"
-        });
+        globe.toast.error("Pilih modul terlebih dahulu"
+        );
         return;
       }
 
@@ -1674,9 +1628,8 @@ export default {
 
       if(!isKodeExist){
 
-        globe.$toasted.global.showError({
-          message: "Anda tidak ada dalam praktikum kelas ini<br>Hanya asisten dalam praktikum ini yang bisa mengaktivasinya"
-        });
+        globe.toast.error("Anda tidak ada dalam praktikum kelas ini<br>Hanya asisten dalam praktikum ini yang bisa mengaktivasinya"
+        );
         return;
       }
 
@@ -1710,9 +1663,8 @@ export default {
               globe.praktikumStart = true;
 
             } else {
-              globe.$toasted.global.showError({
-                message: response.data.message
-              });
+              globe.toast.error(response.data.message
+              );
             }
           });
 
@@ -1725,9 +1677,8 @@ export default {
               globe.menuDisabled = true;
 
             } else {
-              globe.$toasted.global.showError({
-                message: response.data.message
-              });
+              globe.toast.error(response.data.message
+              );
             }
           });
 
@@ -1746,16 +1697,14 @@ export default {
                 //DO NOTHING (it runs as we expected)
 
             } else {
-              globe.$toasted.global.showError({
-                message: response.data.message
-              });
+              globe.toast.error(response.data.message
+              );
             }
           });
 
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       });
     },
@@ -1860,15 +1809,13 @@ export default {
                 continue;
           
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       }).catch(function (error) {
         if (error.response) {
-          globe.$toasted.global.showError({
-            message: error.response.data
-          });
+          globe.toast.error(error.response.data
+          );
         }
       });
     },

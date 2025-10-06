@@ -1,7 +1,7 @@
 import anime from 'animejs/lib/anime.es.js';
 import jQuery from 'jquery';
-import Toast, { POSITION } from 'vue-toastification';
-import 'vue-toastification/dist/index.css';
+import Vue3Toastify, { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -119,13 +119,6 @@ library.add(
 
 dom.watch();
 
-const toastOptions = {
-    position: POSITION.BOTTOM_CENTER,
-    timeout: 2000,
-    closeButton: false,
-    hideProgressBar: true,
-};
-
 function registerToastHelpers(app) {
     const defaultError = "Maaf, telah terjadi sesuatu\n(Panggil CEN untuk dilihat lebih lanjut)";
     const defaultSuccess = 'Proses telah berhasil';
@@ -197,7 +190,7 @@ function registerScrollDirective(app) {
 export default function installUi(app) {
     window.$ = window.jQuery = jQuery;
 
-    app.use(Toast, toastOptions);
+    app.use(Vue3Toastify, { autoClose: 3000, position: 'top-right' });
     registerToastHelpers(app);
     registerScrollbarDirective(app);
     registerScrollDirective(app);

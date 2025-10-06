@@ -1149,6 +1149,7 @@
 </style>
 
 <script>
+import { useToast } from '@/composables/useToast';
 export default {
   props: [
     'comingFrom',
@@ -1308,6 +1309,7 @@ export default {
   },
 
   mounted() {
+    this.toast = useToast();
 
     $('body').addClass('closed');
     this.showProfil();
@@ -1329,9 +1331,8 @@ export default {
         globe.isPollingEnabled = response.data.isPollingEnabled;
 
       } else {
-        globe.$toasted.global.showError({
-          message: response.data.message
-        });
+        globe.toast.error(response.data.message
+        );
       }
     });
 
@@ -1348,9 +1349,8 @@ export default {
         }
 
       } else {
-        globe.$toasted.global.showError({
-          message: response.data.message
-        });
+        globe.toast.error(response.data.message
+        );
       }
     });
 
@@ -1484,9 +1484,8 @@ export default {
         }
 
       } else {
-        globe.$toasted.global.showError({
-          message: response.data.message
-        });
+        globe.toast.error(response.data.message
+        );
       }
     }); 
 
@@ -1650,9 +1649,8 @@ export default {
 
         if(response.data.message === "success") {
           
-          globe.$toasted.global.showSuccess({
-            message: "TP ANDA BERHASIL DISIMPAN"
-          });
+          globe.toast.success("TP ANDA BERHASIL DISIMPAN"
+          );
         }
       }); 
     },
@@ -1661,37 +1659,27 @@ export default {
 
       const globe = this;
       if(this.laporanPraktikan.asisten_id === ''){
-        globe.$toasted.global.showError({
-          message: 'Pilih asisten yang mengajar anda terlebih dahulu <br> (dibagian paling atas samping kiri rating)'
-        });
+        globe.toast.error('Pilih asisten yang mengajar anda terlebih dahulu <br> (dibagian paling atas samping kiri rating)');
         return;
       }
 
       if(this.laporanPraktikan.pesan === ''){
-        globe.$toasted.global.showError({
-          message: 'Masukkan pesan untuk praktikum / asisten terlebih dahulu'
-        });
+        globe.toast.error('Masukkan pesan untuk praktikum / asisten terlebih dahulu');
         return;
       }
 
       if(this.laporanPraktikan.pesan.length < 20){
-        globe.$toasted.global.showError({
-          message: 'Pesan berisi minimal 20 karakter'
-        });
+        globe.toast.error('Pesan berisi minimal 20 karakter');
         return;
       }
 
       if(this.laporanPraktikan.rating_asisten === 0){
-        globe.$toasted.global.showError({
-          message: 'Beri rating untuk asisten terlebih dahulu'
-        });
+        globe.toast.error('Beri rating untuk asisten terlebih dahulu');
         return;
       }
 
       if(this.laporanPraktikan.rating_praktikum === 0){
-        globe.$toasted.global.showError({
-          message: 'Beri rating untuk praktikum terlebih dahulu'
-        });
+        globe.toast.error('Beri rating untuk praktikum terlebih dahulu');
         return;
       }
 
@@ -1701,13 +1689,11 @@ export default {
 
         if(response.data.message === "success") {
           globe.current_praktikum.status = 777;
-          globe.$toasted.global.showSuccess({
-            message: "Praktikum telah selesai :)"
-          });
+          globe.toast.success("Praktikum telah selesai :)"
+          );
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       });
     },
@@ -1745,9 +1731,8 @@ export default {
             }
 
           } else {
-            globe.$toasted.global.showError({
-              message: response.data.message
-            });
+            globe.toast.error(response.data.message
+            );
           }
         });       
 
@@ -1793,9 +1778,8 @@ export default {
                 }
 
               } else {
-                globe.$toasted.global.showError({
-                  message: response.data.message
-                });
+                globe.toast.error(response.data.message
+                );
               }
             }); 
             break;
@@ -1813,9 +1797,8 @@ export default {
                   globe.showNilaiTA = true;
                   
                 } else {
-                  globe.$toasted.global.showError({
-                    message: response.data.message
-                  });
+                  globe.toast.error(response.data.message
+                  );
                 }
               }); 
             }
@@ -1841,9 +1824,8 @@ export default {
                 }
  
               } else {
-                globe.$toasted.global.showError({
-                  message: response.data.message
-                });
+                globe.toast.error(response.data.message
+                );
               }
             }); 
             globe.$axios.get('/getSoalFITB').then(response => {
@@ -1865,9 +1847,8 @@ export default {
                 }
 
               } else {
-                globe.$toasted.global.showError({
-                  message: response.data.message
-                });
+                globe.toast.error(response.data.message
+                );
               }
             });
             break;
@@ -1884,9 +1865,8 @@ export default {
                   // Do nothing as all of jawaban successfully saved to the DB
                   
                 } else {
-                  globe.$toasted.global.showError({
-                    message: response.data.message
-                  });
+                  globe.toast.error(response.data.message
+                  );
                 }
               }); 
 
@@ -1896,9 +1876,8 @@ export default {
                   // Do nothing as all of jawaban successfully saved to the DB
                   
                 } else {
-                  globe.$toasted.global.showError({
-                    message: response.data.message
-                  });
+                  globe.toast.error(response.data.message
+                  );
                 }
               }); 
             }
@@ -1924,9 +1903,8 @@ export default {
                 }
 
               } else {
-                globe.$toasted.global.showError({
-                  message: response.data.message
-                });
+                globe.toast.error(response.data.message
+                );
               }
             }); 
             break;
@@ -1943,9 +1921,8 @@ export default {
                   // Do nothing as all of jawaban successfully saved to the DB
                   
                 } else {
-                  globe.$toasted.global.showError({
-                    message: response.data.message
-                  });
+                  globe.toast.error(response.data.message
+                  );
                 }
               }); 
             }
@@ -1982,9 +1959,8 @@ export default {
                 }
 
               } else {
-                globe.$toasted.global.showError({
-                  message: response.data.message
-                });
+                globe.toast.error(response.data.message
+                );
               }
             }); 
             break;
@@ -2003,9 +1979,8 @@ export default {
                     // Do nothing as all of jawaban successfully saved to the DB
                     
                   } else {
-                    globe.$toasted.global.showError({
-                      message: response.data.message
-                    });
+                    globe.toast.error(response.data.message
+                    );
                   }
                 }); 
               }
@@ -2023,9 +1998,8 @@ export default {
                     globe.showNilaiTK = true;
                     
                   } else {
-                    globe.$toasted.global.showError({
-                      message: response.data.message
-                    });
+                    globe.toast.error(response.data.message
+                    );
                   }
                 }); 
               }
@@ -2069,9 +2043,8 @@ export default {
                 }
 
               } else {
-                globe.$toasted.global.showError({
-                  message: response.data.message
-                });
+                globe.toast.error(response.data.message
+                );
               }
             }); 
             break;
@@ -2147,9 +2120,8 @@ export default {
 
         } else {
 
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       });
     },
@@ -2278,9 +2250,8 @@ export default {
       
                 globe.allJawabanJurnal = response.data.allJawabanJurnal;
               } else {
-                globe.$toasted.global.showError({
-                  message: response.data.message
-                });
+                globe.toast.error(response.data.message
+                );
               }
             });  
           };
@@ -2323,16 +2294,14 @@ export default {
         
         if(response.data.message === "success") {
 
-          globe.$toasted.global.showSuccess({
-            message: "Pesan berhasil terkirim"
-          });
+          globe.toast.success("Pesan berhasil terkirim"
+          );
           globe.messageOpened = false;
 
         } else {
 
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       }).catch(function (error) {
         if (error.response) {
@@ -2340,13 +2309,11 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.kode != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.kode[0]
-              });
+              globe.toast.error(error.response.data.errors.kode[0]
+              );
             if(error.response.data.errors.pesan != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.pesan[0]
-              });
+              globe.toast.error(error.response.data.errors.pesan[0]
+              );
           } 
         }
       });
@@ -2365,17 +2332,15 @@ export default {
         this.$axios.post('/resetPass', this.resetPass).then(response => {
 
         if(response.data.message === "success") {
-          this.$toasted.global.showSuccess({
-            message: "Password berhasil diperbaharui"   
-          });
+          globe.toast.success("Password berhasil diperbaharui"   
+          );
       
 
           this.signOut();
 
         } else {
-          this.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       }).catch(function (error) {
         if (error.response) {
@@ -2383,13 +2348,11 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.password != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.password[0]
-              });
+              globe.toast.error(error.response.data.errors.password[0]
+              );
             if(error.response.data.errors.repeatpass != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.repeatpass[0]
-              });
+              globe.toast.error(error.response.data.errors.repeatpass[0]
+              );
           } 
         }
       });

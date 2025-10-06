@@ -811,6 +811,7 @@ import { MENU_ITEMS, PRIVILEGES, SOAL_TABS } from './Soal/constants';
 
 import { ref, toRefs } from 'vue';
 import { useNavigation } from '@/composables/useNavigation';
+import { useToast } from '@/composables/useToast';
 export default {
   props: [
     'comingFrom',
@@ -829,6 +830,7 @@ export default {
 
   setup(props) {
     const menuRef = ref(null);
+    const toast = useToast();
 
     // Initialize navigation composable
     const navigation = useNavigation({
@@ -842,6 +844,7 @@ export default {
 
     // Return all navigation state and methods
     return {
+      toast,
       menuRef,
       ...toRefs(navigation),
     };
@@ -959,6 +962,7 @@ export default {
   },
 
   mounted() {
+    const globe = this;
     document.body.classList.add('closed');
 
     if (this.$refs.menuRef) {
@@ -1203,9 +1207,8 @@ export default {
 
       fields.forEach(field => {
         if (error.response.data.errors[field]) {
-          this.$toasted.global.showError({
-            message: error.response.data.errors[field][0],
-          });
+          this.toast.error(error.response.data.errors[field][0],
+          );
         }
       });
     },
@@ -1344,15 +1347,13 @@ export default {
 
       this.$axios.post(config.createUrl, form).then(response => {
         if (response.data.message === 'success') {
-          this.$toasted.global.showSuccess({
-            message: config.messages.create,
-          });
+          this.toast.success(config.messages.create,
+          );
           this.appendNewSoal(config, response.data);
           this.resetFormByType();
         } else {
-          this.$toasted.global.showError({
-            message: response.data.message,
-          });
+          this.toast.error(response.data.message,
+          );
         }
       }).catch(error => {
         this.handleValidationErrors(error, config.errorFields);
@@ -1378,14 +1379,12 @@ export default {
           const enriched = { ...updated, judul: modulTitle };
 
           this.updateQuestionInList(config.listKey, enriched);
-          this.$toasted.global.showSuccess({
-            message: config.messages.update,
-          });
+          this.toast.success(config.messages.update,
+          );
           this.resetEditing();
         } else {
-          this.$toasted.global.showError({
-            message: response.data.message,
-          });
+          this.toast.error(response.data.message,
+          );
         }
       }).catch(error => {
         this.handleValidationErrors(error, config.errorFields);
@@ -1400,17 +1399,15 @@ export default {
 
       this.$axios.delete(config.deleteUrl(id)).then(response => {
         if (response.data.message === 'success') {
-          this.$toasted.global.showSuccess({
-            message: config.messages.delete,
-          });
+          this.toast.success(config.messages.delete,
+          );
           this.removeQuestionFrom(config.listKey, id);
           if (this.isEditingSoal(id)) {
             this.resetEditing();
           }
         } else {
-          this.$toasted.global.showError({
-            message: response.data.message,
-          });
+          this.toast.error(response.data.message,
+          );
         }
       }).catch(error => {
         this.handleValidationErrors(error, config.errorFields);

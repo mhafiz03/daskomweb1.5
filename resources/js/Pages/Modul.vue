@@ -498,6 +498,7 @@
 <script>
 import { ref, toRefs } from 'vue';
 import { useNavigation } from '@/composables/useNavigation';
+import { useToast } from '@/composables/useToast';
 export default {
   props: [
     'comingFrom',
@@ -519,9 +520,11 @@ export default {
 
     // Initialize menu state based on comingFrom prop
     navigation.initializeMenu(props.comingFrom, true);
+    const toast = useToast();
 
     // Return all navigation state and methods
     return {
+      toast,
       menuRef,
       ...toRefs(navigation),
     };
@@ -659,9 +662,8 @@ export default {
           $(".editOpen-"+globe.formModul.id).removeClass("hidden");
           $(".editOpen-"+globe.formModul.id).addClass("visible");
 
-          globe.$toasted.global.showSuccess({
-            message: "Modul berhasil diperbaharui"
-          });
+          globe.toast.success("Modul berhasil diperbaharui"
+          );
           
           for(var i=0; i<globe.listAllModul.length; i++){
             if(globe.listAllModul[i].id === globe.formModul.id){
@@ -677,9 +679,8 @@ export default {
           globe.formModul.isi = "";
           globe.formModul.isEnglish = false;
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       }).catch(function (error) {
         if (error.response) {
@@ -687,17 +688,14 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.judul != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.judul[0]
-              });
+              globe.toast.error(error.response.data.errors.judul[0]
+              );
             if(error.response.data.errors.deskripsi != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.deskripsi[0]
-              });
+              globe.toast.error(error.response.data.errors.deskripsi[0]
+              );
             if(error.response.data.errors.isi != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.isi[0]
-              });
+              globe.toast.error(error.response.data.errors.isi[0]
+              );
           }
         }
       });
@@ -759,9 +757,8 @@ export default {
 
         if(response.data.message === "success") {
 
-          globe.$toasted.global.showSuccess({
-            message: "Modul berhasil dihapus"
-          });
+          globe.toast.success("Modul berhasil dihapus"
+          );
 
           var i;
           for(i=0; i<globe.listAllModul.length; i++){
@@ -771,9 +768,8 @@ export default {
           }
           globe.listAllModul.splice(i, 1);
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       }).catch(function (error) {
         if (error.response) {
@@ -781,17 +777,14 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.judul != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.judul[0]
-              });
+              globe.toast.error(error.response.data.errors.judul[0]
+              );
             if(error.response.data.errors.deskripsi != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.deskripsi[0]
-              });
+              globe.toast.error(error.response.data.errors.deskripsi[0]
+              );
             if(error.response.data.errors.isi != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.isi[0]
-              });
+              globe.toast.error(error.response.data.errors.isi[0]
+              );
           }
         }
       });
@@ -805,9 +798,8 @@ export default {
         if(response.data.message === "success") {
 
           $("#modulForm")[0].reset();
-          globe.$toasted.global.showSuccess({
-            message: "Modul berhasil ditambahkan"
-          });
+          globe.toast.success("Modul berhasil ditambahkan"
+          );
           globe.listAllModul.push({
             id: response.data.id,
             judul: globe.formModul.judul,
@@ -817,9 +809,8 @@ export default {
             isUnlocked: globe.formModul.isUnlocked,
           })
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       }).catch(function (error) {
         if (error.response) {
@@ -827,17 +818,14 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.judul != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.judul[0]
-              });
+              globe.toast.error(error.response.data.errors.judul[0]
+              );
             if(error.response.data.errors.deskripsi != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.deskripsi[0]
-              });
+              globe.toast.error(error.response.data.errors.deskripsi[0]
+              );
             if(error.response.data.errors.isi != null)
-              globe.$toasted.global.showError({
-                message: error.response.data.errors.isi[0]
-              });
+              globe.toast.error(error.response.data.errors.isi[0]
+              );
           }
         }
       });

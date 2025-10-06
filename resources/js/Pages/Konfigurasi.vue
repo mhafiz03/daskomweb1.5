@@ -457,6 +457,7 @@
 <script>
 import { ref, toRefs } from 'vue';
 import { useNavigation } from '@/composables/useNavigation';
+import { useToast } from '@/composables/useToast';
 export default {
   props: [
     'comingFrom',
@@ -478,9 +479,11 @@ export default {
 
     // Initialize menu state based on comingFrom prop
     navigation.initializeMenu(props.comingFrom, true);
+    const toast = useToast();
 
     // Return all navigation state and methods
     return {
+      toast,
       menuRef,
       ...toRefs(navigation),
     };
@@ -512,7 +515,6 @@ export default {
         tubes_activation: this.currentConfig === 'nope' ? false : !!this.currentConfig.tubes_activation,
         polling_activation: this.currentConfig === 'nope' ? false : !!this.currentConfig.polling_activation,
       },
-
     }
   },
 
@@ -592,14 +594,12 @@ export default {
           this.currentConfig.tubes_activation = this.formConfig.tubes_activation;
           this.currentConfig.polling_activation = this.formConfig.polling_activation;
 
-          globe.$toasted.global.showSuccess({
-            message: "New configuration saved"
-          });
+          globe.toast.success("New configuration saved"
+          );
 
         } else {
-          globe.$toasted.global.showError({
-            message: response.data.message
-          });
+          globe.toast.error(response.data.message
+          );
         }
       });
     }

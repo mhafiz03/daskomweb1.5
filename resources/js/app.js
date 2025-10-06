@@ -7,8 +7,9 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { InertiaProgress } from '@inertiajs/progress';
 import axios from 'axios';
-
 import installUi from './plugins/ui';
+
+import { useToast } from '@/composables/useToast';
 
 InertiaProgress.init({ color: '#1f2937' });
 
@@ -28,5 +29,17 @@ createInertiaApp({
         app.provide('axios', axios);
 
         app.mount(el);
+        
+        (function () {
+            const t = useToast();
+            window.$toasted = {
+                global: {
+                    showSuccess: (message) => t.success(message),
+                    showError: (message) => t.error(message),
+                    showInfo: (message) => t.info(message),
+                    showWarning: (message) => t.warning(message),
+                }
+            };
+        })();
     },
 });
