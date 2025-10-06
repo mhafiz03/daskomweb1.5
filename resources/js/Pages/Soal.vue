@@ -7,7 +7,7 @@
       :items="visibleMenuItems"
       :menu-container-class="menuContainerClass"
       :highlighted-menu="highlightedMenu"
-      :menu-ref="menuRef"
+      :menu-ref="menuContainerRef.ref"
       @hover="isMenuShown = false"
       @select="handleMenuSelect"
     />
@@ -785,13 +785,13 @@ export default {
   },
 
   setup(props) {
-    const menuRef = ref(null);
+    const menuContainer = ref(null);
     const toast = useToast();
 
     // Initialize navigation composable
     const navigation = useNavigation({
       userType: 'asisten',
-      menuRef: menuRef,
+      menuRef: menuContainer,
       currentPage: 'soal'
     });
     const navigationRefs = toRefs(navigation);
@@ -808,9 +808,11 @@ export default {
     });
 
     // Return all navigation state and methods
+    // Wrap menuContainer to prevent auto-unwrapping in template
     return {
       toast,
-      menuRef,
+      menuContainer,
+      menuContainerRef: { ref: menuContainer }, // Wrapped for template
       ...navigationRefs,
       ...sidebarMenu,
     };
@@ -913,12 +915,12 @@ export default {
   },
 
   mounted() {
-    const globe = this;
     document.body.classList.add('closed');
 
-    if (this.menuRef?.value && this.position != null) {
+    if (this.menuContainer && this.position != null) {
       this.$nextTick(() => {
-        this.menuRef.value.scrollTop = this.position;
+        const target = Number(this.position) || 0;
+        this.menuContainer.scrollTop = target;
       });
     }
 

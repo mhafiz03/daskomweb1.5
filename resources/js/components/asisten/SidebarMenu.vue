@@ -48,7 +48,7 @@ export default {
       default: '',
     },
     menuRef: {
-      type: Object,
+      type: [Object, Function],
       default: null,
     },
   },
@@ -89,8 +89,18 @@ export default {
       this.$emit('select', item.id);
     },
     setContainerRef(el) {
-      if (this.menuRef) {
+      console.log('[SidebarMenu setContainerRef] el:', el);
+      console.log('[SidebarMenu setContainerRef] menuRef type:', typeof this.menuRef);
+      console.log('[SidebarMenu setContainerRef] menuRef:', this.menuRef);
+      
+      // Handle both callback function and ref object
+      if (typeof this.menuRef === 'function') {
+        console.log('[SidebarMenu setContainerRef] Calling function');
+        this.menuRef(el);
+      } else if (this.menuRef && typeof this.menuRef === 'object') {
+        console.log('[SidebarMenu setContainerRef] Setting ref.value');
         this.menuRef.value = el;
+        console.log('[SidebarMenu setContainerRef] ref.value after set:', this.menuRef.value);
       }
     },
   },
