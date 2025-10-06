@@ -624,6 +624,7 @@ export default {
       isMenuShown: false,
       messageOpened: false,
       openWide: false,
+      echoChannel: null,
       modulShown: false,
 
       currentJawabanJurnal: '',
@@ -754,315 +755,37 @@ export default {
     }
   },
 
-  mounted() {
+  async mounted() {
     this.toast = useToast();
 
     $('body').addClass('closed');
     this.showProfil();
 
-    const globe = this;
-    if(this.comingFrom === 'login'||
-        this.comingFrom === 'none' ){
-
-      setTimeout(
-        function() {
-          globe.pageActive = true;
-        }, 10); 
+    if (this.comingFrom === 'login' || this.comingFrom === 'none') {
+      setTimeout(() => {
+        this.pageActive = true;
+      }, 10);
     }
 
-    globe.$axios.post('/checkPolling').then(response => {
-
-      if(response.data.message === "success") {
-
-        globe.isPollingEnabled = Boolean(response.data.isPollingEnabled);
-
-      } else {
-        globe.toast.error(response.data.message
-        );
-      }
-    });
-
-    globe.$axios.post('/checkPraktikum').then(response => {
-
-      if(response.data.message === "success") {
-
-        if(response.data.current_praktikum != null){
-
-          //There is currently active praktikum && kelas_id === current_praktikum.kelas_id
-          if(response.data.current_praktikum.kelas_id === globe.currentUser.kelas_id){
-            globe.setCurrentPraktikumState(response.data.current_praktikum, false);
-          }
-        }
-
-      } else {
-        globe.toast.error(response.data.message
-        );
-      }
-    });
-
-    globe.$axios.post('/getAllNilai/'+globe.currentUser.id).then(response => {
-
-      if(response.data.message === "success") {
-
-        response.data.allNilai.forEach(nilai => {
-
-          globe.allNilaiData.labels.push(nilai.judul);
-          globe.allNilaiTP.push(nilai.tp);
-          globe.allNilaiTA.push(nilai.ta);
-          globe.allNilaiJURNAL.push(nilai.jurnal);
-          globe.allNilaiTK.push(nilai.tk);
-          globe.allNilaiSKILL.push(nilai.skill);
-          globe.allNilaiDISKON.push(nilai.diskon);
-        });
-
-        for (let index = 0; index < 6; index++) {
-
-          switch(index) {
-
-            case 0:
-              globe.allNilaiData.datasets.push({
-
-                label: "TP",
-                backgroundColor : 'rgba(75,192,192,0.1)',
-                borderColor : '#00c853',
-                pointBackgroundColor: 'black', 
-                borderWidth: 2, 
-                pointBorderColor: 'black',
-                data: []
-              });
-
-              response.data.allNilai.forEach(nilai => {
-
-                globe.allNilaiData.datasets[index].data.push(nilai.tp);
-              });
-              break;
-            
-            case 1:
-              globe.allNilaiData.datasets.push({
-
-                label: "TA",
-                backgroundColor : 'rgba(75,192,192,0.1)',
-                borderColor : '#00c853',
-                pointBackgroundColor: 'black', 
-                borderWidth: 2, 
-                pointBorderColor: 'black',
-                data: []
-              });
-
-              response.data.allNilai.forEach(nilai => {
-
-                globe.allNilaiData.datasets[index].data.push(nilai.ta);
-              });
-              break;
-
-            case 2:
-              globe.allNilaiData.datasets.push({
-
-                label: "JURNAL",
-                backgroundColor : 'rgba(75,192,192,0.1)',
-                borderColor : '#00c853',
-                pointBackgroundColor: 'black', 
-                borderWidth: 2, 
-                pointBorderColor: 'black',
-                data: []
-              });
-
-              response.data.allNilai.forEach(nilai => {
-
-                globe.allNilaiData.datasets[index].data.push(nilai.jurnal);
-              });
-              break;
-
-            case 3:
-              globe.allNilaiData.datasets.push({
-
-                label: "TK",
-                backgroundColor : 'rgba(75,192,192,0.1)',
-                borderColor : '#00c853',
-                pointBackgroundColor: 'black', 
-                borderWidth: 2, 
-                pointBorderColor: 'black',
-                data: []
-              });
-
-              response.data.allNilai.forEach(nilai => {
-
-                globe.allNilaiData.datasets[index].data.push(nilai.tk);
-              });
-              break;
-
-            case 4:
-              globe.allNilaiData.datasets.push({
-
-                label: "SKILL",
-                backgroundColor : 'rgba(75,192,192,0.1)',
-                borderColor : '#00c853',
-                pointBackgroundColor: 'black', 
-                borderWidth: 2, 
-                pointBorderColor: 'black',
-                data: []
-              });
-
-              response.data.allNilai.forEach(nilai => {
-
-                globe.allNilaiData.datasets[index].data.push(nilai.skill);
-              });
-              break;
-
-            case 5:
-              globe.allNilaiData.datasets.push({
-
-                label: "DISKON",
-                backgroundColor : 'rgba(75,192,192,0.1)',
-                borderColor : '#00c853',
-                pointBackgroundColor: 'black', 
-                borderWidth: 2, 
-                pointBorderColor: 'black',
-                data: []
-              });
-
-              response.data.allNilai.forEach(nilai => {
-
-                globe.allNilaiData.datasets[index].data.push(nilai.diskon);
-              });
-              break;
-          }
-        }
-
-      } else {
-        globe.toast.error(response.data.message
-        );
-      }
-    }); 
-
-    if(globe.currentUser.kelas.substring(6, 10) == 'INT'){
-      globe.all_modul = globe.allModul.filter(function (modul){
-        modul.isUnlocked === 1 ? modul.isUnlocked = true : modul.isUnlocked = false;
-        return modul.isEnglish === 1 && modul.id <= 20;
-      });
-      globe.$axios.get('/getSoalTP/true/' + globe.currentUser.id).then(response => {
-
-        if(response.data.message === "success") {
-
-          if(response.data.all_soalEssay !== null){
-
-            globe.soalTPEssay = response.data.all_soalEssay;
-            for (let index = 0; index < globe.soalTPEssay.length; index++) {
-              const soal = globe.soalTPEssay[index];
-              globe.jawabanTP.push({
-                soal_id: soal.soal_id == null ? soal.id : soal.soal_id,
-                modul_id: soal.modul_id,
-                praktikan_id: globe.currentUser.id,
-                jawaban: soal.jawaban === null ? '' : soal.jawaban,
-              });
-            }
-          }
-
-          if(response.data.all_soalProgram !== null){
-
-            globe.soalTPProgram = response.data.all_soalProgram;
-            for (let index = 0; index < globe.soalTPProgram.length; index++) {
-              const soal = globe.soalTPProgram[index];
-              globe.jawabanTP.push({
-                soal_id: soal.soal_id == null ? soal.id : soal.soal_id,
-                modul_id: soal.modul_id,
-                praktikan_id: globe.currentUser.id,
-                jawaban: soal.jawaban === null ? '' : soal.jawaban,
-              });
-            }
-          }
-        }
-      }); 
-
-      globe.$axios.post('/getPembahasanTP/true').then(response => {
-
-        if(response.data.message === "success") {
-
-          if(response.data.tp !== null) {
-
-            globe.pembahasanTp.modul_id = response.data.tp.modul_id;
-            globe.pembahasanTp.pembahasan = response.data.tp.pembahasan;
-            globe.qrcodeData.modul_id = response.data.tp.modul_id;
-          }
-        }
-      });
-
-    } else {
-      globe.all_modul = globe.allModul.filter(function (modul){
-        return modul.isEnglish === 0 && modul.id <= 20;
-      });
-      globe.$axios.get('/getSoalTP/false/' + globe.currentUser.id).then(response => {
-
-        if(response.data.message === "success") {
-
-          if(response.data.all_soalEssay !== null){
-
-            globe.soalTPEssay = response.data.all_soalEssay;
-            for (let index = 0; index < globe.soalTPEssay.length; index++) {
-              const soal = globe.soalTPEssay[index];
-              globe.jawabanTP.push({
-                soal_id: soal.soal_id == null ? soal.id : soal.soal_id,
-                modul_id: soal.modul_id,
-                praktikan_id: globe.currentUser.id,
-                jawaban: soal.jawaban === null ? '' : soal.jawaban,
-              });
-            }
-          }
-
-          if(response.data.all_soalProgram !== null){
-
-            globe.soalTPProgram = response.data.all_soalProgram;
-            for (let index = 0; index < globe.soalTPProgram.length; index++) {
-              const soal = globe.soalTPProgram[index];
-              globe.jawabanTP.push({
-                soal_id: soal.soal_id == null ? soal.id : soal.soal_id,
-                modul_id: soal.modul_id,
-                praktikan_id: globe.currentUser.id,
-                jawaban: soal.jawaban === null ? '' : soal.jawaban,
-              });
-            }
-          }
-        }
-      }); 
-
-      globe.$axios.post('/getPembahasanTP/false').then(response => {
-
-        if(response.data.message === "success") {
-
-          if(response.data.tp !== null) {
-
-            globe.pembahasanTp.modul_id = response.data.tp.modul_id;
-            globe.pembahasanTp.pembahasan = response.data.tp.pembahasan;
-            globe.qrcodeData.modul_id = response.data.tp.modul_id;
-          }
-        }
-      });
-    } 
-
-    if (window.Echo) {
-      globe.echoChannel = window.Echo.channel(`praktikum.${globe.currentUser.kelas_id}`)
-        .listen('.PraktikumStatusUpdated', (data) => {
-          globe.setCurrentPraktikumState(data.current_praktikum, true);
-        });
-    }
+    await this.initializePolling();
+    await this.initializePraktikum();
+    await this.initializeNilai();
+    await this.initializeTpResources();
+    this.setupRealtimeChannel();
   },
 
   beforeUnmount() {
-    const globe = this;
-    if (window.Echo) {
-      window.Echo.leave(`praktikum.${globe.currentUser.kelas_id}`);
-    }
+    this.cleanupRealtimeChannel();
   },
 
   methods: {
 
     generateScoreText: function($nilai) {
 
-      const globe = this;
       if($nilai > 50)
-        return globe.goodScoreText[Math.floor(Math.random() * globe.goodScoreText.length)];
+        return this.goodScoreText[Math.floor(Math.random() * this.goodScoreText.length)];
       else 
-        return globe.badScoreText[Math.floor(Math.random() * globe.badScoreText.length)];
+        return this.badScoreText[Math.floor(Math.random() * this.badScoreText.length)];
     },
 
     handleTextAnswerChange(event) {
@@ -1081,6 +804,496 @@ export default {
       }
 
       this.onQuestionOptionSelect(event.type, event.payload || {});
+    },
+
+    async initializePolling() {
+      try {
+        const { data } = await this.$axios.post('/praktikan/polling/check');
+
+        if (data.message === 'success') {
+          this.isPollingEnabled = Boolean(data.isPollingEnabled);
+        } else {
+          this.toast.error(data.message);
+        }
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memeriksa status polling');
+      }
+    },
+
+    async initializePraktikum() {
+      try {
+        const { data } = await this.$axios.post('/praktikum/check');
+
+        if (data.message === 'success' && data.current_praktikum && data.current_praktikum.kelas_id === this.currentUser.kelas_id) {
+          await this.setCurrentPraktikumState(data.current_praktikum, false);
+        } else if (data.message !== 'success') {
+          this.toast.error(data.message);
+        }
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memeriksa status praktikum');
+      }
+    },
+
+    async initializeNilai() {
+      try {
+        const { data } = await this.$axios.post(`/praktikan/nilai/${this.currentUser.id}`);
+
+        if (data.message !== 'success') {
+          this.toast.error(data.message);
+          return;
+        }
+
+        this.resetNilaiCollections();
+
+        const nilaiList = Array.isArray(data.allNilai) ? data.allNilai : [];
+
+        nilaiList.forEach((nilai) => {
+          this.allNilaiData.labels.push(nilai.judul);
+          this.allNilaiTP.push(nilai.tp);
+          this.allNilaiTA.push(nilai.ta);
+          this.allNilaiJURNAL.push(nilai.jurnal);
+          this.allNilaiTK.push(nilai.tk);
+          this.allNilaiSKILL.push(nilai.skill);
+          this.allNilaiDISKON.push(nilai.diskon);
+        });
+
+        this.allNilaiData.datasets = this.buildNilaiDatasets();
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat data nilai');
+      }
+    },
+
+    async initializeTpResources() {
+      const isInternational = this.currentUser.kelas.substring(6, 10) === 'INT';
+
+      this.all_modul = this.allModul
+        .filter((modul) => (isInternational ? modul.isEnglish === 1 : modul.isEnglish === 0) && modul.id <= 20)
+        .map((modul) => ({
+          ...modul,
+          isUnlocked: modul.isUnlocked === 1,
+        }));
+
+      await this.loadTpQuestions(isInternational);
+      await this.loadTpDiscussion(isInternational);
+    },
+
+    async loadTpQuestions(isInternational) {
+      const flag = isInternational ? 'true' : 'false';
+
+      try {
+        const { data } = await this.$axios.get(`/api/soal/tp/${flag}/${this.currentUser.id}`);
+
+        if (data.message !== 'success') {
+          this.toast.error(data.message);
+          return;
+        }
+
+        const essayQuestions = data.all_soalEssay || [];
+        const programQuestions = data.all_soalProgram || [];
+
+        this.soalTPEssay = essayQuestions;
+        this.soalTPProgram = programQuestions;
+        this.jawabanTP = [];
+
+        const appendAnswer = (soal) => {
+          this.jawabanTP.push({
+            soal_id: soal.soal_id == null ? soal.id : soal.soal_id,
+            modul_id: soal.modul_id,
+            praktikan_id: this.currentUser.id,
+            jawaban: soal.jawaban ?? '',
+          });
+        };
+
+        essayQuestions.forEach(appendAnswer);
+        programQuestions.forEach(appendAnswer);
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat soal TP');
+      }
+    },
+
+    async loadTpDiscussion(isInternational) {
+      const flag = isInternational ? 'true' : 'false';
+
+      try {
+        const { data } = await this.$axios.post(`/tp/pembahasan/${flag}`);
+
+        if (data.message === 'success' && data.tp) {
+          this.pembahasanTp.modul_id = data.tp.modul_id;
+          this.pembahasanTp.pembahasan = data.tp.pembahasan;
+          this.qrcodeData.modul_id = data.tp.modul_id;
+        } else if (data.message !== 'success') {
+          this.toast.error(data.message);
+        }
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat pembahasan TP');
+      }
+    },
+
+    setupRealtimeChannel() {
+      if (!window.Echo) {
+        return;
+      }
+
+      this.cleanupRealtimeChannel();
+      this.echoChannel = window.Echo
+        .channel(`praktikum.${this.currentUser.kelas_id}`)
+        .listen('.PraktikumStatusUpdated', (data) => {
+          this.setCurrentPraktikumState(data.current_praktikum, true);
+        });
+    },
+
+    cleanupRealtimeChannel() {
+      if (window.Echo) {
+        window.Echo.leave(`praktikum.${this.currentUser.kelas_id}`);
+      }
+
+      this.echoChannel = null;
+    },
+
+    resetNilaiCollections() {
+      this.allNilaiData.labels = [];
+      this.allNilaiData.datasets = [];
+
+      this.allNilaiTP = [];
+      this.allNilaiTA = [];
+      this.allNilaiJURNAL = [];
+      this.allNilaiTK = [];
+      this.allNilaiSKILL = [];
+      this.allNilaiDISKON = [];
+    },
+
+    buildNilaiDatasets() {
+      const definitions = [
+        { label: 'TP', data: this.allNilaiTP },
+        { label: 'TA', data: this.allNilaiTA },
+        { label: 'JURNAL', data: this.allNilaiJURNAL },
+        { label: 'TK', data: this.allNilaiTK },
+        { label: 'SKILL', data: this.allNilaiSKILL },
+        { label: 'DISKON', data: this.allNilaiDISKON },
+      ];
+
+      return definitions.map(({ label, data }) => this.createDataset(label, data));
+    },
+
+    createDataset(label, data) {
+      return {
+        label,
+        backgroundColor: 'rgba(75,192,192,0.1)',
+        borderColor: '#00c853',
+        pointBackgroundColor: 'black',
+        borderWidth: 2,
+        pointBorderColor: 'black',
+        data: [...data],
+      };
+    },
+
+    handleRequestError(error, fallbackMessage) {
+      if (error?.response?.data?.message) {
+        this.toast.error(error.response.data.message);
+      } else if (fallbackMessage) {
+        this.toast.error(fallbackMessage);
+      }
+    },
+
+    async loadCurrentModul() {
+      try {
+        const { data } = await this.$axios.post(`/modul/${this.current_praktikum.modul_id}`);
+
+        if (data.message === 'success' && data.modul) {
+          this.current_modul.judul = data.modul.judul;
+          this.current_modul.deskripsi = data.modul.deskripsi;
+          this.current_modul.isi = data.modul.isi;
+
+          if (this.current_praktikum.status === 0) {
+            await this.loadRandomQuote();
+          }
+        } else if (data.message !== 'success') {
+          this.toast.error(data.message);
+        }
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat informasi modul');
+      }
+    },
+
+    async loadRandomQuote() {
+      try {
+        const { data } = await this.$axios.get('http://api.quotable.io/random');
+        if (data?.content && data?.author) {
+          this.programmingQuote = data.content;
+          this.quoteAuthor = data.author;
+        }
+      } catch (error) {
+        // Mengabaikan kegagalan pemuatan kutipan agar tidak mengganggu alur utama.
+      }
+    },
+
+    async submitJawaban(endpoint, payload, onSuccess) {
+      try {
+        const { data } = await this.$axios.post(endpoint, payload);
+
+        if (data.message === 'success') {
+          if (typeof onSuccess === 'function') {
+            onSuccess(data);
+          }
+        } else {
+          this.toast.error(data.message);
+        }
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal mengirim jawaban');
+      }
+    },
+
+    async loadSoalTa() {
+      this.soalTA = [];
+      this.jawabanTA = [];
+      this.chosenJawaban = [];
+      try {
+        const { data } = await this.$axios.get(`/api/soal/ta/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
+
+        if (data.message !== 'success') {
+          this.toast.error(data.message);
+          return;
+        }
+
+        const questions = Array.isArray(data.all_soal) ? data.all_soal : [];
+        this.soalTA = questions;
+
+        questions.forEach((soal) => {
+          const shuffledAnswers = this.shuffleArr([
+            soal.jawaban_benar,
+            soal.jawaban_salah1,
+            soal.jawaban_salah2,
+            soal.jawaban_salah3,
+          ]);
+
+          this.chosenJawaban.push({
+            modul_id: this.current_praktikum.modul_id,
+            praktikan_id: this.currentUser.id,
+            soal_id: soal.id,
+            jawaban: '',
+          });
+
+          this.jawabanTA.push(shuffledAnswers);
+        });
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat soal TA');
+      }
+    },
+
+    async loadSoalJurnalAndFitb() {
+      await Promise.all([this.loadSoalJurnal(), this.loadSoalFitb()]);
+    },
+
+    async loadSoalJurnal() {
+      this.soalJurnal = [];
+      this.jawabanJurnal = [];
+      try {
+        const { data } = await this.$axios.get('/api/soal/jurnal');
+
+        if (data.message !== 'success') {
+          this.toast.error(data.message);
+          return;
+        }
+
+        const list = (data.all_soal || []).filter(Boolean);
+        this.soalJurnal = list;
+        this.jawabanJurnal = list.map((soal) => ({
+          soal_id: soal.id,
+          modul_id: soal.modul_id,
+          praktikan_id: this.currentUser.id,
+          jawaban: '',
+        }));
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat soal Jurnal');
+      }
+    },
+
+    async loadSoalFitb() {
+      this.soalFitb = [];
+      this.jawabanFitb = [];
+      try {
+        const { data } = await this.$axios.get('/api/soal/fitb');
+
+        if (data.message !== 'success') {
+          this.toast.error(data.message);
+          return;
+        }
+
+        const list = (data.all_soal || []).filter(Boolean);
+        this.soalFitb = list;
+        this.jawabanFitb = list.map((soal) => ({
+          soal_id: soal.id,
+          modul_id: soal.modul_id,
+          praktikan_id: this.currentUser.id,
+          jawaban: '',
+        }));
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat soal FITB');
+      }
+    },
+
+    async loadSoalMandiri() {
+      this.soalMandiri = [];
+      this.jawabanMandiri = [];
+      try {
+        const { data } = await this.$axios.get(`/api/soal/mandiri/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
+
+        if (data.message !== 'success') {
+          this.toast.error(data.message);
+          return;
+        }
+
+        const list = data.all_soal || [];
+        this.soalMandiri = list;
+        this.jawabanMandiri = list.map((soal) => ({
+          soal_id: soal.id,
+          modul_id: soal.modul_id,
+          praktikan_id: this.currentUser.id,
+          jawaban: '',
+        }));
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat soal Mandiri');
+      }
+    },
+
+    async loadSoalTk() {
+      this.soalTK = [];
+      this.chosenJawaban = [];
+      this.jawabanTK = [];
+      try {
+        const { data } = await this.$axios.get(`/api/soal/tk/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
+
+        if (data.message !== 'success') {
+          this.toast.error(data.message);
+          return;
+        }
+
+        const questions = data.all_soal || [];
+        this.soalTK = questions;
+
+        questions.forEach((soal) => {
+          const answers = this.shuffleArr([
+            soal.jawaban_benar,
+            soal.jawaban_salah1,
+            soal.jawaban_salah2,
+            soal.jawaban_salah3,
+          ]);
+
+          this.chosenJawaban.push({
+            modul_id: this.current_praktikum.modul_id,
+            praktikan_id: this.currentUser.id,
+            soal_id: soal.id,
+            jawaban: '',
+          });
+
+          this.jawabanTK.push(answers);
+        });
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat soal TK');
+      }
+    },
+
+    async loadSoalRunmod() {
+      this.soalRunmod = [];
+      this.jawabanRunmod = [];
+      try {
+        const { data } = await this.$axios.get('/api/soal/runmod');
+
+        if (data.message !== 'success') {
+          this.toast.error(data.message);
+          return;
+        }
+
+        const list = data.all_soal || [];
+        this.soalRunmod = list;
+        this.jawabanRunmod = list.map((soal) => ({
+          soal_id: soal.id,
+          modul_id: soal.modul_id,
+          praktikan_id: this.currentUser.id,
+          jawaban: '',
+        }));
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat soal Runmod');
+      }
+    },
+
+    async checkExistingLaporan() {
+      try {
+        const { data } = await this.$axios.post(`/praktikan/laporan/${this.currentUser.id}/${this.current_praktikum.modul_id}`);
+
+        if (data.message === 'done') {
+          this.current_praktikum.status = 777;
+          this.praktikumExist = false;
+          this.openWide = false;
+        }
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memeriksa laporan praktikan');
+      }
+    },
+
+    handleStatusZero() {
+      this.praktikumExist = true;
+      this.showPraktikum();
+      this.openWide = true;
+    },
+
+    async handleStatusOne() {
+      await this.loadSoalTa();
+    },
+
+    async handleStatusTwo(isRealtime) {
+      if (isRealtime) {
+        await this.submitJawaban('/praktikan/jawaban/ta', this.chosenJawaban, (data) => {
+          this.nilaiTA = data.nilaiTa;
+          this.showNilaiTA = true;
+        });
+      }
+
+      await this.loadSoalJurnalAndFitb();
+    },
+
+    async handleStatusThree(isRealtime) {
+      if (isRealtime) {
+        await Promise.all([
+          this.submitJawaban('/praktikan/jawaban/jurnal', this.jawabanJurnal),
+          this.submitJawaban('/praktikan/jawaban/fitb', this.jawabanFitb),
+        ]);
+      }
+
+      await this.loadSoalMandiri();
+    },
+
+    async handleStatusFour(isRealtime) {
+      if (isRealtime) {
+        await this.submitJawaban('/praktikan/jawaban/mandiri', this.jawabanMandiri);
+      }
+
+      await this.loadSoalTk();
+    },
+
+    async handleStatusFive(isRealtime) {
+      if (this.isRunmod) {
+        if (isRealtime) {
+          await this.submitJawaban('/praktikan/jawaban/jurnal', this.jawabanRunmod);
+        }
+      } else if (isRealtime) {
+        await this.submitJawaban('/praktikan/jawaban/tk', this.chosenJawaban, (data) => {
+          this.nilaiTK = data.nilaiTk;
+          this.showNilaiTK = true;
+        });
+      }
+
+      await this.checkExistingLaporan();
+    },
+
+    async handleStatusRunmod() {
+      await this.loadSoalRunmod();
+    },
+
+    handleStatusDefault() {
+      this.current_praktikum.status = 777;
+      this.praktikumExist = false;
+      this.openWide = false;
     },
 
     onTextAnswerChange(arrayName, payload) {
@@ -1121,8 +1334,7 @@ export default {
     
     pickATCnim: function()
     {
-      const globe=this;
-        if(globe.currentUser.kelas.substring(6, 10) == 'INT'){
+        if(this.currentUser.kelas.substring(6, 10) == 'INT'){
           return '1101170002';
         } else return '1101170001';
     },
@@ -1137,421 +1349,115 @@ export default {
       return $arr;
     },
 
-    saveJawabanTP: function() {
+    async saveJawabanTP() {
 
-      const globe = this;
-      globe.$axios.post('/saveJawabanTP', globe.jawabanTP).then(response => {
+      try {
+        const { data } = await this.$axios.post('/praktikan/tp/save-jawaban', this.jawabanTP);
 
-        if(response.data.message === "success") {
+        if(data.message === "success") {
           
-          globe.toast.success("TP ANDA BERHASIL DISIMPAN"
+          this.toast.success("TP ANDA BERHASIL DISIMPAN"
           );
+        } else {
+          this.toast.error(data.message);
         }
-      }); 
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal menyimpan jawaban TP');
+      }
     },
     
-    finishPraktikum: function(){
+    async finishPraktikum(){
 
-      const globe = this;
       if(this.laporanPraktikan.asisten_id === ''){
-        globe.toast.error('Pilih asisten yang mengajar anda terlebih dahulu <br> (dibagian paling atas samping kiri rating)');
+        this.toast.error('Pilih asisten yang mengajar anda terlebih dahulu <br> (dibagian paling atas samping kiri rating)');
         return;
       }
 
       if(this.laporanPraktikan.pesan === ''){
-        globe.toast.error('Masukkan pesan untuk praktikum / asisten terlebih dahulu');
+        this.toast.error('Masukkan pesan untuk praktikum / asisten terlebih dahulu');
         return;
       }
 
       if(this.laporanPraktikan.pesan.length < 20){
-        globe.toast.error('Pesan berisi minimal 20 karakter');
+        this.toast.error('Pesan berisi minimal 20 karakter');
         return;
       }
 
       if(this.laporanPraktikan.rating_asisten === 0){
-        globe.toast.error('Beri rating untuk asisten terlebih dahulu');
+        this.toast.error('Beri rating untuk asisten terlebih dahulu');
         return;
       }
 
       if(this.laporanPraktikan.rating_praktikum === 0){
-        globe.toast.error('Beri rating untuk praktikum terlebih dahulu');
+        this.toast.error('Beri rating untuk praktikum terlebih dahulu');
         return;
       }
 
-      globe.laporanPraktikan.praktikan_id = this.currentUser.id;
-      globe.laporanPraktikan.modul_id = this.current_praktikum.modul_id;
-      globe.$axios.post('/sendLaporan', globe.laporanPraktikan).then(response => {
+      this.laporanPraktikan.praktikan_id = this.currentUser.id;
+      this.laporanPraktikan.modul_id = this.current_praktikum.modul_id;
 
-        if(response.data.message === "success") {
-          globe.current_praktikum.status = 777;
-          globe.toast.success("Praktikum telah selesai :)"
+      try {
+        const { data } = await this.$axios.post('/praktikan/laporan', this.laporanPraktikan);
+
+        if(data.message === "success") {
+          this.current_praktikum.status = 777;
+          this.toast.success("Praktikum telah selesai :)"
           );
         } else {
-          globe.toast.error(response.data.message
+          this.toast.error(data.message
           );
         }
-      });
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal mengirim laporan praktikum');
+      }
     },
 
-    setCurrentPraktikumState: function(current_praktikum, isRealtime){
-      
-      const globe = this;
-      globe.current_praktikum.asisten_id = current_praktikum.asisten_id;
-      globe.current_praktikum.modul_id = current_praktikum.modul_id;
-      globe.current_praktikum.kelas_id = current_praktikum.kelas_id;
-      globe.current_praktikum.status = current_praktikum.status;
+    setCurrentPraktikumState: async function(current_praktikum, isRealtime){
 
-      // Check if the praktikan is in the kelas runnning the praktikum
-      if(globe.current_praktikum.kelas_id === this.currentUser.kelas_id){
+      this.current_praktikum.asisten_id = current_praktikum.asisten_id;
+      this.current_praktikum.modul_id = current_praktikum.modul_id;
+      this.current_praktikum.kelas_id = current_praktikum.kelas_id;
+      this.current_praktikum.status = current_praktikum.status;
 
-        //  Initialization of the praktikum
-        globe.$axios.post('/getModul/'+globe.current_praktikum.modul_id).then(response => {
+      if(this.current_praktikum.kelas_id !== this.currentUser.kelas_id){
+        return;
+      }
 
-          if(response.data.message === "success") {
+      await this.loadCurrentModul();
 
-            if(response.data.modul !== null){
+      switch (this.current_praktikum.status) {
 
-              //There is currently active praktikum
-              globe.current_modul.judul = response.data.modul.judul;
-              globe.current_modul.deskripsi = response.data.modul.deskripsi;
-              globe.current_modul.isi = response.data.modul.isi;
+        case 0:
+          this.handleStatusZero();
+          break;
 
-              // http://quotes.stormconsultancy.co.uk/random.json 
-              // (API for random programming quote)
-              if(globe.current_praktikum.status === 0)
-                globe.$axios.get('http://api.quotable.io/random').then(response => {
-                  globe.programmingQuote = response.data.content;
-                  globe.quoteAuthor = response.data.author;
-                }); 
-            }
+        case 1:
+          await this.handleStatusOne();
+          break;
 
-          } else {
-            globe.toast.error(response.data.message
-            );
-          }
-        });       
+        case 2:
+          await this.handleStatusTwo(isRealtime);
+          break;
 
-        switch (globe.current_praktikum.status) {
+        case 3:
+          await this.handleStatusThree(isRealtime);
+          break;
 
-          case 0:
+        case 4:
+          await this.handleStatusFour(isRealtime);
+          break;
 
-            globe.praktikumExist = true;
-            globe.showPraktikum();
-            globe.openWide = true;
-            break;
+        case 5:
+          await this.handleStatusFive(isRealtime);
+          break;
 
-          case 1:
-            
-            // Start Opening TA and grab all SOAL from it
-            // (get RANDOMIZED soal from soal__tas)
-            globe.$axios.get('/getSoalTA/'+globe.current_praktikum.modul_id+'/'+globe.current_praktikum.kelas_id).then(response => {
+        case 123:
+          await this.handleStatusRunmod();
+          break;
 
-              if(response.data.message === "success") {
-
-                if(response.data.all_soal !== null){
-
-                  globe.soalTA = response.data.all_soal;
-                  globe.soalTA.forEach(soal => {
-                    var all_jawaban = [];
-                    all_jawaban.push(soal.jawaban_benar);
-                    all_jawaban.push(soal.jawaban_salah1);
-                    all_jawaban.push(soal.jawaban_salah2);
-                    all_jawaban.push(soal.jawaban_salah3);
-
-                    //randomizing all the "jawaban" for each soal
-                    all_jawaban = globe.shuffleArr(all_jawaban);
-
-                    globe.chosenJawaban.push({
-                      modul_id: globe.current_praktikum.modul_id,
-                      praktikan_id: globe.currentUser.id,
-                      soal_id: soal.id,
-                      jawaban: '',
-                    });
-                      
-                    globe.jawabanTA.push(all_jawaban);
-                  });
-                }
-
-              } else {
-                globe.toast.error(response.data.message
-                );
-              }
-            }); 
-            break;
-
-          case 2:
-            // Realtime connection make changes to status 2
-            // Meaning we should send jawaban in status 1 (Soal TA)
-            if(isRealtime){
-              
-              globe.$axios.post('/sendJawabanTA', globe.chosenJawaban).then(response => {
-
-                if(response.data.message === "success") {
-                  
-                  globe.nilaiTA = response.data.nilaiTa;
-                  globe.showNilaiTA = true;
-                  
-                } else {
-                  globe.toast.error(response.data.message
-                  );
-                }
-              }); 
-            }
-            
-            // Start opening jurnal section, 
-            // get all soal from: get soal from soal__jurnal, soal__fitb
-            globe.$axios.get('/getSoalJURNAL').then(response => {
-
-              if(response.data.message === "success") {
-
-                if(response.data.all_soal !== null){
-
-                  globe.soalJurnal = response.data.all_soal.filter(function (el) {return el != null;});
-                  for (let index = 0; index < globe.soalJurnal.length; index++) {
-                    const soal = globe.soalJurnal[index];
-                    globe.jawabanJurnal.push({
-                      soal_id: soal.id,
-                      modul_id: soal.modul_id,
-                      praktikan_id: globe.currentUser.id,
-                      jawaban: '',
-                    });
-                  }
-                }
- 
-              } else {
-                globe.toast.error(response.data.message
-                );
-              }
-            }); 
-            globe.$axios.get('/getSoalFITB').then(response => {
-
-              if(response.data.message === "success") {
-
-                if(response.data.all_soal !== null){
-
-                  globe.soalFitb = response.data.all_soal.filter(function (el) {return el != null;});
-                  for (let index = 0; index < globe.soalFitb.length; index++) {
-                    const soal = globe.soalFitb[index];
-                    globe.jawabanFitb.push({
-                      soal_id: soal.id,
-                      modul_id: soal.modul_id,
-                      praktikan_id: globe.currentUser.id,
-                      jawaban: '',
-                    });
-                  }
-                }
-
-              } else {
-                globe.toast.error(response.data.message
-                );
-              }
-            });
-            break;
-
-          case 3:
-            
-            // Realtime connection make changes to status 3
-            // Meaning we should send jawaban in status 2 (Soal Jurnal and Soal FITB)
-            if(isRealtime){
-              
-              globe.$axios.post('/sendJawabanJurnal', globe.jawabanJurnal).then(response => {
-
-                if(response.data.message === "success") {
-                  // Do nothing as all of jawaban successfully saved to the DB
-                  
-                } else {
-                  globe.toast.error(response.data.message
-                  );
-                }
-              }); 
-
-              globe.$axios.post('/sendJawabanFitb', globe.jawabanFitb).then(response => {
-
-                if(response.data.message === "success") {
-                  // Do nothing as all of jawaban successfully saved to the DB
-                  
-                } else {
-                  globe.toast.error(response.data.message
-                  );
-                }
-              }); 
-            }
-
-            // Start opening Mandiri Section and get all SOAL from
-            // get soal from soal__mandiris
-            globe.$axios.get('/getSoalMANDIRI/'+globe.current_praktikum.modul_id+'/'+globe.current_praktikum.kelas_id).then(response => {
-
-              if(response.data.message === "success") {
-
-                if(response.data.all_soal !== null){
-
-                  globe.soalMandiri = response.data.all_soal;
-                  for (let index = 0; index < globe.soalMandiri.length; index++) {
-                    const soal = globe.soalMandiri[index];
-                    globe.jawabanMandiri.push({
-                      soal_id: soal.id,
-                      modul_id: soal.modul_id,
-                      praktikan_id: globe.currentUser.id,
-                      jawaban: '',
-                    });
-                  }
-                }
-
-              } else {
-                globe.toast.error(response.data.message
-                );
-              }
-            }); 
-            break;
-
-          case 4:
-            
-            // Realtime connection make changes to status 4
-            // Meaning we should send jawaban in status 3 (Soal Mandiri)
-            if(isRealtime){
-              
-              globe.$axios.post('/sendJawabanMandiri', globe.jawabanMandiri).then(response => {
-
-                if(response.data.message === "success") {
-                  // Do nothing as all of jawaban successfully saved to the DB
-                  
-                } else {
-                  globe.toast.error(response.data.message
-                  );
-                }
-              }); 
-            }
-
-            // Start Opening TK and grab all SOAL from it
-            // (get RANDOMIZED soal from soal__tks)
-            globe.$axios.get('/getSoalTK/'+globe.current_praktikum.modul_id+'/'+globe.current_praktikum.kelas_id).then(response => {
-
-              if(response.data.message === "success") {
-
-                if(response.data.all_soal !== null){
-
-                  globe.soalTK = response.data.all_soal;
-                  globe.chosenJawaban = [];
-                  globe.soalTK.forEach(soal => {
-                    var all_jawaban = [];
-                    all_jawaban.push(soal.jawaban_benar);
-                    all_jawaban.push(soal.jawaban_salah1);
-                    all_jawaban.push(soal.jawaban_salah2);
-                    all_jawaban.push(soal.jawaban_salah3);
-
-                    //randomizing all the "jawaban" for each soal
-                    all_jawaban = globe.shuffleArr(all_jawaban);
-
-                    globe.chosenJawaban.push({
-                      modul_id: globe.current_praktikum.modul_id,
-                      praktikan_id: globe.currentUser.id,
-                      soal_id: soal.id,
-                      jawaban: '',
-                    });
-                      
-                    globe.jawabanTK.push(all_jawaban);
-                  });
-                }
-
-              } else {
-                globe.toast.error(response.data.message
-                );
-              }
-            }); 
-            break;
-
-          case 5: 
-
-            if(globe.isRunmod) {
-              
-              // Realtime connection make changes to status 5
-              // Meaning we should send jawaban in status 4 (Soal Jurnal (RUNMOD))
-              if(isRealtime){
-                
-                globe.$axios.post('/sendJawabanJurnal', globe.jawabanRunmod).then(response => {
-
-                  if(response.data.message === "success") {
-                    // Do nothing as all of jawaban successfully saved to the DB
-                    
-                  } else {
-                    globe.toast.error(response.data.message
-                    );
-                  }
-                }); 
-              }
-            } else {
-              
-              // Realtime connection make changes to status 5
-              // Meaning we should send jawaban in status 4 (Soal TK)
-              if(isRealtime){
-                
-                globe.$axios.post('/sendJawabanTK', globe.chosenJawaban).then(response => {
-
-                  if(response.data.message === "success") {
-                  
-                    globe.nilaiTK = response.data.nilaiTk;
-                    globe.showNilaiTK = true;
-                    
-                  } else {
-                    globe.toast.error(response.data.message
-                    );
-                  }
-                }); 
-              }
-            }
-
-            // Check if laporan Praktikan already exists
-            globe.$axios.post('/getLaporan/'+globe.currentUser.id+'/'+globe.current_praktikum.modul_id).then(response => {
-
-              if(response.data.message === "done") {
-                
-                // Change status to 777 if the praktikan already fill in the laporan form
-                globe.current_praktikum.status = 777;
-                globe.praktikumExist = false;
-                globe.openWide = false;
-              }
-
-              //else just run it as usual
-            }); 
-            break;
-
-          case 123:
-
-            // Start opening Runmod Section and get all SOAL from
-            // get soal from soal_jurnals
-            globe.$axios.get('/getSoalRUNMOD').then(response => {
-
-              if(response.data.message === "success") {
-
-                if(response.data.all_soal !== null){
-
-                  globe.soalRunmod = response.data.all_soal;
-                  for (let index = 0; index < globe.soalRunmod.length; index++) {
-                    const soal = globe.soalRunmod[index];
-                    globe.jawabanRunmod.push({
-                      soal_id: soal.id,
-                      modul_id: soal.modul_id,
-                      praktikan_id: globe.currentUser.id,
-                      jawaban: '',
-                    });
-                  }
-                }
-
-              } else {
-                globe.toast.error(response.data.message
-                );
-              }
-            }); 
-            break;
-
-          default:
-
-            // Ignore other case and cast the status to 777
-            globe.current_praktikum.status = 777;
-            globe.praktikumExist = false;
-            globe.openWide = false;
-            break;
-        }
+        default:
+          this.handleStatusDefault();
+          break;
       }
     },
 
@@ -1702,40 +1608,35 @@ export default {
 
     showJawabanJurnal: function($modul_id, $modul_isUnlocked){
 
-      const globe = this;
-      $modul_isUnlocked ? globe.jawabanChanged = true : globe.jawabanChanged = false;
+      this.jawabanChanged = Boolean($modul_isUnlocked);
 
-      setTimeout(
-        function() {
-          if($modul_isUnlocked){
+      setTimeout(() => {
+        if($modul_isUnlocked){
 
-            globe.jawabanShown = true;
-            globe.currentJawabanJurnal = $modul_id;
-            globe.$axios.post('/praktikanGetJurnal/'+globe.currentUser.id+"/"+$modul_id).then(response => {
-              
-              if(response.data.message === "success"){
-      
-                globe.allJawabanJurnal = response.data.allJawabanJurnal;
-              } else {
-                globe.toast.error(response.data.message
-                );
-              }
-            });  
-          };
-        }, 250);
+          this.jawabanShown = true;
+          this.currentJawabanJurnal = $modul_id;
+          this.$axios.post(`/praktikan/jawaban/jurnal/${this.currentUser.id}/${$modul_id}`).then(response => {
+            
+            if(response.data.message === "success"){
+    
+              this.allJawabanJurnal = response.data.allJawabanJurnal;
+            } else {
+              this.toast.error(response.data.message
+              );
+            }
+          });  
+        }
+      }, 250);
 
-      setTimeout(
-        function() {
-          if (globe.jawabanChanged === true) 
-            globe.jawabanChanged = false;
-        }, 1000);
+      setTimeout(() => {
+        if (this.jawabanChanged === true)
+          this.jawabanChanged = false;
+      }, 1000);
     },
 
     travel: function($whereTo){
-      const globe = this;
-      setTimeout(
-        function() {
-          globe.$inertia.get('/praktikan/' + $whereTo, {}, {
+      setTimeout(() => {
+          this.$inertia.get('/praktikan/' + $whereTo, {}, {
             replace: true,
           });
         }, 500); 
@@ -1743,47 +1644,46 @@ export default {
 
     signOut: function() {
 
-      const globe = this;
       this.pageActive = false;
       this.isMenuShown = false;
-      setTimeout(
-        function() {
-          globe.$inertia.get('/logoutPraktikan', {}, {
+      setTimeout(() => {
+          this.$inertia.get('/logoutPraktikan', {}, {
             replace: true,
           });
         }, 1010); 
     },
 
-    sendMessage: function(){
+    async sendMessage(){
 
-      const globe = this;
-      this.$axios.post('/praktikan/pesan', this.formMessage).then(response => {
-        
-        if(response.data.message === "success") {
+      try {
+        const { data } = await this.$axios.post('/praktikan/pesan', this.formMessage);
 
-          globe.toast.success("Pesan berhasil terkirim"
+        if(data.message === "success") {
+
+          this.toast.success("Pesan berhasil terkirim"
           );
-          globe.messageOpened = false;
+          this.messageOpened = false;
 
         } else {
 
-          globe.toast.error(response.data.message
+          this.toast.error(data.message
           );
         }
-      }).catch(function (error) {
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          if(error.response.data.errors != null){
-            if(error.response.data.errors.kode != null)
-              globe.toast.error(error.response.data.errors.kode[0]
-              );
-            if(error.response.data.errors.pesan != null)
-              globe.toast.error(error.response.data.errors.pesan[0]
-              );
-          } 
+      } catch (error) {
+        const errors = error?.response?.data?.errors;
+        if (errors) {
+          if (errors.kode?.[0]) {
+            this.toast.error(errors.kode[0]
+            );
+          }
+          if (errors.pesan?.[0]) {
+            this.toast.error(errors.pesan[0]
+            );
+          }
+        } else {
+          this.handleRequestError(error, 'Gagal mengirim pesan');
         }
-      });
+      }
     },
 
     formPassword: function($bool){
@@ -1794,35 +1694,34 @@ export default {
       }
     },
 
-    resetPassword: function(){
-      const globe = this;
-        this.$axios.post('/resetPass', this.resetPass).then(response => {
+    async resetPassword(){
+      try {
+        const { data } = await this.$axios.post('/praktikan/reset-password', this.resetPass);
 
-        if(response.data.message === "success") {
-          globe.toast.success("Password berhasil diperbaharui"   
+        if(data.message === "success") {
+          this.toast.success("Password berhasil diperbaharui"   
           );
       
 
           this.signOut();
 
         } else {
-          globe.toast.error(response.data.message
+          this.toast.error(data.message
           );
         }
-      }).catch(function (error) {
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          if(error.response.data.errors != null){
-            if(error.response.data.errors.password != null)
-              globe.toast.error(error.response.data.errors.password[0]
-              );
-            if(error.response.data.errors.repeatpass != null)
-              globe.toast.error(error.response.data.errors.repeatpass[0]
-              );
-          } 
+      } catch (error) {
+        const errors = error?.response?.data?.errors;
+        if (errors) {
+          if(errors.password?.[0])
+            this.toast.error(errors.password[0]
+            );
+          if(errors.repeatpass?.[0])
+            this.toast.error(errors.repeatpass[0]
+            );
+        } else {
+          this.handleRequestError(error, 'Gagal memperbarui password');
         }
-      });
+      }
     }
   }
 }
