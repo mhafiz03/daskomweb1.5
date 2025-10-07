@@ -238,6 +238,13 @@ Route::middleware('loggedIn:praktikan')->prefix('praktikan')->name('praktikan.')
 
     // Comments buat TOT
     Route::post('/soal-comment/{praktikan_id}/{tipe_soal}/{soal_id}', [SoalCommentController::class, 'store'])->name('soal.comment.store');
+
+    // Autosave jawaban
+    Route::prefix('autosave')->name('autosave.')->group(function () {
+        Route::post('/', [\App\Http\Controllers\JawabanSnapshotController::class, 'store'])->name('store');
+        Route::get('/', [\App\Http\Controllers\JawabanSnapshotController::class, 'index'])->name('index');
+        Route::delete('/clear', [\App\Http\Controllers\JawabanSnapshotController::class, 'clearPraktikanAnswers'])->name('clear');
+    });
 });
 
 // Shared Routes (Both Asisten and Praktikan)

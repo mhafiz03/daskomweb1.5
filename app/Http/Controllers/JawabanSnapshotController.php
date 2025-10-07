@@ -21,13 +21,11 @@ class JawabanSnapshotController extends Controller
         return response()->json($data);
     }
 
-    // POST /api/jawaban-snapshot/store
-    // body: { praktikan_id, soal_id, modul_id, tipe_soal, jawaban }
+    // POST /praktikan/autosave
     public function store(Request $req)
     {
         $validated = $req->validate([
             'praktikan_id' => ['required', 'integer', 'exists:praktikans,id'],
-            'soal_id' => ['required', 'integer'],
             'modul_id' => ['required', 'integer', 'exists:moduls,id'],
             'tipe_soal' => ['required', Rule::enum(TipeSoal::class)],
             'jawaban' => ['required', 'array'],
@@ -36,7 +34,6 @@ class JawabanSnapshotController extends Controller
         $snapshot = JawabanSnapshot::updateOrCreate(
             [
                 'praktikan_id' => $validated['praktikan_id'],
-                'soal_id' => $validated['soal_id'],
                 'modul_id' => $validated['modul_id'],
                 'tipe_soal' => $validated['tipe_soal'],
             ],
@@ -49,13 +46,12 @@ class JawabanSnapshotController extends Controller
     }
 
     // POST /api/jawaban-snapshot/bulk-upsert
-    // body: { items: [{praktikan_id, soal_id, modul_id, tipe_soal, jawaban}, ...] }
+    // body: { items: [{praktikan_id, modul_id, tipe_soal, jawaban}, ...] }
     public function bulkUpsert(Request $req)
     {
         $validated = $req->validate([
             'items' => ['required', 'array', 'min:1'],
             'items.*.praktikan_id' => ['required', 'integer', 'exists:praktikans,id'],
-            'items.*.soal_id' => ['required', 'integer'],
             'items.*.modul_id' => ['required', 'integer', 'exists:moduls,id'],
             'items.*.tipe_soal' => ['required', Rule::enum(TipeSoal::class)],
             'items.*.jawaban' => ['required', 'array'],
@@ -65,7 +61,6 @@ class JawabanSnapshotController extends Controller
         foreach ($validated['items'] as $item) {
             $rows[] = [
                 'praktikan_id' => $item['praktikan_id'],
-                'soal_id' => $item['soal_id'],
                 'modul_id' => $item['modul_id'],
                 'tipe_soal' => $item['tipe_soal'],
                 'jawaban' => json_encode($item['jawaban']),
@@ -75,7 +70,7 @@ class JawabanSnapshotController extends Controller
         // Efficient conflict handling
         JawabanSnapshot::upsert(
             $rows,
-            uniqueBy: ['praktikan_id', 'soal_id', 'modul_id', 'tipe_soal'],
+            uniqueBy: ['praktikan_id', 'modul_id', 'tipe_soal'],
             update: ['jawaban', 'updated_at']
         );
 
@@ -88,5 +83,30 @@ class JawabanSnapshotController extends Controller
         $jawabanSnapshot->delete();
 
         return response()->json(['success' => true]);
+    }
+
+    // DELETE /praktikan/autosave/clear
+    // Clears all autosaved answers for a praktikan and modul
+    public function clearPraktikanAnswers(Request $request)
+    {
+        $validated = $request->validate([
+            'praktikan_id' => ['required', 'integer', 'exists:praktikans,id'],
+            'modul_id' => ['required', 'integer', 'exists:moduls,id'],
+            'tipe_soal' => ['nullable', Rule::enum(TipeSoal::class)],
+        ]);
+
+        $query = JawabanSnapshot::where('praktikan_id', $validated['praktikan_id'])
+            ->where('modul_id', $validated['modul_id']);
+
+        if (isset($validated['tipe_soal'])) {
+            $query->where('tipe_soal', $validated['tipe_soal']);
+        }
+
+        $deleted = $query->delete();
+
+        return response()->json([
+            'success' => true,
+            'deleted_count' => $deleted,
+        ]);
     }
 }

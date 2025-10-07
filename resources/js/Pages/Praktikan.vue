@@ -907,6 +907,156 @@ export default {
       }
     },
 
+    // Autosave functionality
+    async saveAutosave(tipesoal) {
+      if (!this.current_praktikum.modul_id) {
+        return;
+      }
+
+      try {
+        // Convert chosenJawaban array to object format {soal_id: answer}
+        const jawabanObject = {};
+        this.chosenJawaban.forEach(item => {
+          if (item.soal_id && item.jawaban) {
+            jawabanObject[item.soal_id] = item.jawaban;
+          }
+        });
+
+        // Only save if there are answers
+        if (Object.keys(jawabanObject).length === 0) {
+          return;
+        }
+
+        await this.$axios.post('/praktikan/autosave', {
+          praktikan_id: this.currentUser.id,
+          modul_id: this.current_praktikum.modul_id,
+          tipe_soal: tipesoal,
+          jawaban: jawabanObject
+        });
+      } catch (error) {
+        // Silent fail for autosave to not interrupt user experience
+        console.warn('Autosave failed:', error);
+      }
+    },
+
+    async loadAutosave(tipesoal) {
+      if (!this.current_praktikum.modul_id) {
+        return {};
+      }
+
+      try {
+        const { data } = await this.$axios.get('/praktikan/autosave', {
+          params: {
+            praktikan_id: this.currentUser.id,
+            modul_id: this.current_praktikum.modul_id,
+            tipe_soal: tipesoal
+          }
+        });
+
+        // Find autosave entry for this tipe_soal
+        const autosaveEntry = data.find(entry => entry.tipe_soal === tipesoal);
+        return autosaveEntry ? autosaveEntry.jawaban : {};
+      } catch (error) {
+        console.warn('Failed to load autosave:', error);
+        return {};
+      }
+    },
+
+    async clearAutosave(tipesoal = null) {
+      if (!this.current_praktikum.modul_id) {
+        return;
+      }
+
+      try {
+        const payload = {
+          praktikan_id: this.currentUser.id,
+          modul_id: this.current_praktikum.modul_id
+        };
+
+        if (tipesoal) {
+          payload.tipe_soal = tipesoal;
+        }
+
+        await this.$axios.delete('/praktikan/autosave/clear', { data: payload });
+      } catch (error) {
+        console.warn('Failed to clear autosave:', error);
+      }
+    },
+
+    // Restore answers from autosave
+    restoreAnswersFromAutosave(savedAnswers, soalType) {
+      if (!savedAnswers || Object.keys(savedAnswers).length === 0) {
+        return;
+      }
+
+      // Update chosenJawaban array with saved answers
+      this.chosenJawaban.forEach((item, index) => {
+        if (item.soal_id && savedAnswers[item.soal_id]) {
+          item.jawaban = savedAnswers[item.soal_id];
+
+          // Update UI styling
+          const jawabanArray = soalType === "TA" ? this.jawabanTA : this.jawabanTK;
+          if (jawabanArray[index]) {
+            const answerIndex = jawabanArray[index].indexOf(item.jawaban);
+            if (answerIndex !== -1) {
+              const selector = `.jawaban-${index}${answerIndex}`;
+              setTimeout(() => {
+                $(selector)
+                  .removeClass('bg-green-200 hover:bg-green-300')
+                  .addClass('bg-green-500 text-white');
+              }, 100);
+            }
+          }
+        }
+      });
+    },
+
+    // Autosave for text-based answers (jurnal, fitb, mandiri)
+    async saveTextAutosave(tipesoal, answersArray) {
+      if (!this.current_praktikum.modul_id || !Array.isArray(answersArray)) {
+        return;
+      }
+
+      try {
+        // Convert answers array to object format {soal_id: answer}
+        const jawabanObject = {};
+        answersArray.forEach(item => {
+          if (item.soal_id && item.jawaban) {
+            jawabanObject[item.soal_id] = item.jawaban;
+          }
+        });
+
+        // Only save if there are answers
+        if (Object.keys(jawabanObject).length === 0) {
+          return;
+        }
+
+        await this.$axios.post('/praktikan/autosave', {
+          praktikan_id: this.currentUser.id,
+          modul_id: this.current_praktikum.modul_id,
+          tipe_soal: tipesoal,
+          jawaban: jawabanObject
+        });
+      } catch (error) {
+        // Silent fail for autosave to not interrupt user experience
+        console.warn('Text autosave failed:', error);
+      }
+    },
+
+    // Restore text answers from autosave
+    restoreTextAnswersFromAutosave(savedAnswers, answersArray) {
+      if (!savedAnswers || Object.keys(savedAnswers).length === 0 || !Array.isArray(answersArray)) {
+        return;
+      }
+
+      // Update answers array with saved answers
+      answersArray.forEach(item => {
+        if (item.soal_id && savedAnswers[item.soal_id]) {
+          item.jawaban = savedAnswers[item.soal_id];
+        }
+      });
+    },
+
     async loadSoalTa() {
       this.soalTA = [];
       this.jawabanTA = [];
@@ -947,7 +1097,12 @@ export default {
 
             this.jawabanTA.push(shuffledAnswers);
           });
-        }} catch (error) {
+
+          // Load autosaved answers
+          const savedAnswers = await this.loadAutosave('ta');
+          this.restoreAnswersFromAutosave(savedAnswers, 'TA');
+        }
+      } catch (error) {
           this.handleRequestError(error, 'Gagal memuat soal TA');
         }
       },
@@ -975,6 +1130,12 @@ export default {
             praktikan_id: this.currentUser.id,
             jawaban: '',
           }));
+
+          // Load autosaved answers
+          if (list.length > 0) {
+            const savedAnswers = await this.loadAutosave('jurnal');
+            this.restoreTextAnswersFromAutosave(savedAnswers, this.jawabanJurnal);
+          }
         } catch (error) {
           this.handleRequestError(error, 'Gagal memuat soal Jurnal');
         }
@@ -999,6 +1160,12 @@ export default {
             praktikan_id: this.currentUser.id,
             jawaban: '',
           }));
+
+          // Load autosaved answers
+          if (list.length > 0) {
+            const savedAnswers = await this.loadAutosave('fitb');
+            this.restoreTextAnswersFromAutosave(savedAnswers, this.jawabanFitb);
+          }
         } catch (error) {
           this.handleRequestError(error, 'Gagal memuat soal FITB');
         }
@@ -1023,6 +1190,12 @@ export default {
             praktikan_id: this.currentUser.id,
             jawaban: '',
           }));
+
+          // Load autosaved answers
+          if (list.length > 0) {
+            const savedAnswers = await this.loadAutosave('mandiri');
+            this.restoreTextAnswersFromAutosave(savedAnswers, this.jawabanMandiri);
+          }
         } catch (error) {
           this.handleRequestError(error, 'Gagal memuat soal Mandiri');
         }
@@ -1070,10 +1243,15 @@ export default {
 
               this.jawabanTK.push(answers);
             });
-          }} catch (error) {
-            this.handleRequestError(error, 'Gagal memuat soal TK');
+
+            // Load autosaved answers
+            const savedAnswers = await this.loadAutosave('tk');
+            this.restoreAnswersFromAutosave(savedAnswers, 'TK');
           }
-        },
+        } catch (error) {
+          this.handleRequestError(error, 'Gagal memuat soal TK');
+        }
+      },
 
     async loadSoalRunmod() {
           this.soalRunmod = [];
@@ -1128,6 +1306,8 @@ export default {
             await this.submitJawaban('/praktikan/jawaban/ta', this.chosenJawaban, (data) => {
               this.nilaiTA = data.nilaiTa;
               this.showNilaiTA = true;
+              // Clear TA autosave after successful submission
+              this.clearAutosave('ta');
             });
           }
 
@@ -1137,8 +1317,12 @@ export default {
     async startMandiri(isRealtime) {
           if (isRealtime) {
             await Promise.all([
-              this.submitJawaban('/praktikan/jawaban/jurnal', this.jawabanJurnal),
-              this.submitJawaban('/praktikan/jawaban/fitb', this.jawabanFitb),
+              this.submitJawaban('/praktikan/jawaban/jurnal', this.jawabanJurnal, () => {
+                this.clearAutosave('jurnal');
+              }),
+              this.submitJawaban('/praktikan/jawaban/fitb', this.jawabanFitb, () => {
+                this.clearAutosave('fitb');
+              }),
             ]);
           }
 
@@ -1147,7 +1331,9 @@ export default {
 
     async startTK(isRealtime) {
           if (isRealtime) {
-            await this.submitJawaban('/praktikan/jawaban/mandiri', this.jawabanMandiri);
+            await this.submitJawaban('/praktikan/jawaban/mandiri', this.jawabanMandiri, () => {
+              this.clearAutosave('mandiri');
+            });
           }
 
           await this.loadSoalTk();
@@ -1162,6 +1348,8 @@ export default {
             await this.submitJawaban('/praktikan/jawaban/tk', this.chosenJawaban, (data) => {
               this.nilaiTK = data.nilaiTk;
               this.showNilaiTK = true;
+              // Clear TK autosave after successful submission
+              this.clearAutosave('tk');
             });
           }
 
@@ -1189,6 +1377,17 @@ export default {
           const entry = target[answerIndex];
           if (entry && typeof entry === 'object') {
             entry.jawaban = value;
+            
+            // Trigger autosave for text answers
+            const tipesoalMap = {
+              'jawabanJurnal': 'jurnal',
+              'jawabanFitb': 'fitb', 
+              'jawabanMandiri': 'mandiri'
+            };
+            
+            if (tipesoalMap[arrayName]) {
+              this.saveTextAutosave(tipesoalMap[arrayName], target);
+            }
           }
         },
 
@@ -1271,6 +1470,10 @@ export default {
 
             if (data.message === "success") {
               this.current_praktikum.status = 777;
+              
+              // Clear all autosaved answers when praktikum ends
+              await this.clearAutosave();
+              
               this.toast.success("Praktikum telah selesai :)"
               );
             } else {
@@ -1356,6 +1559,9 @@ export default {
 
             // Update the answer in the chosen jawaban array
             this.chosenJawaban[chosenJawabanIndex].jawaban = $jawaban;
+
+            // Trigger autosave after answer change
+            this.saveAutosave($soalType.toLowerCase());
           }
 
           // Update styling for the newly selected answer

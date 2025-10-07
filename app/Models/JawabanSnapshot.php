@@ -11,7 +11,6 @@ class JawabanSnapshot extends Model
     protected $fillable = [
         'praktikan_id',
         'modul_id',
-        'soal_id',
         'tipe_soal',
         'jawaban',
     ];
