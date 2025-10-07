@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asisten;
+use App\Models\Configuration;
+use App\Models\Feedback;
+use App\Models\JenisPolling;
+use App\Models\Kelas;
+use App\Models\LaporanPraktikan;
+use App\Models\Modul;
+use App\Models\Nilai;
+use App\Models\Polling;
+use App\Models\Praktikan;
+use App\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use App\Models\Role;
-use App\Models\Kelas;
-use App\Models\Feedback;
-use App\Models\Modul;
-use App\Models\Asisten;
-use App\Models\Configuration;
-use App\Models\LaporanPraktikan;
-use App\Models\Nilai;
-use App\Models\Praktikan;
-use App\Models\Polling;
-use App\Models\JenisPolling;
 
 class PageController extends Controller
 {
@@ -59,12 +59,12 @@ class PageController extends Controller
      */
     public function login()
     {
-        $all_kelas = Kelas::where('id', '!=', 12)->orderBy('kelas', 'asc')->get();
+        $all_kelas = Kelas::whereRaw("kelas NOT LIKE 'TOT%'")->orderBy('kelas', 'asc')->get();
         $roles = Role::all();
-        
+
         return Inertia::render('Login', array_merge($this->getCommonParams(), [
             'all_kelas' => $all_kelas,
-            'roles' => $roles
+            'roles' => $roles,
         ]));
     }
 
@@ -79,7 +79,7 @@ class PageController extends Controller
             ->leftJoin('praktikans', 'feedback.praktikan_id', '=', 'praktikans.id')
             ->orderBy('feedback.created_at', 'desc')->get();
         $userRole = Role::where('id', $user->role_id)->first();
-        
+
         return Inertia::render('Asisten', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
             'messages' => $messages,
@@ -103,7 +103,7 @@ class PageController extends Controller
         $allJurnal = DB::table('soal_jurnals')
             ->join('moduls', 'soal_jurnals.modul_id', '=', 'moduls.id')
             ->select('soal_jurnals.*', 'moduls.judul')->get();
-        
+
         return Inertia::render('Praktikan', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
             'allAsisten' => $allAsisten,
@@ -165,11 +165,11 @@ class PageController extends Controller
         $userRole = Role::where('id', $user->role_id)->first();
         $allKelas = Kelas::all();
         $kelasPrivilege = [1, 2, 4, 5];
-        
-        if (!in_array($userRole->id, $kelasPrivilege, true)) {
+
+        if (! in_array($userRole->id, $kelasPrivilege, true)) {
             return redirect('/');
         }
-        
+
         return Inertia::render('Kelas', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
             'userRole' => $userRole->role,
@@ -186,11 +186,11 @@ class PageController extends Controller
         $userRole = Role::where('id', $user->role_id)->first();
         $allModul = Modul::orderBy('isEnglish', 'asc')->get();
         $modulPrivilege = [1, 2, 4, 15, 7];
-        
-        if (!in_array($userRole->id, $modulPrivilege, true)) {
+
+        if (! in_array($userRole->id, $modulPrivilege, true)) {
             return redirect('/');
         }
-        
+
         return Inertia::render('Modul', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
             'userRole' => $userRole->role,
@@ -212,11 +212,11 @@ class PageController extends Controller
         $allKelas = Kelas::all();
         $allAsisten = Asisten::orderBy('kode', 'asc')->get();
         $plottingPrivilege = [1, 2, 4, 5];
-        
-        if (!in_array($userRole->id, $plottingPrivilege, true)) {
+
+        if (! in_array($userRole->id, $plottingPrivilege, true)) {
             return redirect('/');
         }
-        
+
         return Inertia::render('Plotting', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
             'userRole' => $userRole->role,
@@ -236,7 +236,7 @@ class PageController extends Controller
         $allKelas = Kelas::all();
         $allModul = Modul::orderBy('isEnglish', 'asc')->get();
         $isRunmod = Configuration::find(1)->runmod_activation;
-        
+
         return Inertia::render('Praktikum', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
             'userRole' => $userRole->role,
@@ -255,11 +255,11 @@ class PageController extends Controller
         $userRole = Role::where('id', $user->role_id)->first();
         $currentConfig = Configuration::find(1);
         $konfigurasiPrivilege = [1, 2, 4, 18, 7];
-        
-        if (!in_array($userRole->id, $konfigurasiPrivilege, true)) {
+
+        if (! in_array($userRole->id, $konfigurasiPrivilege, true)) {
             return redirect('/');
         }
-        
+
         return Inertia::render('Konfigurasi', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
             'userRole' => $userRole->role,
@@ -279,11 +279,11 @@ class PageController extends Controller
             ->orderBy('id', 'asc')
             ->get();
         $jawabanPrivilege = [1, 2, 7, 11, 15];
-        
-        if (!in_array($userRole->id, $jawabanPrivilege, true)) {
+
+        if (! in_array($userRole->id, $jawabanPrivilege, true)) {
             return redirect('/');
         }
-        
+
         return Inertia::render('Jawaban', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
             'userRole' => $userRole->role,
@@ -299,7 +299,7 @@ class PageController extends Controller
         $user = Auth::guard('asisten')->user();
         $userRole = Role::where('id', $user->role_id)->first();
         $allAsisten = Asisten::orderBy('kode', 'asc')->get();
-        
+
         foreach ($allAsisten as $asisten => $asisten_val) {
             $allLaporan = LaporanPraktikan::where('laporan_praktikans.asisten_id', $asisten_val->id)
                 ->join('praktikans', 'laporan_praktikans.praktikan_id', '=', 'praktikans.id')
@@ -322,12 +322,12 @@ class PageController extends Controller
 
             $asisten_val->nilaiUnexists = $nilaiUnexists;
         }
-        
+
         $pelanggaranPrivilege = [1, 2, 4, 5, 6, 18];
-        if (!in_array($userRole->id, $pelanggaranPrivilege, true)) {
+        if (! in_array($userRole->id, $pelanggaranPrivilege, true)) {
             return redirect('/');
         }
-        
+
         return Inertia::render('Pelanggaran', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
             'userRole' => $userRole->role,
@@ -353,17 +353,17 @@ class PageController extends Controller
                     ->where('asisten_id', $asisten->id)
                     ->count();
 
-                $allPolling[] = (object)[
+                $allPolling[] = (object) [
                     'jenis' => $jenis->judul,
-                    'jumlah_poll' => $jumlahPoll
+                    'jumlah_poll' => $jumlahPoll,
                 ];
             }
 
-            $pollingResults[] = (object)[
+            $pollingResults[] = (object) [
                 'id' => $asisten->id,
                 'kode' => $asisten->kode,
                 'nama' => $asisten->nama,
-                'polling' => $allPolling
+                'polling' => $allPolling,
             ];
         }
 
@@ -392,12 +392,12 @@ class PageController extends Controller
                 $value->isActive = $value->isActive == '1';
             }
         }
-        
+
         $tpPrivilege = [1, 2, 15, 11, 7];
-        if (!in_array($userRole->id, $tpPrivilege, true)) {
+        if (! in_array($userRole->id, $tpPrivilege, true)) {
             return redirect('/');
         }
-        
+
         return Inertia::render('TugasPendahuluan', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
             'userRole' => $userRole->role,
@@ -419,7 +419,7 @@ class PageController extends Controller
             ->select('laporan_praktikans.*', 'praktikans.nama', 'praktikans.nim', 'praktikans.kelas_id', 'kelas', 'kelas.shift', 'kelas.hari')
             ->latest()
             ->get();
-        
+
         foreach ($allLaporan as $laporan => $value) {
             if (Nilai::where('praktikan_id', $value->praktikan_id)
                 ->where('modul_id', $value->modul_id)
@@ -450,7 +450,7 @@ class PageController extends Controller
         $allHistory = DB::table('laporan_pjs')
             ->join('moduls', 'laporan_pjs.modul_id', '=', 'moduls.id')
             ->select('laporan_pjs.*', 'moduls.judul')->orderBy('created_at', 'desc')->get();
-        
+
         foreach ($allHistory as $history => $h) {
             $asistenExist = false;
             foreach (explode('-', $h->allasisten_id) as $asisten => $a) {
@@ -513,7 +513,7 @@ class PageController extends Controller
             ->where('kelas.id', '!=', 12)
             ->get();
         $allKelas = Kelas::where('kelas.id', '!=', 12)->orderBy('kelas', 'asc')->get();
-        
+
         foreach ($allPraktikan as $praktikan => $prak_value) {
             $allLaporan = Nilai::where('nilais.praktikan_id', $prak_value->id)
                 ->join('praktikans', 'nilais.praktikan_id', '=', 'praktikans.id')
@@ -550,7 +550,7 @@ class PageController extends Controller
                 ->join('kelas', 'praktikans.kelas_id', '=', 'kelas.id')
                 ->select('nilais.rating')
                 ->sum('diskon');
-            
+
             $prak_value->tp = $allTP;
             $prak_value->ta = $allTA;
             $prak_value->jurnal = $allJurnal;
@@ -593,12 +593,12 @@ class PageController extends Controller
             }
             array_push($allNilai, $tempPraktikan);
         }
-        
+
         $RatingPrivilege = [1, 2, 4, 5, 8, 16];
-        if (!in_array($userRole->id, $RatingPrivilege, true)) {
+        if (! in_array($userRole->id, $RatingPrivilege, true)) {
             return redirect('/');
         }
-        
+
         return Inertia::render('Rating', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
             'userRole' => $userRole->role,
@@ -621,10 +621,10 @@ class PageController extends Controller
             ->select('laporan_pjs.*', 'moduls.judul')->orderBy('created_at', 'desc')->get();
 
         $allLaporanPrivilege = [1, 2, 4, 5, 6];
-        if (!in_array($userRole->id, $allLaporanPrivilege, true)) {
+        if (! in_array($userRole->id, $allLaporanPrivilege, true)) {
             return redirect('/');
         }
-        
+
         return Inertia::render('Laporan', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
             'userRole' => $userRole->role,
@@ -640,7 +640,7 @@ class PageController extends Controller
     {
         $user = Auth::guard('praktikan')->user();
         $allAsisten = Asisten::orderBy('kode', 'asc')->get();
-        
+
         return Inertia::render('ContactAsisten', [
             'allAsisten' => $allAsisten,
             'user' => $user,

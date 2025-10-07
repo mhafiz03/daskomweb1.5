@@ -21,6 +21,6 @@ class SoalFitb extends Model
 
     public function comments()
     {
-        return $this->morphMany(SoalComment::class, 'soal', 'soal_type', 'soal_id');
+        return $this->morphMany(SoalComment::class, 'soal', 'tipe_soal', 'soal_id');
     }
 }

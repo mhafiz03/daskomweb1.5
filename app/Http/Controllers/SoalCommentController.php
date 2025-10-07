@@ -2,34 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TipeSoal;
 use App\Models\SoalComment;
 use Illuminate\Http\Request;
 
-
 class SoalCommentController extends Controller
 {
-    protected $soalModelMap = [
-        'tp' => \App\Models\SoalTp::class,
-        'ta' => \App\Models\SoalTa::class,
-        'tk' => \App\Models\SoalTk::class,
-        'jurnal' => \App\Models\SoalJurnal::class,
-        'mandiri' => \App\Models\SoalMandiri::class,
-        'fitb' => \App\Models\SoalFitb::class,
-    ];
-
-    public function showByModul($soal_type, $modul_id)
+    public function showByModul($tipe_soal, $modul_id)
     {
-        if (!isset($this->soalModelMap[$soal_type])) {
+        // Validate tipe_soal using the enum
+        $tipeSoalEnum = TipeSoal::tryFrom($tipe_soal);
+        if (! $tipeSoalEnum) {
             return response()->json(['error' => 'Invalid soal type'], 422);
         }
 
-        $soalModel = $this->soalModelMap[$soal_type];
+        $soalModel = TipeSoal::getModelClass($tipeSoalEnum);
 
         // Get all soal IDs for this modul_id
         $soalIds = $soalModel::where('modul_id', $modul_id)->pluck('id');
 
         // Get all comments for these soal IDs and this type
-        $comments = SoalComment::where('soal_type', $soal_type)
+        $comments = SoalComment::where('tipe_soal', $tipe_soal)
             ->whereIn('soal_id', $soalIds)
             ->with('praktikan') // optional: eager load praktikan
             ->get();
@@ -37,21 +30,23 @@ class SoalCommentController extends Controller
         return response()->json(['success' => true, 'data' => $comments]);
     }
 
-    public function store(Request $request, $praktikan_id, $soal_type, $soal_id)
+    public function store(Request $request, $praktikan_id, $tipe_soal, $soal_id)
     {
         $validated = $request->validate([
             'comment' => 'required|string|max:2000',
         ]);
 
-        if (!isset($this->soalModelMap[$soal_type])) {
+        // Validate tipe_soal using the enum
+        $tipeSoalEnum = TipeSoal::tryFrom($tipe_soal);
+        if (! $tipeSoalEnum) {
             return response()->json(['error' => 'Invalid soal type'], 422);
         }
 
         $comment = SoalComment::create([
-            'soal_id'      => $soal_id,
-            'soal_type'    => $soal_type,
+            'soal_id' => $soal_id,
+            'tipe_soal' => $tipe_soal,
             'praktikan_id' => $praktikan_id,
-            'comment'      => $validated['comment'],
+            'comment' => $validated['comment'],
         ]);
 
         return response()->json(['success' => true, 'data' => $comment]);

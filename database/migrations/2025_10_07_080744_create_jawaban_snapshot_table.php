@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('soal_comments', function (Blueprint $table) {
+        Schema::create('jawaban_snapshot', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('soal_id');
-            $table->string('tipe_soal'); // e.g. 'mandiri', 'tp', 'tk', 'ta', 'jurnal', 'fitb'
             $table->unsignedBigInteger('praktikan_id');
-            $table->string('comment', 2000);
+            $table->unsignedBigInteger('soal_id');
+            $table->unsignedBigInteger('modul_id');
+            $table->json('jawaban');
+            $table->string('tipe_soal', 16);
 
             $table->foreign('praktikan_id')->references('id')->on('praktikans')->onDelete('cascade');
+            $table->foreign('modul_id')->references('id')->on('moduls')->onDelete('cascade');
         });
     }
 
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('soal_comments');
+        Schema::dropIfExists('jawaban_snapshot');
     }
 };
