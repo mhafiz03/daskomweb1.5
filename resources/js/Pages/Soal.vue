@@ -1122,8 +1122,7 @@ export default {
 
       fields.forEach(field => {
         if (error.response.data.errors[field]) {
-          this.toast.error(error.response.data.errors[field][0],
-          );
+          this.toast.error(error.response.data.errors[field][0],);
         }
       });
     },
@@ -1262,13 +1261,11 @@ export default {
 
       this.$axios.post(config.createUrl, form).then(response => {
         if (response.data.message === 'success') {
-          this.toast.success(config.messages.create,
-          );
+          this.toast.success(config.messages.create,);
           this.appendNewSoal(config, response.data);
           this.resetFormByType();
         } else {
-          this.toast.error(response.data.message,
-          );
+          this.toast.error(response.data.message,);
         }
       }).catch(error => {
         this.handleValidationErrors(error, config.errorFields);
@@ -1294,12 +1291,10 @@ export default {
           const enriched = { ...updated, judul: modulTitle };
 
           this.updateQuestionInList(config.listKey, enriched);
-          this.toast.success(config.messages.update,
-          );
+          this.toast.success(config.messages.update,);
           this.resetEditing();
         } else {
-          this.toast.error(response.data.message,
-          );
+          this.toast.error(response.data.message,);
         }
       }).catch(error => {
         this.handleValidationErrors(error, config.errorFields);
@@ -1314,15 +1309,13 @@ export default {
 
       this.$axios.delete(config.deleteUrl(id)).then(response => {
         if (response.data.message === 'success') {
-          this.toast.success(config.messages.delete,
-          );
+          this.toast.success(config.messages.delete,);
           this.removeQuestionFrom(config.listKey, id);
           if (this.isEditingSoal(id)) {
             this.resetEditing();
           }
         } else {
-          this.toast.error(response.data.message,
-          );
+          this.toast.error(response.data.message,);
         }
       }).catch(error => {
         this.handleValidationErrors(error, config.errorFields);

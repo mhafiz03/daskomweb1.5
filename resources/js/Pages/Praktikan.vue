@@ -204,10 +204,11 @@
             :soal-runmod="soalRunmod" :jawaban-runmod="jawabanRunmod" :soal-mandiri="soalMandiri"
             :jawaban-mandiri="jawabanMandiri" :soal-ta="soalTA" :jawaban-ta="jawabanTA" :soal-tk="soalTK"
             :jawaban-tk="jawabanTK" :laporan-praktikan="laporanPraktikan" :nilai-ta="nilaiTA" :nilai-tk="nilaiTK"
-            :generate-score-text="generateScoreText" @polling-saved="handlePollingSaved"
-            @finish-praktikum="finishPraktikum" @text-answer-change="handleTextAnswerChange"
-            @question-option-select="handleQuestionOptionSelect" @update:modulShown="value => modulShown = value"
-            @update:showNilaiTa="value => showNilaiTA = value" @update:showNilaiTk="value => showNilaiTK = value"
+            :selected-answers="selectedAnswers" :generate-score-text="generateScoreText"
+            @polling-saved="handlePollingSaved" @finish-praktikum="finishPraktikum"
+            @text-answer-change="handleTextAnswerChange" @question-option-select="handleQuestionOptionSelect"
+            @update:modulShown="value => modulShown = value" @update:showNilaiTa="value => showNilaiTA = value"
+            @update:showNilaiTk="value => showNilaiTK = value"
             @update:laporanPraktikan="value => laporanPraktikan = value" />
         </div>
       </div>
@@ -520,7 +521,6 @@ export default {
       programmingQuote: 'nothing',
       quoteAuthor: '',
       randomNumber: '',
-      ATCnim: '',
       soalPresentasi: [],
       soalTA: [],
       soalTK: [],
@@ -533,6 +533,9 @@ export default {
 
       jawabanTA: [],
       jawabanTK: [],
+
+      // Reactive state for tracking selected answers
+      selectedAnswers: {},
 
       chosenJawaban: [],
       jawabanPraktikan: {
@@ -927,37 +930,44 @@ export default {
           return;
         }
 
-        await this.$axios.post('/praktikan/autosave', {
+        const payload = {
           praktikan_id: this.currentUser.id,
           modul_id: this.current_praktikum.modul_id,
           tipe_soal: tipesoal,
           jawaban: jawabanObject
-        });
+        };
+
+        await this.$axios.post('/praktikan/autosave', payload);
       } catch (error) {
         // Silent fail for autosave to not interrupt user experience
-        console.warn('Autosave failed:', error);
+        console.warn('[SAVE] Autosave failed:', error);
       }
     },
 
     async loadAutosave(tipesoal) {
+
       if (!this.current_praktikum.modul_id) {
         return {};
       }
 
       try {
+        const requestParams = {
+          praktikan_id: this.currentUser.id,
+          modul_id: this.current_praktikum.modul_id,
+          tipe_soal: tipesoal
+        };
+
         const { data } = await this.$axios.get('/praktikan/autosave', {
-          params: {
-            praktikan_id: this.currentUser.id,
-            modul_id: this.current_praktikum.modul_id,
-            tipe_soal: tipesoal
-          }
+          params: requestParams
         });
 
         // Find autosave entry for this tipe_soal
         const autosaveEntry = data.find(entry => entry.tipe_soal === tipesoal);
-        return autosaveEntry ? autosaveEntry.jawaban : {};
+
+        const result = autosaveEntry ? autosaveEntry.jawaban : {};
+        return result;
       } catch (error) {
-        console.warn('Failed to load autosave:', error);
+        console.warn('[AUTOSAVE] Failed to load autosave:', error);
         return {};
       }
     },
@@ -985,6 +995,7 @@ export default {
 
     // Restore answers from autosave
     restoreAnswersFromAutosave(savedAnswers, soalType) {
+
       if (!savedAnswers || Object.keys(savedAnswers).length === 0) {
         return;
       }
@@ -994,17 +1005,13 @@ export default {
         if (item.soal_id && savedAnswers[item.soal_id]) {
           item.jawaban = savedAnswers[item.soal_id];
 
-          // Update UI styling
+          // Update reactive state instead of jQuery
           const jawabanArray = soalType === "TA" ? this.jawabanTA : this.jawabanTK;
           if (jawabanArray[index]) {
             const answerIndex = jawabanArray[index].indexOf(item.jawaban);
             if (answerIndex !== -1) {
-              const selector = `.jawaban-${index}${answerIndex}`;
-              setTimeout(() => {
-                $(selector)
-                  .removeClass('bg-green-200 hover:bg-green-300')
-                  .addClass('bg-green-500 text-white');
-              }, 100);
+              const key = `${index}-${answerIndex}`;
+              this.selectedAnswers[key] = true;
             }
           }
         }
@@ -1061,6 +1068,7 @@ export default {
       this.soalTA = [];
       this.jawabanTA = [];
       this.chosenJawaban = [];
+      this.selectedAnswers = {}; // Clear selected answers
       try {
         const { data } = await this.$axios.get(`/api/soal/ta/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
 
@@ -1103,702 +1111,678 @@ export default {
           this.restoreAnswersFromAutosave(savedAnswers, 'TA');
         }
       } catch (error) {
-          this.handleRequestError(error, 'Gagal memuat soal TA');
-        }
-      },
+        this.handleRequestError(error, 'Gagal memuat soal TA');
+      }
+    },
 
     async loadSoalJurnalAndFitb() {
-        await Promise.all([this.loadSoalJurnal(), this.loadSoalFitb()]);
-      },
+      await Promise.all([this.loadSoalJurnal(), this.loadSoalFitb()]);
+    },
 
     async loadSoalJurnal() {
-        this.soalJurnal = [];
-        this.jawabanJurnal = [];
-        try {
-          const { data } = await this.$axios.get('/api/soal/jurnal');
+      this.soalJurnal = [];
+      this.jawabanJurnal = [];
+      try {
+        const { data } = await this.$axios.get('/api/soal/jurnal');
 
-          if (data.message !== 'success') {
-            this.toast.error(data.message);
-            return;
-          }
-
-          const list = (data.all_soal || []).filter(Boolean);
-          this.soalJurnal = list;
-          this.jawabanJurnal = list.map((soal) => ({
-            soal_id: soal.id,
-            modul_id: soal.modul_id,
-            praktikan_id: this.currentUser.id,
-            jawaban: '',
-          }));
-
-          // Load autosaved answers
-          if (list.length > 0) {
-            const savedAnswers = await this.loadAutosave('jurnal');
-            this.restoreTextAnswersFromAutosave(savedAnswers, this.jawabanJurnal);
-          }
-        } catch (error) {
-          this.handleRequestError(error, 'Gagal memuat soal Jurnal');
+        if (data.message !== 'success') {
+          this.toast.error(data.message);
+          return;
         }
-      },
+
+        const list = (data.all_soal || []).filter(Boolean);
+        this.soalJurnal = list;
+        this.jawabanJurnal = list.map((soal) => ({
+          soal_id: soal.id,
+          modul_id: soal.modul_id,
+          praktikan_id: this.currentUser.id,
+          jawaban: '',
+        }));
+
+        // Load autosaved answers
+        if (list.length > 0) {
+          const savedAnswers = await this.loadAutosave('jurnal');
+          this.restoreTextAnswersFromAutosave(savedAnswers, this.jawabanJurnal);
+        }
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat soal Jurnal');
+      }
+    },
 
     async loadSoalFitb() {
-        this.soalFitb = [];
-        this.jawabanFitb = [];
-        try {
-          const { data } = await this.$axios.get('/api/soal/fitb');
+      this.soalFitb = [];
+      this.jawabanFitb = [];
+      try {
+        const { data } = await this.$axios.get('/api/soal/fitb');
 
-          if (data.message !== 'success') {
-            this.toast.error(data.message);
-            return;
-          }
-
-          const list = (data.all_soal || []).filter(Boolean);
-          this.soalFitb = list;
-          this.jawabanFitb = list.map((soal) => ({
-            soal_id: soal.id,
-            modul_id: soal.modul_id,
-            praktikan_id: this.currentUser.id,
-            jawaban: '',
-          }));
-
-          // Load autosaved answers
-          if (list.length > 0) {
-            const savedAnswers = await this.loadAutosave('fitb');
-            this.restoreTextAnswersFromAutosave(savedAnswers, this.jawabanFitb);
-          }
-        } catch (error) {
-          this.handleRequestError(error, 'Gagal memuat soal FITB');
+        if (data.message !== 'success') {
+          this.toast.error(data.message);
+          return;
         }
-      },
+
+        const list = (data.all_soal || []).filter(Boolean);
+        this.soalFitb = list;
+        this.jawabanFitb = list.map((soal) => ({
+          soal_id: soal.id,
+          modul_id: soal.modul_id,
+          praktikan_id: this.currentUser.id,
+          jawaban: '',
+        }));
+
+        // Load autosaved answers
+        if (list.length > 0) {
+          const savedAnswers = await this.loadAutosave('fitb');
+          this.restoreTextAnswersFromAutosave(savedAnswers, this.jawabanFitb);
+        }
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat soal FITB');
+      }
+    },
 
     async loadSoalMandiri() {
-        this.soalMandiri = [];
-        this.jawabanMandiri = [];
-        try {
-          const { data } = await this.$axios.get(`/api/soal/mandiri/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
+      this.soalMandiri = [];
+      this.jawabanMandiri = [];
+      try {
+        const { data } = await this.$axios.get(`/api/soal/mandiri/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
 
-          if (data.message !== 'success') {
-            this.toast.error(data.message);
-            return;
-          }
-
-          const list = data.all_soal || [];
-          this.soalMandiri = list;
-          this.jawabanMandiri = list.map((soal) => ({
-            soal_id: soal.id,
-            modul_id: soal.modul_id,
-            praktikan_id: this.currentUser.id,
-            jawaban: '',
-          }));
-
-          // Load autosaved answers
-          if (list.length > 0) {
-            const savedAnswers = await this.loadAutosave('mandiri');
-            this.restoreTextAnswersFromAutosave(savedAnswers, this.jawabanMandiri);
-          }
-        } catch (error) {
-          this.handleRequestError(error, 'Gagal memuat soal Mandiri');
+        if (data.message !== 'success') {
+          this.toast.error(data.message);
+          return;
         }
-      },
+
+        const list = data.all_soal || [];
+        this.soalMandiri = list;
+        this.jawabanMandiri = list.map((soal) => ({
+          soal_id: soal.id,
+          modul_id: soal.modul_id,
+          praktikan_id: this.currentUser.id,
+          jawaban: '',
+        }));
+
+        // Load autosaved answers
+        if (list.length > 0) {
+          const savedAnswers = await this.loadAutosave('mandiri');
+          this.restoreTextAnswersFromAutosave(savedAnswers, this.jawabanMandiri);
+        }
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat soal Mandiri');
+      }
+    },
 
     async loadSoalTk() {
-        this.soalTK = [];
-        this.chosenJawaban = [];
-        this.jawabanTK = [];
-        try {
-          const { data } = await this.$axios.get(`/api/soal/tk/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
+      this.soalTK = [];
+      this.chosenJawaban = [];
+      this.jawabanTK = [];
+      this.selectedAnswers = {}; // Clear selected answers
+      try {
+        const { data } = await this.$axios.get(`/api/soal/tk/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
 
-          if (data.message !== 'success') {
-            this.toast.error(data.message);
-            return;
-          }
+        if (data.message !== 'success') {
+          this.toast.error(data.message);
+          return;
+        }
 
-          const questions = data.all_soal || [];
-          this.soalTK = questions;
+        const questions = data.all_soal || [];
+        this.soalTK = questions;
 
-          // Always ensure chosenJawaban has at least basic info for submission
-          if (questions.length === 0) {
-            // Add empty entry with praktikan_id and modul_id for empty questions
+        // Always ensure chosenJawaban has at least basic info for submission
+        if (questions.length === 0) {
+          // Add empty entry with praktikan_id and modul_id for empty questions
+          this.chosenJawaban.push({
+            modul_id: this.current_praktikum.modul_id,
+            praktikan_id: this.currentUser.id,
+            soal_id: null,
+            jawaban: '',
+          });
+        } else {
+          questions.forEach((soal) => {
+            const answers = this.shuffleArr([
+              soal.jawaban_benar,
+              soal.jawaban_salah1,
+              soal.jawaban_salah2,
+              soal.jawaban_salah3,
+            ]);
+
             this.chosenJawaban.push({
               modul_id: this.current_praktikum.modul_id,
               praktikan_id: this.currentUser.id,
-              soal_id: null,
+              soal_id: soal.id,
               jawaban: '',
             });
-          } else {
-            questions.forEach((soal) => {
-              const answers = this.shuffleArr([
-                soal.jawaban_benar,
-                soal.jawaban_salah1,
-                soal.jawaban_salah2,
-                soal.jawaban_salah3,
-              ]);
 
-              this.chosenJawaban.push({
-                modul_id: this.current_praktikum.modul_id,
-                praktikan_id: this.currentUser.id,
-                soal_id: soal.id,
-                jawaban: '',
-              });
+            this.jawabanTK.push(answers);
+          });
 
-              this.jawabanTK.push(answers);
-            });
-
-            // Load autosaved answers
-            const savedAnswers = await this.loadAutosave('tk');
-            this.restoreAnswersFromAutosave(savedAnswers, 'TK');
-          }
-        } catch (error) {
-          this.handleRequestError(error, 'Gagal memuat soal TK');
+          // Load autosaved answers
+          const savedAnswers = await this.loadAutosave('tk');
+          this.restoreAnswersFromAutosave(savedAnswers, 'TK');
         }
-      },
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat soal TK');
+      }
+    },
 
     async loadSoalRunmod() {
-          this.soalRunmod = [];
-          this.jawabanRunmod = [];
-          try {
-            const { data } = await this.$axios.get('/api/soal/runmod');
+      this.soalRunmod = [];
+      this.jawabanRunmod = [];
+      try {
+        const { data } = await this.$axios.get('/api/soal/runmod');
 
-            if (data.message !== 'success') {
-              this.toast.error(data.message);
-              return;
-            }
+        if (data.message !== 'success') {
+          this.toast.error(data.message);
+          return;
+        }
 
-            const list = data.all_soal || [];
-            this.soalRunmod = list;
-            this.jawabanRunmod = list.map((soal) => ({
-              soal_id: soal.id,
-              modul_id: soal.modul_id,
-              praktikan_id: this.currentUser.id,
-              jawaban: '',
-            }));
-          } catch (error) {
-            this.handleRequestError(error, 'Gagal memuat soal Runmod');
-          }
-        },
+        const list = data.all_soal || [];
+        this.soalRunmod = list;
+        this.jawabanRunmod = list.map((soal) => ({
+          soal_id: soal.id,
+          modul_id: soal.modul_id,
+          praktikan_id: this.currentUser.id,
+          jawaban: '',
+        }));
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memuat soal Runmod');
+      }
+    },
 
     async checkExistingLaporan() {
-          try {
-            const { data } = await this.$axios.post(`/praktikan/laporan/${this.currentUser.id}/${this.current_praktikum.modul_id}`);
+      try {
+        const { data } = await this.$axios.post(`/praktikan/laporan/${this.currentUser.id}/${this.current_praktikum.modul_id}`);
 
-            if (data.message === 'done') {
-              this.current_praktikum.status = 777;
-              this.praktikumExist = false;
-              this.openWide = false;
-            }
-          } catch (error) {
-            this.handleRequestError(error, 'Gagal memeriksa laporan praktikan');
-          }
-        },
-
-        startPraktikum() {
-          this.praktikumExist = true;
-          this.showPraktikum();
-          this.openWide = true;
-        },
-
-    async startTA() {
-          await this.loadSoalTa();
-        },
-
-    async startJurnal(isRealtime) {
-          if (isRealtime) {
-            await this.submitJawaban('/praktikan/jawaban/ta', this.chosenJawaban, (data) => {
-              this.nilaiTA = data.nilaiTa;
-              this.showNilaiTA = true;
-              // Clear TA autosave after successful submission
-              this.clearAutosave('ta');
-            });
-          }
-
-          await this.loadSoalJurnalAndFitb();
-        },
-
-    async startMandiri(isRealtime) {
-          if (isRealtime) {
-            await Promise.all([
-              this.submitJawaban('/praktikan/jawaban/jurnal', this.jawabanJurnal, () => {
-                this.clearAutosave('jurnal');
-              }),
-              this.submitJawaban('/praktikan/jawaban/fitb', this.jawabanFitb, () => {
-                this.clearAutosave('fitb');
-              }),
-            ]);
-          }
-
-          await this.loadSoalMandiri();
-        },
-
-    async startTK(isRealtime) {
-          if (isRealtime) {
-            await this.submitJawaban('/praktikan/jawaban/mandiri', this.jawabanMandiri, () => {
-              this.clearAutosave('mandiri');
-            });
-          }
-
-          await this.loadSoalTk();
-        },
-
-    async startFeedback(isRealtime) {
-          if (this.isRunmod) {
-            if (isRealtime) {
-              await this.submitJawaban('/praktikan/jawaban/jurnal', this.jawabanRunmod);
-            }
-          } else if (isRealtime) {
-            await this.submitJawaban('/praktikan/jawaban/tk', this.chosenJawaban, (data) => {
-              this.nilaiTK = data.nilaiTk;
-              this.showNilaiTK = true;
-              // Clear TK autosave after successful submission
-              this.clearAutosave('tk');
-            });
-          }
-
-          await this.checkExistingLaporan();
-        },
-
-    async handleStatusRunmod() {
-          await this.loadSoalRunmod();
-        },
-
-        handleStatusDefault() {
+        if (data.message === 'done') {
           this.current_praktikum.status = 777;
           this.praktikumExist = false;
           this.openWide = false;
-        },
+        }
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal memeriksa laporan praktikan');
+      }
+    },
 
-        onTextAnswerChange(arrayName, payload) {
+    startPraktikum() {
+      this.praktikumExist = true;
+      this.showPraktikum();
+      this.openWide = true;
+    },
 
-          const target = this[arrayName];
-          if (!Array.isArray(target)) {
-            return;
-          }
+    async startTA() {
+      await this.loadSoalTa();
+    },
 
-          const { answerIndex, value } = payload;
-          const entry = target[answerIndex];
-          if (entry && typeof entry === 'object') {
-            entry.jawaban = value;
-            
-            // Trigger autosave for text answers
-            const tipesoalMap = {
-              'jawabanJurnal': 'jurnal',
-              'jawabanFitb': 'fitb', 
-              'jawabanMandiri': 'mandiri'
-            };
-            
-            if (tipesoalMap[arrayName]) {
-              this.saveTextAutosave(tipesoalMap[arrayName], target);
-            }
-          }
-        },
+    async startJurnal(isRealtime) {
+      if (isRealtime) {
+        await this.submitJawaban('/praktikan/jawaban/ta', this.chosenJawaban, (data) => {
+          this.nilaiTA = data.nilaiTa;
+          this.showNilaiTA = true;
+          // Clear TA autosave after successful submission
+          this.clearAutosave('ta');
+        });
+      }
 
-        onQuestionOptionSelect(type, payload) {
+      await this.loadSoalJurnalAndFitb();
+    },
 
-          const question = payload.question || {};
-          const soalId = question.id || question.soal_id || question.question_id || question.soalId;
-          if (!soalId) {
-            return;
-          }
+    async startMandiri(isRealtime) {
+      if (isRealtime) {
+        await Promise.all([
+          this.submitJawaban('/praktikan/jawaban/jurnal', this.jawabanJurnal, () => {
+            this.clearAutosave('jurnal');
+          }),
+          this.submitJawaban('/praktikan/jawaban/fitb', this.jawabanFitb, () => {
+            this.clearAutosave('fitb');
+          }),
+        ]);
+      }
 
-          this.chooseJawaban(
-            type,
-            payload.option,
-            soalId,
-            payload.questionIndex,
-            payload.optionIndex,
-          );
-        },
+      await this.loadSoalMandiri();
+    },
 
-        shuffleArr: function($arr) {
+    async startTK(isRealtime) {
+      if (isRealtime) {
+        await this.submitJawaban('/praktikan/jawaban/mandiri', this.jawabanMandiri, () => {
+          this.clearAutosave('mandiri');
+        });
+      }
 
-          for (let i = $arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [$arr[i], $arr[j]] = [$arr[j], $arr[i]];
-          }
+      await this.loadSoalTk();
+    },
 
-          return $arr;
-        },
+    async startFeedback(isRealtime) {
+      if (this.isRunmod) {
+        if (isRealtime) {
+          await this.submitJawaban('/praktikan/jawaban/jurnal', this.jawabanRunmod);
+        }
+      } else if (isRealtime) {
+        await this.submitJawaban('/praktikan/jawaban/tk', this.chosenJawaban, (data) => {
+          this.nilaiTK = data.nilaiTk;
+          this.showNilaiTK = true;
+          // Clear TK autosave after successful submission
+          this.clearAutosave('tk');
+        });
+      }
+
+      await this.checkExistingLaporan();
+    },
+
+    async handleStatusRunmod() {
+      await this.loadSoalRunmod();
+    },
+
+    handleStatusDefault() {
+      this.current_praktikum.status = 777;
+      this.praktikumExist = false;
+      this.openWide = false;
+    },
+
+    onTextAnswerChange(arrayName, payload) {
+
+      const target = this[arrayName];
+      if (!Array.isArray(target)) {
+        return;
+      }
+
+      const { answerIndex, value } = payload;
+      const entry = target[answerIndex];
+      if (entry && typeof entry === 'object') {
+        entry.jawaban = value;
+
+        // Trigger autosave for text answers
+        const tipesoalMap = {
+          'jawabanJurnal': 'jurnal',
+          'jawabanFitb': 'fitb',
+          'jawabanMandiri': 'mandiri'
+        };
+
+        if (tipesoalMap[arrayName]) {
+          this.saveTextAutosave(tipesoalMap[arrayName], target);
+        }
+      }
+    },
+
+    onQuestionOptionSelect(type, payload) {
+
+      const question = payload.question || {};
+      const soalId = question.id || question.soal_id || question.question_id || question.soalId;
+      if (!soalId) {
+        return;
+      }
+
+      this.chooseJawaban(
+        type,
+        payload.option,
+        soalId,
+        payload.questionIndex,
+        payload.optionIndex,);
+    },
+
+    shuffleArr: function ($arr) {
+
+      for (let i = $arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [$arr[i], $arr[j]] = [$arr[j], $arr[i]];
+      }
+
+      return $arr;
+    },
 
     async saveJawabanTP() {
 
-          try {
-            const { data } = await this.$axios.post('/praktikan/tp/save-jawaban', this.jawabanTP);
+      try {
+        const { data } = await this.$axios.post('/praktikan/tp/save-jawaban', this.jawabanTP);
 
-            if (data.message === "success") {
+        if (data.message === "success") {
+          this.toast.success("TP ANDA BERHASIL DISIMPAN");
+        } else {
+          this.toast.error(data.message);
+        }
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal menyimpan jawaban TP');
+      }
+    },
 
-              this.toast.success("TP ANDA BERHASIL DISIMPAN"
-              );
-            } else {
-              this.toast.error(data.message);
-            }
-          } catch (error) {
-            this.handleRequestError(error, 'Gagal menyimpan jawaban TP');
-          }
-        },
-    
-    async finishPraktikum(){
+    async finishPraktikum() {
 
-          if (this.laporanPraktikan.asisten_id === '') {
-            this.toast.error('Pilih asisten yang mengajar anda terlebih dahulu <br> (dibagian paling atas samping kiri rating)');
-            return;
-          }
+      if (this.laporanPraktikan.asisten_id === '') {
+        this.toast.error('Pilih asisten yang mengajar anda terlebih dahulu <br> (dibagian paling atas samping kiri rating)');
+        return;
+      }
 
-          if (this.laporanPraktikan.pesan === '') {
-            this.toast.error('Masukkan pesan untuk praktikum / asisten terlebih dahulu');
-            return;
-          }
+      if (this.laporanPraktikan.pesan === '') {
+        this.toast.error('Masukkan pesan untuk praktikum / asisten terlebih dahulu');
+        return;
+      }
 
-          if (this.laporanPraktikan.pesan.length < 20) {
-            this.toast.error('Pesan berisi minimal 20 karakter');
-            return;
-          }
+      if (this.laporanPraktikan.pesan.length < 20) {
+        this.toast.error('Pesan berisi minimal 20 karakter');
+        return;
+      }
 
-          if (this.laporanPraktikan.rating_asisten === 0) {
-            this.toast.error('Beri rating untuk asisten terlebih dahulu');
-            return;
-          }
+      if (this.laporanPraktikan.rating_asisten === 0) {
+        this.toast.error('Beri rating untuk asisten terlebih dahulu');
+        return;
+      }
 
-          if (this.laporanPraktikan.rating_praktikum === 0) {
-            this.toast.error('Beri rating untuk praktikum terlebih dahulu');
-            return;
-          }
+      if (this.laporanPraktikan.rating_praktikum === 0) {
+        this.toast.error('Beri rating untuk praktikum terlebih dahulu');
+        return;
+      }
 
-          this.laporanPraktikan.praktikan_id = this.currentUser.id;
-          this.laporanPraktikan.modul_id = this.current_praktikum.modul_id;
+      this.laporanPraktikan.praktikan_id = this.currentUser.id;
+      this.laporanPraktikan.modul_id = this.current_praktikum.modul_id;
 
-          try {
-            const { data } = await this.$axios.post('/praktikan/laporan', this.laporanPraktikan);
+      try {
+        const { data } = await this.$axios.post('/praktikan/laporan', this.laporanPraktikan);
 
-            if (data.message === "success") {
-              this.current_praktikum.status = 777;
-              
-              // Clear all autosaved answers when praktikum ends
-              await this.clearAutosave();
-              
-              this.toast.success("Praktikum telah selesai :)"
-              );
-            } else {
-              this.toast.error(data.message
-              );
-            }
-          } catch (error) {
-            this.handleRequestError(error, 'Gagal mengirim laporan praktikum');
-          }
-        },
+        if (data.message === "success") {
+          this.current_praktikum.status = 777;
 
-        setCurrentPraktikumState: async function(current_praktikum, isRealtime) {
+          // Clear all autosaved answers when praktikum ends
+          await this.clearAutosave();
 
-          this.current_praktikum.asisten_id = current_praktikum.asisten_id;
-          this.current_praktikum.modul_id = current_praktikum.modul_id;
-          this.current_praktikum.kelas_id = current_praktikum.kelas_id;
-          this.current_praktikum.status = current_praktikum.status;
+          this.toast.success("Praktikum telah selesai :)");
+        } else {
+          this.toast.error(data.message);
+        }
+      } catch (error) {
+        this.handleRequestError(error, 'Gagal mengirim laporan praktikum');
+      }
+    },
 
-          if (this.current_praktikum.kelas_id !== this.currentUser.kelas_id) {
-            return;
-          }
+    setCurrentPraktikumState: async function (current_praktikum, isRealtime) {
 
-          await this.loadCurrentModul();
+      this.current_praktikum.asisten_id = current_praktikum.asisten_id;
+      this.current_praktikum.modul_id = current_praktikum.modul_id;
+      this.current_praktikum.kelas_id = current_praktikum.kelas_id;
+      this.current_praktikum.status = current_praktikum.status;
 
-          switch (this.current_praktikum.status) {
+      if (this.current_praktikum.kelas_id !== this.currentUser.kelas_id) {
+        return;
+      }
 
-            case 0:
-              this.startPraktikum();
+      await this.loadCurrentModul();
+
+      switch (this.current_praktikum.status) {
+
+        case 0:
+          this.startPraktikum();
+          break;
+
+        case 1:
+          await this.startTA();
+          break;
+
+        case 2:
+          await this.startJurnal(isRealtime);
+          break;
+
+        case 3:
+          await this.startMandiri(isRealtime);
+          break;
+
+        case 4:
+          await this.startTK(isRealtime);
+          break;
+
+        case 5:
+          await this.startFeedback(isRealtime);
+          break;
+
+        case 123:
+          await this.handleStatusRunmod();
+          break;
+
+        default:
+          this.handleStatusDefault();
+          break;
+      }
+    },
+
+    chooseJawaban: function ($soalType, $jawaban, $soalId, $soalIndex, $jawabanIndex) {
+      // Determine which array to use based on soal type
+      const jawabanArray = $soalType === "TA" ? this.jawabanTA : this.jawabanTK;
+
+      // Find the corresponding chosen jawaban entry
+      const chosenJawabanIndex = this.chosenJawaban.findIndex(item => item.soal_id === $soalId);
+
+      if (chosenJawabanIndex !== -1) {
+        const currentAnswer = this.chosenJawaban[chosenJawabanIndex].jawaban;
+
+        // If there's a previous answer, clear its selection state
+        if (currentAnswer !== '') {
+          for (let i = 0; i < jawabanArray[chosenJawabanIndex].length; i++) {
+            if (jawabanArray[chosenJawabanIndex][i] === currentAnswer) {
+              const previousKey = `${chosenJawabanIndex}-${i}`;
+              this.selectedAnswers[previousKey] = false;
               break;
-
-            case 1:
-              await this.startTA();
-              break;
-
-            case 2:
-              await this.startJurnal(isRealtime);
-              break;
-
-            case 3:
-              await this.startMandiri(isRealtime);
-              break;
-
-            case 4:
-              await this.startTK(isRealtime);
-              break;
-
-            case 5:
-              await this.startFeedback(isRealtime);
-              break;
-
-            case 123:
-              await this.handleStatusRunmod();
-              break;
-
-            default:
-              this.handleStatusDefault();
-              break;
-          }
-        },
-
-        chooseJawaban: function($soalType, $jawaban, $soalId, $soalIndex, $jawabanIndex) {
-          // Determine which array to use based on soal type
-          const jawabanArray = $soalType === "TA" ? this.jawabanTA : this.jawabanTK;
-
-          // Find the corresponding chosen jawaban entry
-          const chosenJawabanIndex = this.chosenJawaban.findIndex(item => item.soal_id === $soalId);
-
-          if (chosenJawabanIndex !== -1) {
-            const currentAnswer = this.chosenJawaban[chosenJawabanIndex].jawaban;
-
-            // If there's a previous answer, reset its styling
-            if (currentAnswer !== '') {
-              for (let i = 0; i < jawabanArray[chosenJawabanIndex].length; i++) {
-                if (jawabanArray[chosenJawabanIndex][i] === currentAnswer) {
-                  const previousSelector = `.jawaban-${chosenJawabanIndex}${i}`;
-                  $(previousSelector)
-                    .addClass('bg-green-200 hover:bg-green-300')
-                    .removeClass('bg-green-500 text-white');
-                  break;
-                }
-              }
-            }
-
-            // Update the answer in the chosen jawaban array
-            this.chosenJawaban[chosenJawabanIndex].jawaban = $jawaban;
-
-            // Trigger autosave after answer change
-            this.saveAutosave($soalType.toLowerCase());
-          }
-
-          // Update styling for the newly selected answer
-          const currentSelector = `.jawaban-${$soalIndex}${$jawabanIndex}`;
-          $(currentSelector)
-            .removeClass('bg-green-200 hover:bg-green-300')
-            .addClass('bg-green-500 text-white');
-        },
-
-        handlePollingSaved() {
-          this.pollingComplete_mutable = true;
-        },
-
-        showPraktikum: function() {
-
-          this.isPraktikum = true;
-          this.isTP = false;
-          this.isNilai = false;
-          this.isProfil = false;
-          this.isJawaban = false;
-
-          this.allJawabanJurnal = [];
-          this.jawabanShown = false;
-          this.currentJawabanJurnal = '';
-
-          $('.tpIcon , .nilaiIcon , .profilIcon, .jawabanIcon').removeClass('w-3/12');
-          $('.tpIcon , .nilaiIcon , .profilIcon, .jawabanIcon').removeClass('youngYellowIcon');
-          $('.tpIcon , .nilaiIcon , .profilIcon, .jawabanIcon').addClass('iconYellowHover');
-          $('.tpIcon , .nilaiIcon , .profilIcon, .jawabanIcon').addClass('w-full');
-
-          $('.praktikumIcon').removeClass('w-full');
-          $('.praktikumIcon').removeClass('iconYellowHover');
-          $('.praktikumIcon').addClass('youngYellowIcon');
-          $('.praktikumIcon').addClass('w-3/12');
-        },
-
-        showNilai: function() {
-          this.isPraktikum = false;
-          this.isTP = false;
-          this.isNilai = true;
-          this.isProfil = false;
-          this.isJawaban = false;
-
-          this.allJawabanJurnal = [];
-          this.jawabanShown = false;
-          this.currentJawabanJurnal = '';
-
-          $('.praktikumIcon , .tpIcon , .profilIcon, .jawabanIcon').removeClass('w-3/12');
-          $('.praktikumIcon , .tpIcon , .profilIcon, .jawabanIcon').removeClass('youngYellowIcon');
-          $('.praktikumIcon , .tpIcon , .profilIcon, .jawabanIcon').addClass('iconYellowHover');
-          $('.praktikumIcon , .tpIcon , .profilIcon, .jawabanIcon').addClass('w-full');
-
-          $('.nilaiIcon').removeClass('w-full');
-          $('.nilaiIcon').removeClass('iconYellowHover');
-          $('.nilaiIcon').addClass('youngYellowIcon');
-          $('.nilaiIcon').addClass('w-3/12');
-        },
-
-        showTP: function() {
-          this.isPraktikum = false;
-          this.isTP = true;
-          this.isNilai = false;
-          this.isProfil = false;
-          this.isJawaban = false;
-
-          this.allJawabanJurnal = [];
-          this.jawabanShown = false;
-          this.currentJawabanJurnal = '';
-
-          $('.praktikumIcon , .nilaiIcon , .profilIcon, .jawabanIcon').removeClass('w-3/12');
-          $('.praktikumIcon , .nilaiIcon , .profilIcon, .jawabanIcon').removeClass('youngYellowIcon');
-          $('.praktikumIcon , .nilaiIcon , .profilIcon, .jawabanIcon').addClass('iconYellowHover');
-          $('.praktikumIcon , .nilaiIcon , .profilIcon, .jawabanIcon').addClass('w-full');
-
-          $('.tpIcon').removeClass('iconYellowHover');
-          $('.tpIcon').removeClass('w-full');
-          $('.tpIcon').addClass('youngYellowIcon');
-          $('.tpIcon').addClass('w-3/12');
-        },
-
-        showProfil: function() {
-          this.isPraktikum = false;
-          this.isTP = false;
-          this.isNilai = false;
-          this.isProfil = true;
-          this.isJawaban = false;
-
-          this.allJawabanJurnal = [];
-          this.jawabanShown = false;
-          this.currentJawabanJurnal = '';
-
-          $('.praktikumIcon , .nilaiIcon , .tpIcon, .jawabanIcon').removeClass('w-3/12');
-          $('.praktikumIcon , .nilaiIcon , .tpIcon, .jawabanIcon').removeClass('youngYellowIcon');
-          $('.praktikumIcon , .nilaiIcon , .tpIcon, .jawabanIcon').addClass('iconYellowHover');
-          $('.praktikumIcon , .nilaiIcon , .tpIcon, .jawabanIcon').addClass('w-full');
-
-          $('.profilIcon').removeClass('iconYellowHover');
-          $('.profilIcon').removeClass('w-full');
-          $('.profilIcon').addClass('youngYellowIcon');
-          $('.profilIcon').addClass('w-3/12');
-        },
-
-        showJawaban: function() {
-          this.isPraktikum = false;
-          this.isTP = false;
-          this.isNilai = false;
-          this.isProfil = false;
-          this.isJawaban = true;
-
-          $('.praktikumIcon , .nilaiIcon , .tpIcon, .profilIcon').removeClass('w-3/12');
-          $('.praktikumIcon , .nilaiIcon , .tpIcon, .profilIcon').removeClass('youngYellowIcon');
-          $('.praktikumIcon , .nilaiIcon , .tpIcon, .profilIcon').addClass('iconYellowHover');
-          $('.praktikumIcon , .nilaiIcon , .tpIcon, .profilIcon').addClass('w-full');
-
-          $('.jawabanIcon').removeClass('iconYellowHover');
-          $('.jawabanIcon').removeClass('w-full');
-          $('.jawabanIcon').addClass('youngYellowIcon');
-          $('.jawabanIcon').addClass('w-3/12');
-        },
-
-        onJawabanModuleSelect({ id, isUnlocked }) {
-
-          this.jawabanChanged = Boolean(isUnlocked);
-
-          setTimeout(() => {
-            if (isUnlocked) {
-
-              this.jawabanShown = true;
-              this.currentJawabanJurnal = id;
-              this.$axios.post(`/praktikan/jawaban/jurnal/${this.currentUser.id}/${id}`).then(response => {
-
-                if (response.data.message === "success") {
-
-                  this.allJawabanJurnal = response.data.allJawabanJurnal;
-                } else {
-                  this.toast.error(response.data.message
-                  );
-                }
-              });
-            }
-          }, 250);
-
-          setTimeout(() => {
-            if (this.jawabanChanged === true)
-              this.jawabanChanged = false;
-          }, 1000);
-        },
-
-        travel: function($whereTo) {
-          setTimeout(() => {
-            this.$inertia.get('/praktikan/' + $whereTo, {}, {
-              replace: true,
-            });
-          }, 500);
-        },
-
-        signOut: function() {
-
-          this.pageActive = false;
-          this.isMenuShown = false;
-          setTimeout(() => {
-            this.$inertia.get('/logoutPraktikan', {}, {
-              replace: true,
-            });
-          }, 1010);
-        },
-
-    async sendMessage(){
-
-          try {
-            const { data } = await this.$axios.post('/praktikan/pesan', this.formMessage);
-
-            if (data.message === "success") {
-
-              this.toast.success("Pesan berhasil terkirim"
-              );
-              this.messageOpened = false;
-
-            } else {
-
-              this.toast.error(data.message
-              );
-            }
-          } catch (error) {
-            const errors = error?.response?.data?.errors;
-            if (errors) {
-              if (errors.kode?.[0]) {
-                this.toast.error(errors.kode[0]
-                );
-              }
-              if (errors.pesan?.[0]) {
-                this.toast.error(errors.pesan[0]
-                );
-              }
-            } else {
-              this.handleRequestError(error, 'Gagal mengirim pesan');
-            }
-          }
-        },
-
-        formPassword: function($bool) {
-          this.viewPassForm = $bool;
-          if (!$bool) {
-            this.resetPass.password = '';
-            this.resetPass.repeatpass = '';
-          }
-        },
-
-    async resetPassword(){
-          try {
-            const { data } = await this.$axios.post('/praktikan/reset-password', this.resetPass);
-
-            if (data.message === "success") {
-              this.toast.success("Password berhasil diperbaharui"
-              );
-
-
-              this.signOut();
-
-            } else {
-              this.toast.error(data.message
-              );
-            }
-          } catch (error) {
-            const errors = error?.response?.data?.errors;
-            if (errors) {
-              if (errors.password?.[0])
-                this.toast.error(errors.password[0]
-                );
-              if (errors.repeatpass?.[0])
-                this.toast.error(errors.repeatpass[0]
-                );
-            } else {
-              this.handleRequestError(error, 'Gagal memperbarui password');
             }
           }
         }
+
+        // Update the answer in the chosen jawaban array
+        this.chosenJawaban[chosenJawabanIndex].jawaban = $jawaban;
+
+        // Set the new selection state
+        const currentKey = `${$soalIndex}-${$jawabanIndex}`;
+        this.selectedAnswers[currentKey] = true;
+
+        // Trigger autosave after answer change
+        this.saveAutosave($soalType.toLowerCase());
+      }
+    },
+
+    handlePollingSaved() {
+      this.pollingComplete_mutable = true;
+    },
+
+    showPraktikum: function () {
+
+      this.isPraktikum = true;
+      this.isTP = false;
+      this.isNilai = false;
+      this.isProfil = false;
+      this.isJawaban = false;
+
+      this.allJawabanJurnal = [];
+      this.jawabanShown = false;
+      this.currentJawabanJurnal = '';
+
+      $('.tpIcon , .nilaiIcon , .profilIcon, .jawabanIcon').removeClass('w-3/12');
+      $('.tpIcon , .nilaiIcon , .profilIcon, .jawabanIcon').removeClass('youngYellowIcon');
+      $('.tpIcon , .nilaiIcon , .profilIcon, .jawabanIcon').addClass('iconYellowHover');
+      $('.tpIcon , .nilaiIcon , .profilIcon, .jawabanIcon').addClass('w-full');
+
+      $('.praktikumIcon').removeClass('w-full');
+      $('.praktikumIcon').removeClass('iconYellowHover');
+      $('.praktikumIcon').addClass('youngYellowIcon');
+      $('.praktikumIcon').addClass('w-3/12');
+    },
+
+    showNilai: function () {
+      this.isPraktikum = false;
+      this.isTP = false;
+      this.isNilai = true;
+      this.isProfil = false;
+      this.isJawaban = false;
+
+      this.allJawabanJurnal = [];
+      this.jawabanShown = false;
+      this.currentJawabanJurnal = '';
+
+      $('.praktikumIcon , .tpIcon , .profilIcon, .jawabanIcon').removeClass('w-3/12');
+      $('.praktikumIcon , .tpIcon , .profilIcon, .jawabanIcon').removeClass('youngYellowIcon');
+      $('.praktikumIcon , .tpIcon , .profilIcon, .jawabanIcon').addClass('iconYellowHover');
+      $('.praktikumIcon , .tpIcon , .profilIcon, .jawabanIcon').addClass('w-full');
+
+      $('.nilaiIcon').removeClass('w-full');
+      $('.nilaiIcon').removeClass('iconYellowHover');
+      $('.nilaiIcon').addClass('youngYellowIcon');
+      $('.nilaiIcon').addClass('w-3/12');
+    },
+
+    showTP: function () {
+      this.isPraktikum = false;
+      this.isTP = true;
+      this.isNilai = false;
+      this.isProfil = false;
+      this.isJawaban = false;
+
+      this.allJawabanJurnal = [];
+      this.jawabanShown = false;
+      this.currentJawabanJurnal = '';
+
+      $('.praktikumIcon , .nilaiIcon , .profilIcon, .jawabanIcon').removeClass('w-3/12');
+      $('.praktikumIcon , .nilaiIcon , .profilIcon, .jawabanIcon').removeClass('youngYellowIcon');
+      $('.praktikumIcon , .nilaiIcon , .profilIcon, .jawabanIcon').addClass('iconYellowHover');
+      $('.praktikumIcon , .nilaiIcon , .profilIcon, .jawabanIcon').addClass('w-full');
+
+      $('.tpIcon').removeClass('iconYellowHover');
+      $('.tpIcon').removeClass('w-full');
+      $('.tpIcon').addClass('youngYellowIcon');
+      $('.tpIcon').addClass('w-3/12');
+    },
+
+    showProfil: function () {
+      this.isPraktikum = false;
+      this.isTP = false;
+      this.isNilai = false;
+      this.isProfil = true;
+      this.isJawaban = false;
+
+      this.allJawabanJurnal = [];
+      this.jawabanShown = false;
+      this.currentJawabanJurnal = '';
+
+      $('.praktikumIcon , .nilaiIcon , .tpIcon, .jawabanIcon').removeClass('w-3/12');
+      $('.praktikumIcon , .nilaiIcon , .tpIcon, .jawabanIcon').removeClass('youngYellowIcon');
+      $('.praktikumIcon , .nilaiIcon , .tpIcon, .jawabanIcon').addClass('iconYellowHover');
+      $('.praktikumIcon , .nilaiIcon , .tpIcon, .jawabanIcon').addClass('w-full');
+
+      $('.profilIcon').removeClass('iconYellowHover');
+      $('.profilIcon').removeClass('w-full');
+      $('.profilIcon').addClass('youngYellowIcon');
+      $('.profilIcon').addClass('w-3/12');
+    },
+
+    showJawaban: function () {
+      this.isPraktikum = false;
+      this.isTP = false;
+      this.isNilai = false;
+      this.isProfil = false;
+      this.isJawaban = true;
+
+      $('.praktikumIcon , .nilaiIcon , .tpIcon, .profilIcon').removeClass('w-3/12');
+      $('.praktikumIcon , .nilaiIcon , .tpIcon, .profilIcon').removeClass('youngYellowIcon');
+      $('.praktikumIcon , .nilaiIcon , .tpIcon, .profilIcon').addClass('iconYellowHover');
+      $('.praktikumIcon , .nilaiIcon , .tpIcon, .profilIcon').addClass('w-full');
+
+      $('.jawabanIcon').removeClass('iconYellowHover');
+      $('.jawabanIcon').removeClass('w-full');
+      $('.jawabanIcon').addClass('youngYellowIcon');
+      $('.jawabanIcon').addClass('w-3/12');
+    },
+
+    onJawabanModuleSelect({ id, isUnlocked }) {
+
+      this.jawabanChanged = Boolean(isUnlocked);
+
+      setTimeout(() => {
+        if (isUnlocked) {
+
+          this.jawabanShown = true;
+          this.currentJawabanJurnal = id;
+          this.$axios.post(`/praktikan/jawaban/jurnal/${this.currentUser.id}/${id}`).then(response => {
+
+            if (response.data.message === "success") {
+              this.allJawabanJurnal = response.data.allJawabanJurnal;
+            } else {
+              this.toast.error(response.data.message);
+            }
+          });
+        }
+      }, 250);
+
+      setTimeout(() => {
+        if (this.jawabanChanged === true)
+          this.jawabanChanged = false;
+      }, 1000);
+    },
+
+    travel: function ($whereTo) {
+      setTimeout(() => {
+        this.$inertia.get('/praktikan/' + $whereTo, {}, {
+          replace: true,
+        });
+      }, 500);
+    },
+
+    signOut: function () {
+
+      this.pageActive = false;
+      this.isMenuShown = false;
+      setTimeout(() => {
+        this.$inertia.get('/logoutPraktikan', {}, {
+          replace: true,
+        });
+      }, 1010);
+    },
+
+    async sendMessage() {
+
+      try {
+        const { data } = await this.$axios.post('/praktikan/pesan', this.formMessage);
+
+        if (data.message === "success") {
+          this.toast.success("Pesan berhasil terkirim");
+          this.messageOpened = false;
+        } else {
+          this.toast.error(data.message);
+        }
+      } catch (error) {
+        const errors = error?.response?.data?.errors;
+        if (errors) {
+          if (errors.kode?.[0]) {
+            this.toast.error(errors.kode[0]);
+          }
+          if (errors.pesan?.[0]) {
+            this.toast.error(errors.pesan[0]);
+          }
+        } else {
+          this.handleRequestError(error, 'Gagal mengirim pesan');
+        }
+      }
+    },
+
+    formPassword: function ($bool) {
+      this.viewPassForm = $bool;
+      if (!$bool) {
+        this.resetPass.password = '';
+        this.resetPass.repeatpass = '';
+      }
+    },
+
+    async resetPassword() {
+      try {
+        const { data } = await this.$axios.post('/praktikan/reset-password', this.resetPass);
+
+        if (data.message === "success") {
+          this.toast.success("Password berhasil diperbaharui");
+          this.signOut();
+        } else {
+          this.toast.error(data.message);
+        }
+      } catch (error) {
+        const errors = error?.response?.data?.errors;
+        if (errors) {
+          if (errors.password?.[0])
+            this.toast.error(errors.password[0]);
+          if (errors.repeatpass?.[0])
+            this.toast.error(errors.repeatpass[0]);
+        } else {
+          this.handleRequestError(error, 'Gagal memperbarui password');
+        }
       }
     }
+  }
+}
 </script>

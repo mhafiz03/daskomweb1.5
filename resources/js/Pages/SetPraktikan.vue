@@ -225,26 +225,22 @@ export default {
       const globe = this;
 
       if(this.praktikanNimPass === '') {
-        globe.toast.error("Isikan nim nya terlebih dahulu"
-        );
+        globe.toast.error("Isikan nim nya terlebih dahulu");
         return;
       }
 
       if(this.newPass === ''){
-        globe.toast.error("Isikan password yang barunya"
-        );
+        globe.toast.error("Isikan password yang barunya");
         return;
       }
 
       globe.$axios.put('/asisten/praktikan/password/'+this.praktikanNimPass+'/'+this.newPass).then(response => {
 
         if(response.data.message === "success") {
-          globe.toast.success("Password praktikan "+this.praktikanNim+" berhasil diubah"
-          );
+          globe.toast.success("Password praktikan "+this.praktikanNim+" berhasil diubah");
 
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       });
     },
@@ -254,26 +250,22 @@ export default {
       const globe = this;
 
       if(this.praktikanNim === '') {
-        globe.toast.error("Isikan nim nya terlebih dahulu"
-        );
+        globe.toast.error("Isikan nim nya terlebih dahulu");
         return;
       }
 
       if(this.chosenModulID === ''){
-        globe.toast.error("Pilih modul nya terlebih dahulu"
-        );
+        globe.toast.error("Pilih modul nya terlebih dahulu");
         return;
       }
 
       globe.$axios.post('/asisten/praktikan/set/'+this.praktikanNim+'/'+this.currentUser.id+'/'+this.chosenModulID).then(response => {
 
         if(response.data.message === "success") {
-          globe.toast.success("Praktikan "+this.praktikanNim+" berhasil di set manual"
-          );
+          globe.toast.success("Praktikan "+this.praktikanNim+" berhasil di set manual");
 
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       });
     },

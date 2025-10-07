@@ -44,8 +44,13 @@
           @click="onSelectOption(option, question, questionIndex, optionIndex)"
         >
           <div
-            class="w-full bg-green-200 hover:bg-green-300 px-4 py-2 rounded-large font-overpass-bold break-words whitespace-pre-wrap text-xl"
-            :class="optionClass(questionIndex, optionIndex)"
+            class="w-full px-4 py-2 rounded-large font-overpass-bold break-words whitespace-pre-wrap text-xl"
+            :class="[
+              optionClass(questionIndex, optionIndex),
+              selectedAnswers[`${questionIndex}-${optionIndex}`] 
+                ? 'bg-green-500 text-white' 
+                : 'bg-green-200 hover:bg-green-300'
+            ]"
           >
             <span>{{ option }}</span>
           </div>
@@ -122,6 +127,10 @@ export default {
     optionClassPrefix: {
       type: String,
       default: 'jawaban-',
+    },
+    selectedAnswers: {
+      type: Object,
+      default: () => ({}),
     },
     onAnswerChange: {
       type: Function,
@@ -208,8 +217,7 @@ export default {
         question.soal_id ??
         question.question_id ??
         question.soalId ??
-        index
-      );
+        index);
     },
     handleSecureEvent(event) {
       if (this.secureText) {

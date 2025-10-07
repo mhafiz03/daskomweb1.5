@@ -716,8 +716,7 @@ export default {
               globe.formLaporanPj.id = response.data.latestLaporanID;
 
             } else {
-              globe.toast.error(response.data.message
-              );
+              globe.toast.error(response.data.message);
             }
           });
 
@@ -732,15 +731,13 @@ export default {
               globe.formHistoryJaga.modul_id = globe.chosenModulID;
 
             } else {
-              globe.toast.error(response.data.message
-              );
+              globe.toast.error(response.data.message);
             }
           });
         }
 
       } else {
-        globe.toast.error(response.data.message
-        );
+        globe.toast.error(response.data.message);
       }
     });
   },
@@ -866,20 +863,17 @@ export default {
                     
           let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index); // Checking for duplicates
           if(findDuplicates(sumAllAsisten_kode).length > 0){
-            globe.toast.error("Satu asisten tidak boleh berada dalam kolom yang berbeda"
-            );
+            globe.toast.error("Satu asisten tidak boleh berada dalam kolom yang berbeda");
             return;
           }
 
           if(sumAllAsisten_kode.length === 0){
-            globe.toast.error("Isi data terlebih dahulu"
-            );
+            globe.toast.error("Isi data terlebih dahulu");
             return;
           }
 
           if(sumAllPraktikan_Alfa.length === 0 && globe.formPraktikan_Alfa.allpraktikan_nim !== "*"){
-            globe.toast.error("Ketikkan '*' pada praktikan alfa <br> jika tidak ada praktikan yang alfa"
-            );
+            globe.toast.error("Ketikkan '*' pada praktikan alfa <br> jika tidak ada praktikan yang alfa");
             return;
           } else if(globe.formPraktikan_Alfa.allpraktikan_nim !== "*"){
 
@@ -900,8 +894,7 @@ export default {
           }
 
           if(sumAllAsisten_kode.includes(globe.currentUser.kode)){
-            globe.toast.error("Asisten PJ tidak perlu ditulis disini"
-            );
+            globe.toast.error("Asisten PJ tidak perlu ditulis disini");
             return;
           }
 
@@ -918,8 +911,7 @@ export default {
             const element = diff_FromList[index];
 
             if(sumAllAsisten_kode.includes(element)){
-              globe.toast.error("Asisten "+diff_FromList+" tidak ada dalam praktikum ini"
-              );
+              globe.toast.error("Asisten "+diff_FromList+" tidak ada dalam praktikum ini");
               return;
             }
           }
@@ -927,8 +919,7 @@ export default {
           for (let index = 0; index < diff_FromSum.length; index++) {
             const element = diff_FromSum[index];
             if(listAllAsistenKode.includes(element)){
-              globe.toast.error("Asisten "+diff_FromSum+" belum dimasukkan"
-              );
+              globe.toast.error("Asisten "+diff_FromSum+" belum dimasukkan");
               return;
             }
           }
@@ -978,8 +969,7 @@ export default {
                                 // Do nothing as its working as it supposed to be
 
                               } else {
-                                globe.toast.error(response.data.message
-                                );
+                                globe.toast.error(response.data.message);
                               }
                             });
                           }
@@ -994,12 +984,10 @@ export default {
 
                                 if(response.data.message === "success") {
 
-                                  globe.toast.success("Praktikum berhasil tersimpan"
-                                  );
+                                  globe.toast.success("Praktikum berhasil tersimpan");
 
                                 } else {
-                                  globe.toast.error(response.data.message
-                                  );
+                                  globe.toast.error(response.data.message);
                                 }
                               });
                               globe.$axios.delete('/asisten/praktikum/stop').then(response => {
@@ -1010,32 +998,27 @@ export default {
                               });
 
                             } else {
-                              globe.toast.error(response.data.message
-                              );
+                              globe.toast.error(response.data.message);
                             }
                           });
 
                         } else {
-                          globe.toast.error(response.data.message
-                          );
+                          globe.toast.error(response.data.message);
                         }
                       });
 
                     } else {
-                      globe.toast.error(response.data.message
-                      );
+                      globe.toast.error(response.data.message);
                     }
                   });
 
                 } else {
-                  globe.toast.error(response.data.message
-                  );
+                  globe.toast.error(response.data.message);
                 }
               });
 
             } else {
-              globe.toast.error(response.data.message
-              );
+              globe.toast.error(response.data.message);
             }
           });
         }
@@ -1054,8 +1037,7 @@ export default {
             //DO NOTHING (it runs as we expected)
 
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       });
 
@@ -1108,8 +1090,7 @@ export default {
             //DO NOTHING (it runs as we expected)
 
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       });
     },
@@ -1129,8 +1110,7 @@ export default {
               //DO NOTHING (it runs as we expected)
 
           } else {
-            globe.toast.error(response.data.message
-            );
+            globe.toast.error(response.data.message);
           }
         });
       }
@@ -1160,36 +1140,31 @@ export default {
           }
         } else {
         
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       });
       
       if(this.chosenKelasID === ""){
 
-        globe.toast.error("Pilih kelas terlebih dahulu"
-        );
+        globe.toast.error("Pilih kelas terlebih dahulu");
         return;
       }
 
       if(this.listAllAsisten.length < 1){
 
-        globe.toast.error("Tidak terdapat asisten di kelas ini"
-        );
+        globe.toast.error("Tidak terdapat asisten di kelas ini");
         return;
       }
 
       if(this.listAllPraktikan.length < 1){
 
-        globe.toast.error("Tidak terdapat praktikan di kelas ini"
-        );
+        globe.toast.error("Tidak terdapat praktikan di kelas ini");
         return;
       }
 
       if(this.chosenModulID === ''){
 
-        globe.toast.error("Pilih modul terlebih dahulu"
-        );
+        globe.toast.error("Pilih modul terlebih dahulu");
         return;
       }
 
@@ -1201,8 +1176,7 @@ export default {
 
       if(!isKodeExist){
 
-        globe.toast.error("Anda tidak ada dalam praktikum kelas ini<br>Hanya asisten dalam praktikum ini yang bisa mengaktivasinya"
-        );
+        globe.toast.error("Anda tidak ada dalam praktikum kelas ini<br>Hanya asisten dalam praktikum ini yang bisa mengaktivasinya");
         return;
       }
 
@@ -1236,8 +1210,7 @@ export default {
               globe.praktikumStart = true;
 
             } else {
-              globe.toast.error(response.data.message
-              );
+              globe.toast.error(response.data.message);
             }
           });
 
@@ -1250,8 +1223,7 @@ export default {
               globe.menuDisabled = true;
 
             } else {
-              globe.toast.error(response.data.message
-              );
+              globe.toast.error(response.data.message);
             }
           });
 
@@ -1270,14 +1242,12 @@ export default {
                 //DO NOTHING (it runs as we expected)
 
             } else {
-              globe.toast.error(response.data.message
-              );
+              globe.toast.error(response.data.message);
             }
           });
 
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       });
     },
@@ -1382,13 +1352,11 @@ export default {
                 continue;
           
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       }).catch(function (error) {
         if (error.response) {
-          globe.toast.error(error.response.data
-          );
+          globe.toast.error(error.response.data);
         }
       });
     },

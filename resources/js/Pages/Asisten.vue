@@ -390,8 +390,7 @@ export default {
         globe.jagaInter = response.data.jagaInter;
 
       } else {
-        globe.toast.error(response.data.message
-        );
+        globe.toast.error(response.data.message);
       }
     });
 
@@ -426,8 +425,7 @@ export default {
         
         if(response.data.message === "success") {
 
-          globe.toast.success("Deskripsi berhasil diperbaharui"   
-          );
+          globe.toast.success("Deskripsi berhasil diperbaharui"   );
 
           globe.$inertia.get('/asisten', {}, {
             replace: true,
@@ -435,8 +433,7 @@ export default {
           globe.editDescription(false);
 
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       }).catch(function (error) {
         if (error.response) {
@@ -444,17 +441,13 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.deskripsi != null)
-              globe.toast.error(error.response.data.errors.deskripsi[0]
-              );
+              globe.toast.error(error.response.data.errors.deskripsi[0]);
             if(error.response.data.errors.nomor_telepon != null)
-              globe.toast.error(error.response.data.errors.nomor_telepon[0]
-              );
+              globe.toast.error(error.response.data.errors.nomor_telepon[0]);
             if(error.response.data.errors.id_line != null)
-              globe.toast.error(error.response.data.errors.id_line[0]
-              );
+              globe.toast.error(error.response.data.errors.id_line[0]);
             if(error.response.data.errors.instagram != null)
-              globe.toast.error(error.response.data.errors.instagram[0]
-              );
+              globe.toast.error(error.response.data.errors.instagram[0]);
           }
         }
       });
@@ -502,8 +495,7 @@ export default {
         //Do nothing 
       }).catch(function (error) {
         if (error.response) {
-          globe.toast.error(error.response.data.errors
-          );
+          globe.toast.error(error.response.data.errors);
         }
       });
 

@@ -594,12 +594,10 @@ export default {
           this.currentConfig.tubes_activation = this.formConfig.tubes_activation;
           this.currentConfig.polling_activation = this.formConfig.polling_activation;
 
-          globe.toast.success("New configuration saved"
-          );
+          globe.toast.success("New configuration saved");
 
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       });
     }

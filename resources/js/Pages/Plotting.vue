@@ -681,8 +681,7 @@ export default {
         
         if(response.data.message === "success") {
           
-          globe.toast.success("Jadwal Jaga berhasil reset"
-          );
+          globe.toast.success("Jadwal Jaga berhasil reset");
 
           globe.listAllJaga = [];
           globe.closePopup();
@@ -691,8 +690,7 @@ export default {
           this.formJaga.kelas_id = '';
           this.plottingMenuShown = false;
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       })
 
@@ -703,16 +701,14 @@ export default {
       const globe = this;
 
       if(this.formJaga.asisten_id === null || this.formJaga.kelas_id === null){
-        globe.toast.error("Pilih asisten & kelas terlebih dahulu"
-        );
+        globe.toast.error("Pilih asisten & kelas terlebih dahulu");
       }
 
       this.$axios.delete('/asisten/jadwal-jaga', { data: this.formJaga }).then(response => {
 
         if(response.data.message === "success") {
 
-          globe.toast.success("Jadwal Jaga berhasil dihapus"
-          );
+          globe.toast.success("Jadwal Jaga berhasil dihapus");
 
           var i;
           for(i=0; i<globe.listAllJaga.length; i++){
@@ -727,8 +723,7 @@ export default {
           this.formJaga.kelas_id = '';
           this.plottingMenuShown = false;
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       }).catch(function (error) {
         if (error.response) {
@@ -736,14 +731,11 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.hari != null)
-              globe.toast.error(error.response.data.errors.hari[0]
-              );
+              globe.toast.error(error.response.data.errors.hari[0]);
             if(error.response.data.errors.shift != null)
-              globe.toast.error(error.response.data.errors.shift[0]
-              );
+              globe.toast.error(error.response.data.errors.shift[0]);
             if(error.response.data.errors.asisten_id != null)
-              globe.toast.error(error.response.data.errors.asisten_id[0]
-              );
+              globe.toast.error(error.response.data.errors.asisten_id[0]);
           }
         }
       });
@@ -757,8 +749,7 @@ export default {
         if(response.data.message === "success") {
 
           $("#jagaForm")[0].reset();
-          globe.toast.success("Jadwal Jaga berhasil ditambahkan"
-          );
+          globe.toast.success("Jadwal Jaga berhasil ditambahkan");
 
           var kode;
           globe.allAsisten.forEach(element => {
@@ -788,11 +779,9 @@ export default {
           setTimeout(
             function() {
               globe.formJaga.asisten_id = '';
-            }, 500
-          ); 
+            }, 500); 
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       }).catch(function (error) {
         if (error.response) {
@@ -800,14 +789,11 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.hari != null)
-              globe.toast.error(error.response.data.errors.hari[0]
-              );
+              globe.toast.error(error.response.data.errors.hari[0]);
             if(error.response.data.errors.shift != null)
-              globe.toast.error(error.response.data.errors.shift[0]
-              );
+              globe.toast.error(error.response.data.errors.shift[0]);
             if(error.response.data.errors.asisten_id != null)
-              globe.toast.error(error.response.data.errors.asisten_id[0]
-              );
+              globe.toast.error(error.response.data.errors.asisten_id[0]);
           }
         }
       });

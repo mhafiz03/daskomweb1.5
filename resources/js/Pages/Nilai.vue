@@ -828,8 +828,7 @@ export default {
             this.formNilai.diskon = response.data.nilai.diskon;
             this.formNilai.rating = response.data.nilai.rating;
           } else {
-            globe.toast.error(response.data.message
-            );
+            globe.toast.error(response.data.message);
           }
         });
 
@@ -848,8 +847,7 @@ export default {
             this.formNilai.ta = response.data.nilaiTa;
             this.formNilai.tk = response.data.nilaiTk;
           } else {
-            globe.toast.error(response.data.message
-            );
+            globe.toast.error(response.data.message);
           }
         });
       }
@@ -861,8 +859,7 @@ export default {
           globe.allJawabanTp = response.data.allJawabanTp;
           globe.allJawabanJurnal = response.data.allJawabanJurnal;
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       });
     },
@@ -872,32 +869,27 @@ export default {
       const globe = this;
 
       if(this.formNilai.tp === '') {
-        globe.toast.error("Input nilai TP terlebih dahulu"
-        );
+        globe.toast.error("Input nilai TP terlebih dahulu");
         return;
       }
 
       if(this.formNilai.jurnal === '') {
-        globe.toast.error("Input nilai Jurnal terlebih dahulu"
-        );
+        globe.toast.error("Input nilai Jurnal terlebih dahulu");
         return;
       }
 
       if(this.formNilai.skill === '') {
-        globe.toast.error("Input skill terlebih dahulu"
-        );
+        globe.toast.error("Input skill terlebih dahulu");
         return;
       }
 
       if(this.formNilai.rating === 0) {
-        globe.toast.error("Input rating terlebih dahulu dengan mengklik nilai skill"
-        );
+        globe.toast.error("Input rating terlebih dahulu dengan mengklik nilai skill");
         return;
       }
 
       if(this.formNilai.diskon === '') {
-        globe.toast.error("Input diskon terlebih dahulu <br> Inputkan 0 jika tidak ada diskon"
-        );
+        globe.toast.error("Input diskon terlebih dahulu <br> Inputkan 0 jika tidak ada diskon");
         return;
       }
 
@@ -919,11 +911,9 @@ export default {
           globe.formNilai.praktikan_id = '';
           globe.listAllLaporan[globe.chosenIndex].nilaiExists = true;
           globe.nilaiShown = false;
-          globe.toast.success("Nilai berhasil di input"
-          );
+          globe.toast.success("Nilai berhasil di input");
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       });
     }

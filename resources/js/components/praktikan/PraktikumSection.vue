@@ -53,6 +53,7 @@
                 mode="options"
                 :questions="soalTa"
                 :options-list="jawabanTa"
+                :selected-answers="selectedAnswers"
                 question-key="pertanyaan"
                 :on-option-select="payload => emitQuestionOptionSelect('TA', payload)"
               />
@@ -286,6 +287,7 @@
                 mode="options"
                 :questions="soalTk"
                 :options-list="jawabanTk"
+                :selected-answers="selectedAnswers"
                 question-key="pertanyaan"
                 :on-option-select="payload => emitQuestionOptionSelect('TK', payload)"
               />
@@ -547,6 +549,10 @@ export default {
     generateScoreText: {
       type: Function,
       required: true,
+    },
+    selectedAnswers: {
+      type: Object,
+      default: () => ({}),
     },
   },
   emits: [

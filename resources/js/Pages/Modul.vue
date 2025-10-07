@@ -662,8 +662,7 @@ export default {
           $(".editOpen-"+globe.formModul.id).removeClass("hidden");
           $(".editOpen-"+globe.formModul.id).addClass("visible");
 
-          globe.toast.success("Modul berhasil diperbaharui"
-          );
+          globe.toast.success("Modul berhasil diperbaharui");
           
           for(var i=0; i<globe.listAllModul.length; i++){
             if(globe.listAllModul[i].id === globe.formModul.id){
@@ -679,8 +678,7 @@ export default {
           globe.formModul.isi = "";
           globe.formModul.isEnglish = false;
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       }).catch(function (error) {
         if (error.response) {
@@ -688,14 +686,11 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.judul != null)
-              globe.toast.error(error.response.data.errors.judul[0]
-              );
+              globe.toast.error(error.response.data.errors.judul[0]);
             if(error.response.data.errors.deskripsi != null)
-              globe.toast.error(error.response.data.errors.deskripsi[0]
-              );
+              globe.toast.error(error.response.data.errors.deskripsi[0]);
             if(error.response.data.errors.isi != null)
-              globe.toast.error(error.response.data.errors.isi[0]
-              );
+              globe.toast.error(error.response.data.errors.isi[0]);
           }
         }
       });
@@ -757,8 +752,7 @@ export default {
 
         if(response.data.message === "success") {
 
-          globe.toast.success("Modul berhasil dihapus"
-          );
+          globe.toast.success("Modul berhasil dihapus");
 
           var i;
           for(i=0; i<globe.listAllModul.length; i++){
@@ -768,8 +762,7 @@ export default {
           }
           globe.listAllModul.splice(i, 1);
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       }).catch(function (error) {
         if (error.response) {
@@ -777,14 +770,11 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.judul != null)
-              globe.toast.error(error.response.data.errors.judul[0]
-              );
+              globe.toast.error(error.response.data.errors.judul[0]);
             if(error.response.data.errors.deskripsi != null)
-              globe.toast.error(error.response.data.errors.deskripsi[0]
-              );
+              globe.toast.error(error.response.data.errors.deskripsi[0]);
             if(error.response.data.errors.isi != null)
-              globe.toast.error(error.response.data.errors.isi[0]
-              );
+              globe.toast.error(error.response.data.errors.isi[0]);
           }
         }
       });
@@ -798,8 +788,7 @@ export default {
         if(response.data.message === "success") {
 
           $("#modulForm")[0].reset();
-          globe.toast.success("Modul berhasil ditambahkan"
-          );
+          globe.toast.success("Modul berhasil ditambahkan");
           globe.listAllModul.push({
             id: response.data.id,
             judul: globe.formModul.judul,
@@ -809,8 +798,7 @@ export default {
             isUnlocked: globe.formModul.isUnlocked,
           })
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       }).catch(function (error) {
         if (error.response) {
@@ -818,14 +806,11 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.judul != null)
-              globe.toast.error(error.response.data.errors.judul[0]
-              );
+              globe.toast.error(error.response.data.errors.judul[0]);
             if(error.response.data.errors.deskripsi != null)
-              globe.toast.error(error.response.data.errors.deskripsi[0]
-              );
+              globe.toast.error(error.response.data.errors.deskripsi[0]);
             if(error.response.data.errors.isi != null)
-              globe.toast.error(error.response.data.errors.isi[0]
-              );
+              globe.toast.error(error.response.data.errors.isi[0]);
           }
         }
       });
