@@ -15,6 +15,7 @@ use App\Http\Controllers\JawabanJurnalController;
 use App\Http\Controllers\JawabanMandiriController;
 use App\Http\Controllers\JawabanTaController;
 use App\Http\Controllers\JawabanTkController;
+use App\Http\Controllers\JawabanTpController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\KumpulTpController;
 use App\Http\Controllers\LaporanPjController;
@@ -249,10 +250,11 @@ Route::prefix('api')->name('api.')->group(function () {
     Route::get('/soal/jurnal', [SoalJurnalController::class, 'show'])->name('soal.jurnal');
     Route::get('/soal/runmod', [SoalJurnalController::class, 'showRunmod'])->name('soal.runmod');
     Route::get('/soal/mandiri/{modul_id}/{kelas_id}', [SoalMandiriController::class, 'show'])->name('soal.mandiri');
+    Route::post('/get-tp/{praktikan_nim}/{modul_id}', [JawabanTpController::class, 'show'])->name('get-tp');
 });
 
 // Special Routes (No middleware)
-Route::get('/lihat-tp', [PageController::class, 'lihatTp'])->name('lihat_tp');
+Route::get('/lihat_tp', [PageController::class, 'lihatTp'])->name('lihat_tp');
 
 // Legacy Routes - For Backward Compatibility (TODO: Update frontend to use new routes)
 Route::post('/loginAsisten', [AsistenLoginController::class, 'login'])->name('loginAsisten');
@@ -368,9 +370,6 @@ Route::post('/changePraktikanPass/{praktikan_nim}/{new_pass}', [PraktikanControl
 
 Route::post('/checkPolling', [ConfigurationController::class, 'isPollingEnabled'])->name('checkPolling')->middleware('loggedIn:praktikan');
 Route::post('/savePolling', [PollingController::class, 'store'])->name('savePolling')->middleware('loggedIn:praktikan');
-
-Route::get('/upload', [UploadController::class, 'upload'])->name('uploadPage')->middleware('loggedIn:asisten');
-Route::post('/upload/proses', [UploadController::class, 'proses_upload'])->name('uploadProses')->middleware('loggedIn:asisten');
 
 Route::post('/updateDesc', [AsistenController::class, 'updateDesc'])->name('updateDesc')->middleware('loggedIn:asisten');
 Route::post('/resetPass', [PraktikanController::class, 'resetPass'])->name('resetPassword')->middleware('loggedIn:praktikan');

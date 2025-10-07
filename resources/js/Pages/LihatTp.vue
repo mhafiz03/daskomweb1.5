@@ -21,13 +21,13 @@
             <div v-for="(jawaban, index) in allTpData" v-bind:key="jawaban.id" 
                 class="w-full flex-row h-auto">
               <div class="w-full h-auto flex my-10">
-                <div class="h-full w-12 flex font-merri-bold text-sm sm:text-xl">
+                <div class="h-full w-12 flex font-merri-bold text-sm sm:text-xl text-white">
                   <div class="m-auto w-auto h-auto">{{ index +1 }}</div>
                 </div>
                 <div class="h-12 px-1 w-4">
-                  <div class="h-full w-full bg-gray-900"/>
+                  <div class="h-full w-full bg-white"/>
                 </div>
-                <div class="h-full w-16full break-words whitespace-pre-wrap flex px-2 font-monda text-lg sm:text-2xl">
+                <div class="h-full w-16full break-words whitespace-pre-wrap flex px-2 font-monda text-lg sm:text-2xl text-white">
                   <span>{{ jawaban.soal }}</span>
                 </div>
               </div>
@@ -42,7 +42,7 @@
       </div>
     </div>
 
-    <div class="w-full h-full py-4 flex"
+    <div class="w-full h-screen py-4 flex"
         :class="[{ 'visible': !tpDataShown },
                   { 'hidden': tpDataShown }]">
       <div class="w-72 h-72 m-auto">
@@ -99,27 +99,28 @@ export default {
 
       praktikanNim: '',
       chosenModulID: '',
+      toast: null,
     };
   },
-
+  created() {
+    this.toast = useToast();
+  },
   methods: {
     cekTpPraktikan: function(){
 
       const globe = this;
 
       if(this.praktikanNim === '') {
-        toast.error("Isikan nim nya terlebih dahulu"
-        );
+        this.toast.error("Isikan nim nya terlebih dahulu");
         return;
       }
 
       if(this.chosenModulID === ''){
-        toast.error("Pilih modul nya terlebih dahulu"
-        );
+        this.toast.error("Pilih modul nya terlebih dahulu");
         return;
       }
 
-      globe.$axios.post('/api/getTp/'+this.praktikanNim+'/'+this.chosenModulID).then(response => {
+      globe.$axios.post('/api/get-tp/'+this.praktikanNim+'/'+this.chosenModulID).then(response => {
 
         if(response.data.message === "success") {
           
@@ -127,8 +128,7 @@ export default {
           globe.allTpData = response.data.all_tp;
 
         } else {
-          toast.error(response.data.message
-          );
+          this.toast.error(response.data.message);
         }
       });
     },

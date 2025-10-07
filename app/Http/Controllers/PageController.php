@@ -495,7 +495,7 @@ class PageController extends Controller
         $user = Auth::guard('asisten')->user();
         $allModul = Modul::orderBy('isEnglish', 'asc')->get();
 
-        return Inertia::render('Lihat_Tp', [
+        return Inertia::render('LihatTp', [
             'currentUser' => $user,
             'allModul' => $allModul,
         ]);
