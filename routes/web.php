@@ -36,6 +36,7 @@ use App\Http\Controllers\TempJawabantpController;
 use App\Http\Controllers\TugaspendahuluanController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\SoalCommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -194,8 +195,10 @@ Route::middleware('loggedIn:asisten')->prefix('asisten')->name('asisten.')->grou
     Route::post('/konfigurasi/save', [ConfigurationController::class, 'store'])->name('konfigurasi.save');
     
     // File Upload
-    Route::get('/upload', [UploadController::class, 'upload'])->name('upload');
-    Route::post('/upload/process', [UploadController::class, 'proses_upload'])->name('upload.process');
+    // Route::get('/upload', [UploadController::class, 'upload'])->name('upload');
+    // Route::post('/upload/process', [UploadController::class, 'proses_upload'])->name('upload.process');
+
+    Route::get('/soal-comment/{soal_type}/{modul_id}', [SoalCommentController::class, 'showByModul'])->name('soal.comment.show');
 });
 
 // Praktikan Routes
@@ -232,6 +235,9 @@ Route::middleware('loggedIn:praktikan')->prefix('praktikan')->name('praktikan.')
     
     // Reset Password
     Route::post('/reset-password', [PraktikanController::class, 'resetPass'])->name('reset_password');
+
+    // Comments buat TOT
+    Route::post('/soal-comment/{praktikan_id}/{soal_type}/{soal_id}', [SoalCommentController::class, 'store'])->name('soal.comment.store');
 });
 
 // Shared Routes (Both Asisten and Praktikan)

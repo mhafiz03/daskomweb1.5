@@ -15,6 +15,13 @@ class SoalJurnal extends Model
      * @var array
      */
     protected $fillable = [
-        'soal', 'modul_id', 'isSulit',
+        'soal',
+        'modul_id',
+        'isSulit',
     ];
+
+    public function comments()
+    {
+        return $this->morphMany(SoalComment::class, 'soal', 'soal_type', 'soal_id');
+    }
 }

@@ -15,6 +15,16 @@ class SoalTa extends Model
      * @var array
      */
     protected $fillable = [
-        'pertanyaan', 'modul_id', 'jawaban_benar', 'jawaban_salah1', 'jawaban_salah2', 'jawaban_salah3',
+        'pertanyaan',
+        'modul_id',
+        'jawaban_benar',
+        'jawaban_salah1',
+        'jawaban_salah2',
+        'jawaban_salah3',
     ];
+
+    public function comments()
+    {
+        return $this->morphMany(SoalComment::class, 'soal', 'soal_type', 'soal_id');
+    }
 }
