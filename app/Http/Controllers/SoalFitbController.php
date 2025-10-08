@@ -118,26 +118,8 @@ class SoalFitbController extends Controller
      * @param  \App\Models\SoalFitb  $soal_Fitb
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(SoalFitb $soal_Fitb)
     {
-        try {
-            $soal = SoalFitb::find($id);
-    
-            if (!$soal) {
-                return response()->json(['message' => 'Soal not found'], 404);
-            }
-    
-            $soal->delete();
-    
-            return response()->json(['message' => 'success']);
-        } catch (\Exception $e) {
-            // Log the error for debugging
-            \Log::error('Failed to delete SoalFitb: '.$e->getMessage());
-    
-            return response()->json([
-                'message' => 'Failed to delete soal',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        //
     }
 }

@@ -428,9 +428,8 @@ class PageController extends Controller
     public function nilai()
     {
         $user = Auth::guard('asisten')->user();
-        $userRole = Role::find($user->role_id);
+        $userRole = Role::where('id', $user->role_id)->first();
 
-        // Get all laporan with their related models and check if nilai exists
         $allLaporan = LaporanPraktikan::with([
             'praktikan:id,nama,nim,kelas_id',
             'praktikan.kelas:id,kelas,shift,hari',
@@ -439,13 +438,29 @@ class PageController extends Controller
             ->latest()
             ->get()
             ->map(function ($laporan) {
-                $laporan->nilaiExists = Nilai::where([
-                    'praktikan_id' => $laporan->praktikan_id,
-                    'modul_id' => $laporan->modul_id,
+                // Map to flat structure for frontend compatibility
+                return [
+                    'id' => $laporan->id,
+                    'pesan' => $laporan->pesan,
                     'asisten_id' => $laporan->asisten_id,
-                ])->exists();
-
-                return $laporan;
+                    'modul_id' => $laporan->modul_id,
+                    'praktikan_id' => $laporan->praktikan_id,
+                    'rating_praktikum' => $laporan->rating_praktikum,
+                    'rating_asisten' => $laporan->rating_asisten,
+                    'created_at' => $laporan->created_at,
+                    'updated_at' => $laporan->updated_at,
+                    'nama' => $laporan->praktikan->nama ?? null,
+                    'nim' => $laporan->praktikan->nim ?? null,
+                    'kelas_id' => $laporan->praktikan->kelas_id ?? null,
+                    'kelas' => $laporan->praktikan->kelas->kelas ?? null,
+                    'shift' => $laporan->praktikan->kelas->shift ?? null,
+                    'hari' => $laporan->praktikan->kelas->hari ?? null,
+                    'nilaiExists' => Nilai::where([
+                        'praktikan_id' => $laporan->praktikan_id,
+                        'modul_id' => $laporan->modul_id,
+                        'asisten_id' => $laporan->asisten_id,
+                    ])->exists(),
+                ];
             });
 
         return Inertia::render('Nilai', array_merge($this->getCommonParams(), [

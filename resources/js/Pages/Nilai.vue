@@ -797,13 +797,11 @@ export default {
     },
 
     showJawaban: function($type) {
-
       const globe = this;
       this.showingJawaban = $type;
     },
 
     showNilaiPage: function($praktikan_id, $modul_id, $kelas_id, $index){
-      
       const globe = this;
 
       this.chosenPraktikanNIM = this.listAllLaporan[$index].nim;
@@ -817,11 +815,8 @@ export default {
       this.nilaiShown = true;
 
       if(this.listAllLaporan[$index].nilaiExists === true){
-
         globe.$axios.post('/asisten/nilai/'+$praktikan_id+'/'+$modul_id).then(response => {
-
           if(response.data.message === "success"){
-
             this.formNilai.ta = response.data.nilai.ta;
             this.formNilai.tk = response.data.nilai.tk;
             this.formNilai.tp = response.data.nilai.tp;
@@ -835,17 +830,13 @@ export default {
         });
 
       } else {
-
         if($modul_id === 1) {
-
           this.formNilai.tp = 100;
           this.formNilai.skill = 100;
         }
 
         globe.$axios.post('/asisten/nilai/form/'+$praktikan_id+'/'+$modul_id).then(response => {
-
           if(response.data.message === "success"){
-
             this.formNilai.ta = response.data.nilaiTa;
             this.formNilai.tk = response.data.nilaiTk;
           } else {
@@ -855,9 +846,7 @@ export default {
       }
       
       globe.$axios.post('/asisten/nilai/jawaban/'+$praktikan_id+'/'+$modul_id).then(response => {
-
         if(response.data.message === "success"){
-
           globe.allJawabanTp = response.data.allJawabanTp;
           globe.allJawabanJurnal = response.data.allJawabanJurnal;
         } else {
@@ -930,7 +919,6 @@ export default {
       globe.$axios.post('/asisten/nilai', this.formNilai).then(response => {
 
         if(response.data.message === "success"){
-
           globe.formNilai.tp = '';
           globe.formNilai.jurnal = '';
           globe.formNilai.skill = '';

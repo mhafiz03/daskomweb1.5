@@ -123,26 +123,8 @@ class SoalMandiriController extends Controller
      * @param  \App\Models\SoalMandiri  $soal_Mandiri
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(SoalMandiri $soal_Mandiri)
     {
-        try {
-            $soal = SoalMandiri::find($id);
-    
-            if (!$soal) {
-                return response()->json(['message' => 'Soal not found'], 404);
-            }
-    
-            $soal->delete();
-    
-            return response()->json(['message' => 'success']);
-        } catch (\Exception $e) {
-            // Log the error for debugging
-            \Log::error('Failed to delete SoalMandiri: '.$e->getMessage());
-    
-            return response()->json([
-                'message' => 'Failed to delete soal',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        //
     }
 }
