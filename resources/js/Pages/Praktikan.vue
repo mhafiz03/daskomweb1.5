@@ -2,34 +2,27 @@
   <div class="bg-green-900 w-full h-full overflow-hidden">
 
     <!-- Main Layout -->
-    <div class="absolute my-auto z-40 h-full pointer-events-none flex animation-enable"
-        :class="[{ 'right-0': pageActive },
-                { 'right-minFull': !pageActive },
-                  { 'w-24full': !openWide },
-                  { 'w-full': openWide }]" @mouseover="isMenuShown = false">
-      <div class="my-auto flex w-full pointer-events-none animation-enable"
-          :class="[{ 'h-36full': !openWide },
-                  { 'h-4full': openWide }]">
+    <div class="absolute my-auto z-40 h-full pointer-events-none flex animation-enable" :class="[{ 'right-0': pageActive },
+    { 'right-minFull': !pageActive },
+    { 'w-24full': !openWide },
+    { 'w-full': openWide }]" @mouseover="isMenuShown = false">
+      <div class="my-auto flex w-full pointer-events-none animation-enable" :class="[{ 'h-36full': !openWide },
+      { 'h-4full': openWide }]">
         <div class="h-full w-12 flex pointer-events-auto">
-          <div class="w-8 h-8 m-auto"
-            :class="[{ 'visible': !praktikumExist },
-                    { 'hidden': praktikumExist }]">
-            <span class="w-full h-full cursor-pointer"
-                :class="[{ 'visible': !openWide },
-                        { 'hidden': openWide }]"
-                v-on:click="openWide = true;">
+          <div class="w-8 h-8 m-auto" :class="[{ 'visible': !praktikumExist },
+          { 'hidden': praktikumExist }]">
+            <span class="w-full h-full cursor-pointer" :class="[{ 'visible': !openWide },
+            { 'hidden': openWide }]" v-on:click="openWide = true;">
               <img class="w-full h-full fas fa-caret-left text-white">
             </span>
-            <span class="w-full h-full cursor-pointer"
-                :class="[{ 'visible': openWide },
-                        { 'hidden': !openWide }]"
-                v-on:click="openWide = false;">
+            <span class="w-full h-full cursor-pointer" :class="[{ 'visible': openWide },
+            { 'hidden': !openWide }]" v-on:click="openWide = false;">
               <img class="w-full h-full fas fa-caret-right text-white">
             </span>
           </div>
         </div>
         <div class="rounded-l-large h-full w-12full bg-yellow-200 pointer-events-auto overflow-y-auto">
-        
+
           <!-- Profil Layout -->
           <div v-if="isProfil">
             <div class="h-auto w-full flex">
@@ -38,10 +31,9 @@
                 <span class="font-merri-italic text-4xl mt-2"> ({{ currentUser.email }})</span>
               </div>
             </div>
-            <div class="h-auto w-full flex-row pb-2"
-                  :class="[{'hidden':viewPassForm},
-                          {'visible':!viewPassForm}]">
-              <div class="h-1/3 w-full flex"> 
+            <div class="h-auto w-full flex-row pb-2" :class="[{ 'hidden': viewPassForm },
+            { 'visible': !viewPassForm }]">
+              <div class="h-1/3 w-full flex">
                 <div class="w-auto h-auto ml-16 mt-8">
                   <span class="font-overpass text-3xl">Kelas : </span>
                   <span class="whitespace-pre-wrap font-overpass-bold text-3xl"> {{ currentUser.kelas }}</span>
@@ -61,65 +53,67 @@
               </div>
             </div>
             <div class="h-1/3 w-full flex pb-4">
-                <div class="w-auto h-auto ml-16 mt-4"
-                  :class="[{'hidden':viewPassForm},
-                          {'visible':!viewPassForm}]">
-                  <span class="font-overpass text-2xl bg-red-500 text-white p-3 pb-2 rounded-lg hover:bg-red-600 cursor-pointer duration-300 hover:duration-300"
+              <div class="w-auto h-auto ml-16 mt-4" :class="[{ 'hidden': viewPassForm },
+              { 'visible': !viewPassForm }]">
+                <span
+                  class="font-overpass text-2xl bg-red-500 text-white p-3 pb-2 rounded-lg hover:bg-red-600 cursor-pointer duration-300 hover:duration-300"
                   v-on:click="formPassword(true)">Ganti Password<img class="ml-1 p-1 fas fa-pen fa-lg"></span>
-                </div>
-                 <div class="w-auto h-auto ml-4 mt-4"
-                  :class="[{'hidden':viewPassForm},
-                          {'visible':!viewPassForm}]">
-                  <span class="font-overpass text-2xl bg-green-800 text-yellow-300 p-3 pb-2 rounded-lg hover:bg-green-600 cursor-pointer duration-300 hover:duration-300" v-on:click='travel("contact-asisten")'
-                  >Kontak Asisten<img class="ml-1 p-1 fas fa-users fa-lg"></span>
-                </div>
+              </div>
+              <div class="w-auto h-auto ml-4 mt-4" :class="[{ 'hidden': viewPassForm },
+              { 'visible': !viewPassForm }]">
+                <span
+                  class="font-overpass text-2xl bg-green-800 text-yellow-300 p-3 pb-2 rounded-lg hover:bg-green-600 cursor-pointer duration-300 hover:duration-300"
+                  v-on:click='travel("contact-asisten")'>Kontak Asisten<img class="ml-1 p-1 fas fa-users fa-lg"></span>
+              </div>
             </div>
-            <div class="h-1/3 w-full flex-col pb-4"
-                  :class="[{'hidden':!viewPassForm},
-                          {'visible':viewPassForm}]">
-                <div class="w-2/3 h-auto ml-16 mt-2 flex-col">
-                  <div class="font-overpass-bold"> Input Password baru:</div>
-                  <input v-model="resetPass.password" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-1/4 py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" id="password" type="password" placeholder="******************">
-                </div>
-                <div class="w-2/3 h-auto ml-16 mt-2 flex-col">
-                  <div class="font-overpass-bold"> Ulangi Password baru:</div>
-                  <input v-model="resetPass.repeatpass" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-1/4 py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" id="repeatpass" type="password" placeholder="******************">
-                </div>
-                <div class="w-2/3 h-auto ml-16 mt-2 flex">
-                  <span class="p-2 px-3 bg-red-600 font-merri-bold text-xl cursor-pointer text-white rounded-lg hover:bg-red-700 animation-enable"
-                      v-on:click="formPassword(false)">
-                      <img class="p-1 fas fa-times fa-lg">
-                  </span>
-                  <span class="p-2 bg-green-600 font-merri-bold text-xl cursor-pointer text-white rounded-lg hover:bg-green-700 animation-enable mx-2"
-                      v-on:click="resetPassword">
-                      <img class="p-1 fas fa-check fa-lg">
-                  </span>
-                </div>
+            <div class="h-1/3 w-full flex-col pb-4" :class="[{ 'hidden': !viewPassForm },
+            { 'visible': viewPassForm }]">
+              <div class="w-2/3 h-auto ml-16 mt-2 flex-col">
+                <div class="font-overpass-bold"> Input Password baru:</div>
+                <input v-model="resetPass.password"
+                  class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-1/4 py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                  id="password" type="password" placeholder="******************">
+              </div>
+              <div class="w-2/3 h-auto ml-16 mt-2 flex-col">
+                <div class="font-overpass-bold"> Ulangi Password baru:</div>
+                <input v-model="resetPass.repeatpass"
+                  class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-1/4 py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                  id="repeatpass" type="password" placeholder="******************">
+              </div>
+              <div class="w-2/3 h-auto ml-16 mt-2 flex">
+                <span
+                  class="p-2 px-3 bg-red-600 font-merri-bold text-xl cursor-pointer text-white rounded-lg hover:bg-red-700 animation-enable"
+                  v-on:click="formPassword(false)">
+                  <img class="p-1 fas fa-times fa-lg">
+                </span>
+                <span
+                  class="p-2 bg-green-600 font-merri-bold text-xl cursor-pointer text-white rounded-lg hover:bg-green-700 animation-enable mx-2"
+                  v-on:click="resetPassword">
+                  <img class="p-1 fas fa-check fa-lg">
+                </span>
+              </div>
             </div>
           </div>
 
           <!-- TP Layout -->
           <div v-if="isTP" class="w-full h-full flex">
             <div class="w-full h-full flex" v-if="!qrcodeShown">
-              <div v-if="soalTPEssay.length === 0 && soalTPProgram.length === 0" 
-                  class="w-full h-full flex">
+              <div v-if="soalTPEssay.length === 0 && soalTPProgram.length === 0" class="w-full h-full flex">
                 <div class="font-monda-bold h-auto w-auto m-auto text-center text-5xl">
                   Tidak ada <br> Tugas Pendahuluan saat ini <br>
                   <span class="text-xl">Silahkan cek kembali setelah ada pengumuman di OA line: @875lgds</span>
                 </div>
               </div>
 
-              <div class="h-full w-full flex-row relative"
-                  v-if="soalTPEssay.length > 0 && soalTPProgram.length > 0">
-                <div class="w-full flex absolute top-0 rounded-tl-large animation-enable"
-                    :class="[{ 'bg-green-400 h-12': soalOpened },
-                            { 'bg-green-100 h-12full': !soalOpened }]">
+              <div class="h-full w-full flex-row relative" v-if="soalTPEssay.length > 0 && soalTPProgram.length > 0">
+                <div class="w-full flex absolute top-0 rounded-tl-large animation-enable" :class="[{ 'bg-green-400 h-12': soalOpened },
+                { 'bg-green-100 h-12full': !soalOpened }]">
                   <div class="w-full h-full relative flex">
-                    <div class="h-12 w-full select-none absolute bottom-0 flex pb-1 mx-auto font-overpass-mono-bold text-2xl animation-enable"
-                        :class="[{ 'text-yellow-100 cursor-pointer': soalOpened },
-                                { 'text-black': !soalOpened }]"
-                        v-on:click="soalOpened = false">
-                      <span class="m-auto">PEMBAHASAN</span> 
+                    <div
+                      class="h-12 w-full select-none absolute bottom-0 flex pb-1 mx-auto font-overpass-mono-bold text-2xl animation-enable"
+                      :class="[{ 'text-yellow-100 cursor-pointer': soalOpened },
+                      { 'text-black': !soalOpened }]" v-on:click="soalOpened = false">
+                      <span class="m-auto">PEMBAHASAN</span>
                     </div>
                     <div class="absolute top-0 w-full h-12full flex">
                       <div class="w-full h-full" v-scrollbar>
@@ -132,39 +126,31 @@
                     </div>
                   </div>
                 </div>
-                <div class="w-full flex absolute bottom-0 rounded-bl-large animation-enable"
-                    :class="[{ 'bg-green-100 h-12full': soalOpened },
-                            { 'bg-green-400 h-12': !soalOpened }]">
+                <div class="w-full flex absolute bottom-0 rounded-bl-large animation-enable" :class="[{ 'bg-green-100 h-12full': soalOpened },
+                { 'bg-green-400 h-12': !soalOpened }]">
                   <div class="w-full h-full relative flex">
-                    <div class="h-12 z-30 w-full select-none absolute top-0 flex pt-1 font-overpass-mono-bold text-2xl animation-enable"
-                        :class="[{ 'text-yellow-100 cursor-pointer': !soalOpened },
-                                { 'text-black': soalOpened }]"
-                        v-on:click="soalOpened = true">
-                      <span class="m-auto">SOAL <span class="font-overpass text-lg pt-0">(klik tombol simpan di paling bawah untuk menyimpan)</span></span>
+                    <div
+                      class="h-12 z-30 w-full select-none absolute top-0 flex pt-1 font-overpass-mono-bold text-2xl animation-enable"
+                      :class="[{ 'text-yellow-100 cursor-pointer': !soalOpened },
+                      { 'text-black': soalOpened }]" v-on:click="soalOpened = true">
+                      <span class="m-auto">SOAL <span class="font-overpass text-lg pt-0">(klik tombol simpan di paling
+                          bawah untuk menyimpan)</span></span>
                     </div>
                     <div class="absolute bottom-0 w-full h-12full flex">
                       <div class="w-full h-full" v-scrollbar>
                         <div>
-                          <QuestionBlock
-                              :questions="soalTPEssay"
-                              :answers="jawabanTP"
-                              :secure-text="true"
-                              :on-answer-change="payload => onTextAnswerChange('jawabanTP', payload)"
-                          />
+                          <QuestionBlock :questions="soalTPEssay" :answers="jawabanTP" :secure-text="true"
+                            :on-answer-change="payload => onTextAnswerChange('jawabanTP', payload)" />
 
-                          <QuestionBlock
-                              :questions="soalTPProgram"
-                              :answers="jawabanTP"
-                              :secure-text="true"
-                              :numbering-offset="soalTPEssay.length"
-                              :answer-index-offset="soalTPEssay.length"
-                              :on-answer-change="payload => onTextAnswerChange('jawabanTP', payload)"
-                          />
+                          <QuestionBlock :questions="soalTPProgram" :answers="jawabanTP" :secure-text="true"
+                            :numbering-offset="soalTPEssay.length" :answer-index-offset="soalTPEssay.length"
+                            :on-answer-change="payload => onTextAnswerChange('jawabanTP', payload)" />
 
                           <div class="w-1/2 h-20 mx-auto">
                             <div class="w-full h-full p-4 cursor-pointer hover:p-5 animation-enable-short"
-                                v-on:click="saveJawabanTP()">
-                              <div class="w-full h-full font-overpass-bold text-xl text-white flex pt-1 rounded-full bg-green-600">
+                              v-on:click="saveJawabanTP()">
+                              <div
+                                class="w-full h-full font-overpass-bold text-xl text-white flex pt-1 rounded-full bg-green-600">
                                 <div class="m-auto">
                                   Simpan
                                 </div>
@@ -182,228 +168,166 @@
 
           <!-- Nilai Layout -->
           <div v-if="isNilai" class="w-full h-full flex">
-            <chart class="w-full h-full p-4"
-                :chartdata="allNilaiData"
-                :options="{
-                  responsive: true,
-                  maintainAspectRatio: false,
+            <chart class="w-full h-full p-4" :chartdata="allNilaiData" :options="{
+              responsive: true,
+              maintainAspectRatio: false,
 
-                  scales: {
-                    y: {
-                      beginAtZero: true,
-                      grid: {
-                        display: false,
-                      },
-                    },
-                    x: {
-                      grid: {
-                        display: false,
-                      },
-                    },
-                  }
-                }">
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: {
+                    display: false,
+                  },
+                },
+                x: {
+                  grid: {
+                    display: false,
+                  },
+                },
+              }
+            }">
             </chart>
           </div>
 
           <!--Jawaban Layout -->
-          <JawabanSection
-            v-if="isJawaban"
-            :modules="all_modul"
-            :current-module-id="currentJawabanJurnal"
-            :answers="allJawabanJurnal"
-            :answers-visible="jawabanShown"
-            :answers-refreshing="jawabanChanged"
-            :current-user="currentUser"
-            @select-module="onJawabanModuleSelect"
-          />
+          <JawabanSection v-if="isJawaban" :modules="all_modul" :current-module-id="currentJawabanJurnal"
+            :answers="allJawabanJurnal" :ta-answers="jawabanTaAnswers" :tk-answers="jawabanTkAnswers" 
+            :answers-visible="jawabanShown" :answers-refreshing="jawabanChanged"
+            :current-user="currentUser" @select-module="onJawabanModuleSelect" />
 
           <!-- Praktikum Layout -->
-          <PraktikumSection
-            v-if="isPraktikum"
-            :is-polling-enabled="isPollingEnabled"
-            :polling-complete="pollingComplete_mutable"
-            :current-user="currentUser"
-            :all-asisten="allAsisten"
-            :all-asisten-polling="allAsistenPolling"
-            :all-polling="allPolling"
-            :current-praktikum="current_praktikum"
-            :current-modul="current_modul"
-            :programming-quote="programmingQuote"
-            :quote-author="quoteAuthor"
-            :modul-shown="modulShown"
-            :show-nilai-ta="showNilaiTA"
-            :show-nilai-tk="showNilaiTK"
-            :soal-fitb="soalFitb"
-            :jawaban-fitb="jawabanFitb"
-            :soal-jurnal="soalJurnal"
-            :jawaban-jurnal="jawabanJurnal"
-            :soal-runmod="soalRunmod"
-            :jawaban-runmod="jawabanRunmod"
-            :soal-mandiri="soalMandiri"
-            :jawaban-mandiri="jawabanMandiri"
-            :soal-ta="soalTA"
-            :jawaban-ta="jawabanTA"
-            :soal-tk="soalTK"
-            :jawaban-tk="jawabanTK"
-            :laporan-praktikan="laporanPraktikan"
-            :nilai-ta="nilaiTA"
-            :nilai-tk="nilaiTK"
-            :generate-score-text="generateScoreText"
-            @polling-saved="handlePollingSaved"
-            @finish-praktikum="finishPraktikum"
-            @text-answer-change="handleTextAnswerChange"
-            @question-option-select="handleQuestionOptionSelect"
-            @update:modulShown="value => modulShown = value"
-            @update:showNilaiTa="value => showNilaiTA = value"
+          <PraktikumSection v-if="isPraktikum" :is-polling-enabled="isPollingEnabled"
+            :polling-complete="pollingComplete_mutable" :current-user="currentUser" :all-asisten="allAsisten"
+            :all-asisten-polling="allAsistenPolling" :all-polling="allPolling" :current-praktikum="current_praktikum"
+            :current-modul="current_modul" :programming-quote="programmingQuote" :quote-author="quoteAuthor"
+            :modul-shown="modulShown" :show-nilai-ta="showNilaiTA" :show-nilai-tk="showNilaiTK" :soal-fitb="soalFitb"
+            :jawaban-fitb="jawabanFitb" :soal-jurnal="soalJurnal" :jawaban-jurnal="jawabanJurnal"
+            :soal-runmod="soalRunmod" :jawaban-runmod="jawabanRunmod" :soal-mandiri="soalMandiri"
+            :jawaban-mandiri="jawabanMandiri" :soal-ta="soalTA" :jawaban-ta="jawabanTA" :soal-tk="soalTK"
+            :jawaban-tk="jawabanTK" :laporan-praktikan="laporanPraktikan" :nilai-ta="nilaiTA" :nilai-tk="nilaiTK"
+            :selected-answers="selectedAnswers" :generate-score-text="generateScoreText"
+            @polling-saved="handlePollingSaved" @finish-praktikum="finishPraktikum"
+            @text-answer-change="handleTextAnswerChange" @question-option-select="handleQuestionOptionSelect"
+            @update:modulShown="value => modulShown = value" @update:showNilaiTa="value => showNilaiTA = value"
             @update:showNilaiTk="value => showNilaiTK = value"
-            @update:laporanPraktikan="value => laporanPraktikan = value"
-          />
+            @update:laporanPraktikan="value => laporanPraktikan = value" />
         </div>
       </div>
     </div>
 
     <!-- Main Menu -->
-    <div class="absolute w-24full right-0 h-16 flex animation-enable"
-        :class="[{ 'bottom-0': pageActive },
-                { 'bottom-min4rem': !pageActive }]">
+    <div class="absolute w-24full right-0 h-16 flex animation-enable" :class="[{ 'bottom-0': pageActive },
+    { 'bottom-min4rem': !pageActive }]">
       <div class="m-auto h-full w-3/5 flex">
 
         <!-- Dummy For Animation -->
-        <div class="h-full animation-enable"
-            :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
-                    { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]"/>
-        <div class="h-full animation-enable"
-            :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
-                    { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]"/>
-        <div class="h-full animation-enable"
-            :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
-                    { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]"/>
-        <div class="h-full animation-enable"
-            :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
-                    { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]"/>
+        <div class="h-full animation-enable" :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
+        { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]" />
+        <div class="h-full animation-enable" :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
+        { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]" />
+        <div class="h-full animation-enable" :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
+        { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]" />
+        <div class="h-full animation-enable" :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
+        { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]" />
         <!-- END -->
 
-        <div class="h-full flex animation-enable pointer-events-none"
-            :class="[{ 'w-1/11': !isProfil },
-                    { 'w-9/11': isProfil }]"
-            v-on:click="showProfil">
-          <div class="h-full flex animation-enable pointer-events-none"
-              :class="[{ 'w-full': !isProfil },
-                      { 'w-1/2': isProfil }]">
-            <div class="h-full animation-enable pointer-events-none"
-              :class="[{ 'w-0': !isProfil },
-                      { 'w-9/12': isProfil }]"/>
-            <img class="profilIcon w-full iconYellowHover select-none cursor-pointer pointer-events-auto self-center h-8 fas fa-address-card animation-enable">
+        <div class="h-full flex animation-enable pointer-events-none" :class="[{ 'w-1/11': !isProfil },
+        { 'w-9/11': isProfil }]" v-on:click="showProfil">
+          <div class="h-full flex animation-enable pointer-events-none" :class="[{ 'w-full': !isProfil },
+          { 'w-1/2': isProfil }]">
+            <div class="h-full animation-enable pointer-events-none" :class="[{ 'w-0': !isProfil },
+            { 'w-9/12': isProfil }]" />
+            <img
+              class="profilIcon w-full iconYellowHover select-none cursor-pointer pointer-events-auto self-center h-8 fas fa-address-card animation-enable">
           </div>
-          <span class="self-center text-left font-monda-bold text-lg text-white animation-enable-short"
-              :class="[{ 'w-0 opacity-0 tracking-tighter': !isProfil },
-                      { 'w-1/2 opacity-100 tracking-widest': isProfil }]">
+          <span class="self-center text-left font-monda-bold text-lg text-white animation-enable-short" :class="[{ 'w-0 opacity-0 tracking-tighter': !isProfil },
+          { 'w-1/2 opacity-100 tracking-widest': isProfil }]">
             Profil
           </span>
         </div>
 
-        <div class="h-full flex animation-enable pointer-events-none"
-            :class="[{ 'w-1/11': !isPraktikum },
-                    { 'w-9/11': isPraktikum }]"
-            v-on:click="showPraktikum">
-          <div class="h-full flex animation-enable pointer-events-none"
-              :class="[{ 'w-full': !isPraktikum },
-                      { 'w-1/2': isPraktikum }]">
-            <div class="h-full animation-enable pointer-events-none"
-              :class="[{ 'w-0': !isPraktikum },
-                      { 'w-9/12': isPraktikum }]"/>
-            <img class="praktikumIcon w-full iconYellowHover select-none cursor-pointer pointer-events-auto self-center h-8 fas fa-code animation-enable">
+        <div class="h-full flex animation-enable pointer-events-none" :class="[{ 'w-1/11': !isPraktikum },
+        { 'w-9/11': isPraktikum }]" v-on:click="showPraktikum">
+          <div class="h-full flex animation-enable pointer-events-none" :class="[{ 'w-full': !isPraktikum },
+          { 'w-1/2': isPraktikum }]">
+            <div class="h-full animation-enable pointer-events-none" :class="[{ 'w-0': !isPraktikum },
+            { 'w-9/12': isPraktikum }]" />
+            <img
+              class="praktikumIcon w-full iconYellowHover select-none cursor-pointer pointer-events-auto self-center h-8 fas fa-code animation-enable">
           </div>
-          <span class="self-center text-left font-monda-bold text-lg text-white animation-enable-short"
-              :class="[{ 'w-0 opacity-0 tracking-tighter': !isPraktikum },
-                      { 'w-1/2 opacity-100 tracking-widest': isPraktikum }]">
+          <span class="self-center text-left font-monda-bold text-lg text-white animation-enable-short" :class="[{ 'w-0 opacity-0 tracking-tighter': !isPraktikum },
+          { 'w-1/2 opacity-100 tracking-widest': isPraktikum }]">
             Praktikum
           </span>
         </div>
-        
-        <div class="h-full flex animation-enable pointer-events-none"
-            :class="[{ 'w-1/11': !isTP },
-                    { 'w-9/11': isTP }]"
-            v-on:click="showTP">
-          <div class="h-full flex animation-enable pointer-events-none"
-              :class="[{ 'w-full': !isTP },
-                      { 'w-1/2': isTP }]">
-            <div class="h-full animation-enable pointer-events-none"
-              :class="[{ 'w-0': !isTP },
-                      { 'w-9/12': isTP }]"/>
-            <img class="tpIcon w-full iconYellowHover select-none cursor-pointer pointer-events-auto self-center h-8 fas fa-file-code animation-enable">
+
+        <div class="h-full flex animation-enable pointer-events-none" :class="[{ 'w-1/11': !isTP },
+        { 'w-9/11': isTP }]" v-on:click="showTP">
+          <div class="h-full flex animation-enable pointer-events-none" :class="[{ 'w-full': !isTP },
+          { 'w-1/2': isTP }]">
+            <div class="h-full animation-enable pointer-events-none" :class="[{ 'w-0': !isTP },
+            { 'w-9/12': isTP }]" />
+            <img
+              class="tpIcon w-full iconYellowHover select-none cursor-pointer pointer-events-auto self-center h-8 fas fa-file-code animation-enable">
           </div>
-          <span class="self-center text-left font-monda-bold text-lg text-white animation-enable-short"
-              :class="[{ 'w-0 opacity-0 tracking-tighter': !isTP },
-                      { 'w-1/2 opacity-100 tracking-widest': isTP }]">
+          <span class="self-center text-left font-monda-bold text-lg text-white animation-enable-short" :class="[{ 'w-0 opacity-0 tracking-tighter': !isTP },
+          { 'w-1/2 opacity-100 tracking-widest': isTP }]">
             Tugas Pendahuluan
           </span>
         </div>
 
-        <div class="h-full flex animation-enable pointer-events-none"
-            :class="[{ 'w-1/11': !isNilai },
-                    { 'w-9/11': isNilai }]"
-            v-on:click="showNilai">
-          <div class="h-full flex animation-enable pointer-events-none"
-              :class="[{ 'w-full': !isNilai },
-                      { 'w-1/2': isNilai }]">
-            <div class="h-full animation-enable pointer-events-none"
-              :class="[{ 'w-0': !isNilai },
-                      { 'w-9/12': isNilai }]"/>
-            <img class="nilaiIcon w-full iconYellowHover select-none cursor-pointer pointer-events-auto self-center h-8 fas fa-chart-area animation-enable">
+        <div class="h-full flex animation-enable pointer-events-none" :class="[{ 'w-1/11': !isNilai },
+        { 'w-9/11': isNilai }]" v-on:click="showNilai">
+          <div class="h-full flex animation-enable pointer-events-none" :class="[{ 'w-full': !isNilai },
+          { 'w-1/2': isNilai }]">
+            <div class="h-full animation-enable pointer-events-none" :class="[{ 'w-0': !isNilai },
+            { 'w-9/12': isNilai }]" />
+            <img
+              class="nilaiIcon w-full iconYellowHover select-none cursor-pointer pointer-events-auto self-center h-8 fas fa-chart-area animation-enable">
           </div>
-          <span class="self-center text-left font-monda-bold text-lg text-white animation-enable-short"
-              :class="[{ 'w-0 opacity-0 tracking-tighter': !isNilai },
-                      { 'w-1/2 opacity-100 tracking-widest': isNilai }]">
+          <span class="self-center text-left font-monda-bold text-lg text-white animation-enable-short" :class="[{ 'w-0 opacity-0 tracking-tighter': !isNilai },
+          { 'w-1/2 opacity-100 tracking-widest': isNilai }]">
             Nilai
           </span>
         </div>
 
-        <div class="h-full flex animation-enable pointer-events-none"
-            :class="[{ 'w-1/11': !isJawaban },
-                    { 'w-9/11': isJawaban }]"
-            v-on:click="showJawaban">
-          <div class="h-full flex animation-enable pointer-events-none"
-              :class="[{ 'w-full': !isJawaban },
-                      { 'w-1/2': isJawaban }]">
-            <div class="h-full animation-enable pointer-events-none"
-              :class="[{ 'w-0': !isJawaban },
-                      { 'w-9/12': isJawaban }]"/>
-            <img class="jawabanIcon w-full iconYellowHover select-none cursor-pointer pointer-events-auto self-center h-8 fas fa-book animation-enable">
+        <div class="h-full flex animation-enable pointer-events-none" :class="[{ 'w-1/11': !isJawaban },
+        { 'w-9/11': isJawaban }]" v-on:click="showJawaban">
+          <div class="h-full flex animation-enable pointer-events-none" :class="[{ 'w-full': !isJawaban },
+          { 'w-1/2': isJawaban }]">
+            <div class="h-full animation-enable pointer-events-none" :class="[{ 'w-0': !isJawaban },
+            { 'w-9/12': isJawaban }]" />
+            <img
+              class="jawabanIcon w-full iconYellowHover select-none cursor-pointer pointer-events-auto self-center h-8 fas fa-book animation-enable">
           </div>
-          <span class="self-center text-left font-monda-bold text-lg text-white animation-enable-short"
-              :class="[{ 'w-0 opacity-0 tracking-tighter': !isJawaban },
-                      { 'w-1/2 opacity-100 tracking-widest': isJawaban }]">
+          <span class="self-center text-left font-monda-bold text-lg text-white animation-enable-short" :class="[{ 'w-0 opacity-0 tracking-tighter': !isJawaban },
+          { 'w-1/2 opacity-100 tracking-widest': isJawaban }]">
             Jawaban
           </span>
         </div>
 
         <!-- Dummy For Animation -->
-        <div class="h-full animation-enable"
-            :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
-                    { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]"/>
-        <div class="h-full animation-enable"
-            :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
-                    { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]"/>
-        <div class="h-full animation-enable"
-            :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
-                    { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]"/>
-        <div class="h-full animation-enable"
-            :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
-                    { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]"/>
+        <div class="h-full animation-enable" :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
+        { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]" />
+        <div class="h-full animation-enable" :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
+        { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]" />
+        <div class="h-full animation-enable" :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
+        { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]" />
+        <div class="h-full animation-enable" :class="[{ 'w-1/11': !isPraktikum && !isNilai && !isTP && !isProfil && !isJawaban },
+        { 'w-0': isPraktikum || isNilai || isTP || isProfil || isJawaban }]" />
         <!-- END -->
 
       </div>
     </div>
 
     <!-- Profile Menu -->
-    <div class="absolute top-0 right-0 z-40 w-24full h-24 flex"
-        :class="[{ 'visible': isMenuShown && pageActive },
-                { 'hidden': !isMenuShown }]" @mouseleave="isMenuShown = false">
+    <div class="absolute top-0 right-0 z-40 w-24full h-24 flex" :class="[{ 'visible': isMenuShown && pageActive },
+    { 'hidden': !isMenuShown }]" @mouseleave="isMenuShown = false">
       <div class="m-auto h-full w-56 flex-row bg-gray-600 mt-2 rounded-lg">
-        <div class="w-full h-2/3"/>
+        <div class="w-full h-2/3" />
         <div class="w-full h-1/3 flex">
-          <div class="rounded-b-lg bg-gray-400 flex hover:bg-gray-500 w-full h-full cursor-pointer" v-on:click="signOut">
+          <div class="rounded-b-lg bg-gray-400 flex hover:bg-gray-500 w-full h-full cursor-pointer"
+            v-on:click="signOut">
             <span class="m-auto font-monda-bold text-sm text-right w-full">
               Logout
             </span>
@@ -414,56 +338,53 @@
     </div>
 
     <!-- Profile Layout -->
-    <div class="absolute right-0 w-24full h-16 flex animation-enable"
-        :class="[{ 'top-0': pageActive },
-                { 'top-min4rem': !pageActive },
-                { 'z-40': !openWide },
-                { 'z-0': openWide }]">
+    <div class="absolute right-0 w-24full h-16 flex animation-enable" :class="[{ 'top-0': pageActive },
+    { 'top-min4rem': !pageActive },
+    { 'z-40': !openWide },
+    { 'z-0': openWide }]">
       <div class="m-auto h-12 mt-4 w-48 flex items-center font-monda-bold text-lg text-white">
         <span class="m-auto flex items-center z-10" @mouseover="isMenuShown = true">
           {{ currentUser.nim }}
-          <div class="w-4"/>
+          <div class="w-4" />
           <img class="select-none w-8 h-8 fas fa-arrow-circle-down" style="color: white;">
         </span>
       </div>
     </div>
 
     <!-- Message Layout -->
-    <div class="absolute z-50 bottom-0 w-full h-full bg-black animation-enable pointer-events-none"
-        :class="[{ 'opacity-75': messageOpened },
-                { 'opacity-0': !messageOpened }]"/>
-    <div class="absolute z-50 w-full h-36 bg-gray-500 rounded-b-lg animation-enable"
-        :class="[{ 'top-0': messageOpened },
-                { ' top-min20rem': !messageOpened }]">
+    <div class="absolute z-50 bottom-0 w-full h-full bg-black animation-enable pointer-events-none" :class="[{ 'opacity-75': messageOpened },
+    { 'opacity-0': !messageOpened }]" />
+    <div class="absolute z-50 w-full h-36 bg-gray-500 rounded-b-lg animation-enable" :class="[{ 'top-0': messageOpened },
+    { ' top-min20rem': !messageOpened }]">
       <form id="messageForm" class="w-full h-full pl-24 flex">
         <div class="w-2/12 h-full flex-row py-4">
           <span class="font-merri w-full text-left text-lg h-1/4">
             Kode Asisten
           </span>
           <div class="w-full h-3/4">
-            <input v-model="formMessage.kode" 
-                  class="font-overpass-mono-bold uppercase text-5xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                  id="Kode" type="text" placeholder="FAI">
+            <input v-model="formMessage.kode"
+              class="font-overpass-mono-bold uppercase text-5xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+              id="Kode" type="text" placeholder="FAI">
           </div>
         </div>
         <div class="w-9/12 h-full flex-row py-4 pl-4">
           <span class="font-merri w-full text-left text-lg h-1/4">
-            Pesan Kepada 
+            Pesan Kepada
             <span class="uppercase">
               [ {{ formMessage.kode }} ]
             </span>
           </span>
           <div class="w-full h-3/4">
-            <textarea v-model="secretMessage" cols="30" rows="10" 
-                  class="font-overpass-mono-bold text-2xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
-                  :class="[{ 'hidden': formMessage.kode.toUpperCase() != 'FAI' },
-                          { 'visible': formMessage.kode.toUpperCase() == 'FAI' }]" 
-                  id="Kode" type="text" placeholder="just for a test"/>
-            <textarea v-model="formMessage.pesan" cols="30" rows="10" 
-                  class="font-overpass-mono-bold text-2xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                  :class="[{ 'hidden': formMessage.kode.toUpperCase() == 'FAI' },
-                          { 'visible': formMessage.kode.toUpperCase() != 'FAI' }]"
-                  id="Kode" type="text" placeholder="just for a test"/>
+            <textarea v-model="secretMessage" cols="30" rows="10"
+              class="font-overpass-mono-bold text-2xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+              :class="[{ 'hidden': formMessage.kode.toUpperCase() != 'FAI' },
+              { 'visible': formMessage.kode.toUpperCase() == 'FAI' }]" id="Kode" type="text"
+              placeholder="just for a test" />
+            <textarea v-model="formMessage.pesan" cols="30" rows="10"
+              class="font-overpass-mono-bold text-2xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+              :class="[{ 'hidden': formMessage.kode.toUpperCase() == 'FAI' },
+              { 'visible': formMessage.kode.toUpperCase() != 'FAI' }]" id="Kode" type="text"
+              placeholder="just for a test" />
           </div>
         </div>
         <div class="w-1/12 h-full">
@@ -475,22 +396,18 @@
     </div>
 
     <!-- Message Menu (OPEN) -->
-    <span class="messageIcon absolute top-0 mt-6 ml-6 w-12 h-12 cursor-pointer animation-enable"
-        :class="[{ 'left-min20rem': !pageActive || messageOpened },
-                { 'left-0': pageActive && !messageOpened },
-                { 'z-50': !openWide },
-                { 'z-0': openWide }]"
-        v-on:click="messageOpened = true">
+    <span class="messageIcon absolute top-0 mt-6 ml-6 w-12 h-12 cursor-pointer animation-enable" :class="[{ 'left-min20rem': !pageActive || messageOpened },
+    { 'left-0': pageActive && !messageOpened },
+    { 'z-50': !openWide },
+    { 'z-0': openWide }]" v-on:click="messageOpened = true">
       <img class="iconGreenHover w-full h-full fas fa-envelope">
     </span>
 
     <!-- Message Menu (CLOSE) -->
-    <span class="messageIcon absolute left-0 mt-20 ml-5 w-12 h-12 p-0 hover:p-1 cursor-pointer animation-enable"
-        :class="[{ 'top-0': messageOpened },
-                { 'top-min20rem': !messageOpened },
-                { 'z-50': !openWide },
-                { 'z-0': openWide }]"
-        v-on:click="messageOpened = false">
+    <span class="messageIcon absolute left-0 mt-20 ml-5 w-12 h-12 p-0 hover:p-1 cursor-pointer animation-enable" :class="[{ 'top-0': messageOpened },
+    { 'top-min20rem': !messageOpened },
+    { 'z-50': !openWide },
+    { 'z-0': openWide }]" v-on:click="messageOpened = false">
       <img class="w-full h-full fas fa-window-close" style="color: black;">
     </span>
   </div>
@@ -512,16 +429,19 @@
   color: #d69e2e;
 }
 
-.iconYellowHover:hover{
+.iconYellowHover:hover {
   color: #faf089;
 }
-.bg-yellow-300-active:active{
+
+.bg-yellow-300-active:active {
   background-color: #faf089 !important;
 }
-.bg-yellow-300-nonActive:active{
+
+.bg-yellow-300-nonActive:active {
   background-color: #b7791f !important;
 }
-.bg-yellow-500-Active:active{
+
+.bg-yellow-500-Active:active {
   background-color: #ecc94b !important;
 }
 </style>
@@ -601,8 +521,7 @@ export default {
 
       programmingQuote: 'nothing',
       quoteAuthor: '',
-      randomNumber:'',
-      ATCnim:'',
+      randomNumber: '',
       soalPresentasi: [],
       soalTA: [],
       soalTK: [],
@@ -615,6 +534,9 @@ export default {
 
       jawabanTA: [],
       jawabanTK: [],
+
+      // Reactive state for tracking selected answers
+      selectedAnswers: {},
 
       chosenJawaban: [],
       jawabanPraktikan: {
@@ -642,6 +564,8 @@ export default {
       jawabanMandiri: [],
       jawabanTP: [],
       jawabanRunmod: [],
+      jawabanTaAnswers: [],
+      jawabanTkAnswers: [],
 
       laporanPraktikan: {
         pesan: '',
@@ -681,9 +605,9 @@ export default {
       ],
 
       secretMessage: 'VnRjdHggQU4gdnAgV1RZUCBxbGNsaGxqX2VjdHhwIG9weXJseSBhcGRseSA6IHF3bHJ7cGxkZXBjX3Bycl8xX290ZXB4ZnZseX0=',
-      
-      resetPass:{
-        password:'',
+
+      resetPass: {
+        password: '',
         repeatpass: '',
       },
 
@@ -717,11 +641,11 @@ export default {
 
   methods: {
 
-    generateScoreText: function($nilai) {
+    generateScoreText: function ($nilai) {
 
-      if($nilai > 50)
+      if ($nilai > 50)
         return this.goodScoreText[Math.floor(Math.random() * this.goodScoreText.length)];
-      else 
+      else
         return this.badScoreText[Math.floor(Math.random() * this.badScoreText.length)];
     },
 
@@ -976,14 +900,178 @@ export default {
           this.toast.error(data.message);
         }
       } catch (error) {
-        this.handleRequestError(error, 'Gagal mengirim jawaban');
+        // Handle new robust controller error responses
+        if (error.response?.status === 422) {
+          this.toast.error(error.response.data.message || 'Data yang dikirim tidak valid');
+        } else if (error.response?.status === 409) {
+          this.toast.error(error.response.data.message || 'Tidak ada soal untuk modul ini');
+        } else if (error.response?.status === 500) {
+          this.toast.error(error.response.data.message || 'Terjadi kesalahan dalam penilaian');
+        } else {
+          this.handleRequestError(error, 'Gagal mengirim jawaban');
+        }
       }
+    },
+
+    // Autosave functionality
+    async saveAutosave(tipesoal) {
+      if (!this.current_praktikum.modul_id) {
+        return;
+      }
+
+      try {
+        // Convert chosenJawaban array to object format {soal_id: answer}
+        const jawabanObject = {};
+        this.chosenJawaban.forEach(item => {
+          if (item.soal_id && item.jawaban) {
+            jawabanObject[item.soal_id] = item.jawaban;
+          }
+        });
+
+        // Only save if there are answers
+        if (Object.keys(jawabanObject).length === 0) {
+          return;
+        }
+
+        const payload = {
+          praktikan_id: this.currentUser.id,
+          modul_id: this.current_praktikum.modul_id,
+          tipe_soal: tipesoal,
+          jawaban: jawabanObject
+        };
+
+        await this.$axios.post('/praktikan/autosave', payload);
+      } catch (error) {
+        // Silent fail for autosave to not interrupt user experience
+        console.warn('[SAVE] Autosave failed:', error);
+      }
+    },
+
+    async loadAutosave(tipesoal) {
+
+      if (!this.current_praktikum.modul_id) {
+        return {};
+      }
+
+      try {
+        const requestParams = {
+          praktikan_id: this.currentUser.id,
+          modul_id: this.current_praktikum.modul_id,
+          tipe_soal: tipesoal
+        };
+
+        const { data } = await this.$axios.get('/praktikan/autosave', {
+          params: requestParams
+        });
+
+        // Find autosave entry for this tipe_soal
+        const autosaveEntry = data.find(entry => entry.tipe_soal === tipesoal);
+
+        const result = autosaveEntry ? autosaveEntry.jawaban : {};
+        return result;
+      } catch (error) {
+        console.warn('[AUTOSAVE] Failed to load autosave:', error);
+        return {};
+      }
+    },
+
+    async clearAutosave(tipesoal = null) {
+      if (!this.current_praktikum.modul_id) {
+        return;
+      }
+
+      try {
+        const payload = {
+          praktikan_id: this.currentUser.id,
+          modul_id: this.current_praktikum.modul_id
+        };
+
+        if (tipesoal) {
+          payload.tipe_soal = tipesoal;
+        }
+
+        await this.$axios.delete('/praktikan/autosave/clear', { data: payload });
+      } catch (error) {
+        console.warn('Failed to clear autosave:', error);
+      }
+    },
+
+    // Restore answers from autosave
+    restoreAnswersFromAutosave(savedAnswers, soalType) {
+
+      if (!savedAnswers || Object.keys(savedAnswers).length === 0) {
+        return;
+      }
+
+      // Update chosenJawaban array with saved answers
+      this.chosenJawaban.forEach((item, index) => {
+        if (item.soal_id && savedAnswers[item.soal_id]) {
+          item.jawaban = savedAnswers[item.soal_id];
+
+          // Update reactive state instead of jQuery
+          const jawabanArray = soalType === "TA" ? this.jawabanTA : this.jawabanTK;
+          if (jawabanArray[index]) {
+            const answerIndex = jawabanArray[index].indexOf(item.jawaban);
+            if (answerIndex !== -1) {
+              const key = `${index}-${answerIndex}`;
+              this.selectedAnswers[key] = true;
+            }
+          }
+        }
+      });
+    },
+
+    // Autosave for text-based answers (jurnal, fitb, mandiri)
+    async saveTextAutosave(tipesoal, answersArray) {
+      if (!this.current_praktikum.modul_id || !Array.isArray(answersArray)) {
+        return;
+      }
+
+      try {
+        // Convert answers array to object format {soal_id: answer}
+        const jawabanObject = {};
+        answersArray.forEach(item => {
+          if (item.soal_id && item.jawaban) {
+            jawabanObject[item.soal_id] = item.jawaban;
+          }
+        });
+
+        // Only save if there are answers
+        if (Object.keys(jawabanObject).length === 0) {
+          return;
+        }
+
+        await this.$axios.post('/praktikan/autosave', {
+          praktikan_id: this.currentUser.id,
+          modul_id: this.current_praktikum.modul_id,
+          tipe_soal: tipesoal,
+          jawaban: jawabanObject
+        });
+      } catch (error) {
+        // Silent fail for autosave to not interrupt user experience
+        console.warn('Text autosave failed:', error);
+      }
+    },
+
+    // Restore text answers from autosave
+    restoreTextAnswersFromAutosave(savedAnswers, answersArray) {
+      if (!savedAnswers || Object.keys(savedAnswers).length === 0 || !Array.isArray(answersArray)) {
+        return;
+      }
+
+      // Update answers array with saved answers
+      answersArray.forEach(item => {
+        if (item.soal_id && savedAnswers[item.soal_id]) {
+          item.jawaban = savedAnswers[item.soal_id];
+        }
+      });
     },
 
     async loadSoalTa() {
       this.soalTA = [];
       this.jawabanTA = [];
       this.chosenJawaban = [];
+      this.selectedAnswers = {}; // Clear selected answers
       try {
         const { data } = await this.$axios.get(`/api/soal/ta/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
 
@@ -995,23 +1083,36 @@ export default {
         const questions = Array.isArray(data.all_soal) ? data.all_soal : [];
         this.soalTA = questions;
 
-        questions.forEach((soal) => {
-          const shuffledAnswers = this.shuffleArr([
-            soal.jawaban_benar,
-            soal.jawaban_salah1,
-            soal.jawaban_salah2,
-            soal.jawaban_salah3,
-          ]);
-
+        if (questions.length === 0) {
           this.chosenJawaban.push({
             modul_id: this.current_praktikum.modul_id,
             praktikan_id: this.currentUser.id,
-            soal_id: soal.id,
+            soal_id: null,
             jawaban: '',
           });
+        } else {
+          questions.forEach((soal) => {
+            const shuffledAnswers = this.shuffleArr([
+              soal.jawaban_benar,
+              soal.jawaban_salah1,
+              soal.jawaban_salah2,
+              soal.jawaban_salah3,
+            ]);
 
-          this.jawabanTA.push(shuffledAnswers);
-        });
+            this.chosenJawaban.push({
+              modul_id: this.current_praktikum.modul_id,
+              praktikan_id: this.currentUser.id,
+              soal_id: soal.id,
+              jawaban: '',
+            });
+
+            this.jawabanTA.push(shuffledAnswers);
+          });
+
+          // Load autosaved answers
+          const savedAnswers = await this.loadAutosave('ta');
+          this.restoreAnswersFromAutosave(savedAnswers, 'TA');
+        }
       } catch (error) {
         this.handleRequestError(error, 'Gagal memuat soal TA');
       }
@@ -1040,6 +1141,12 @@ export default {
           praktikan_id: this.currentUser.id,
           jawaban: '',
         }));
+
+        // Load autosaved answers
+        if (list.length > 0) {
+          const savedAnswers = await this.loadAutosave('jurnal');
+          this.restoreTextAnswersFromAutosave(savedAnswers, this.jawabanJurnal);
+        }
       } catch (error) {
         this.handleRequestError(error, 'Gagal memuat soal Jurnal');
       }
@@ -1064,6 +1171,12 @@ export default {
           praktikan_id: this.currentUser.id,
           jawaban: '',
         }));
+
+        // Load autosaved answers
+        if (list.length > 0) {
+          const savedAnswers = await this.loadAutosave('fitb');
+          this.restoreTextAnswersFromAutosave(savedAnswers, this.jawabanFitb);
+        }
       } catch (error) {
         this.handleRequestError(error, 'Gagal memuat soal FITB');
       }
@@ -1088,6 +1201,12 @@ export default {
           praktikan_id: this.currentUser.id,
           jawaban: '',
         }));
+
+        // Load autosaved answers
+        if (list.length > 0) {
+          const savedAnswers = await this.loadAutosave('mandiri');
+          this.restoreTextAnswersFromAutosave(savedAnswers, this.jawabanMandiri);
+        }
       } catch (error) {
         this.handleRequestError(error, 'Gagal memuat soal Mandiri');
       }
@@ -1097,6 +1216,7 @@ export default {
       this.soalTK = [];
       this.chosenJawaban = [];
       this.jawabanTK = [];
+      this.selectedAnswers = {}; // Clear selected answers
       try {
         const { data } = await this.$axios.get(`/api/soal/tk/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
 
@@ -1108,23 +1228,38 @@ export default {
         const questions = data.all_soal || [];
         this.soalTK = questions;
 
-        questions.forEach((soal) => {
-          const answers = this.shuffleArr([
-            soal.jawaban_benar,
-            soal.jawaban_salah1,
-            soal.jawaban_salah2,
-            soal.jawaban_salah3,
-          ]);
-
+        // Always ensure chosenJawaban has at least basic info for submission
+        if (questions.length === 0) {
+          // Add empty entry with praktikan_id and modul_id for empty questions
           this.chosenJawaban.push({
             modul_id: this.current_praktikum.modul_id,
             praktikan_id: this.currentUser.id,
-            soal_id: soal.id,
+            soal_id: null,
             jawaban: '',
           });
+        } else {
+          questions.forEach((soal) => {
+            const answers = this.shuffleArr([
+              soal.jawaban_benar,
+              soal.jawaban_salah1,
+              soal.jawaban_salah2,
+              soal.jawaban_salah3,
+            ]);
 
-          this.jawabanTK.push(answers);
-        });
+            this.chosenJawaban.push({
+              modul_id: this.current_praktikum.modul_id,
+              praktikan_id: this.currentUser.id,
+              soal_id: soal.id,
+              jawaban: '',
+            });
+
+            this.jawabanTK.push(answers);
+          });
+
+          // Load autosaved answers
+          const savedAnswers = await this.loadAutosave('tk');
+          this.restoreAnswersFromAutosave(savedAnswers, 'TK');
+        }
       } catch (error) {
         this.handleRequestError(error, 'Gagal memuat soal TK');
       }
@@ -1168,47 +1303,55 @@ export default {
       }
     },
 
-    handleStatusZero() {
+    startPraktikum() {
       this.praktikumExist = true;
       this.showPraktikum();
       this.openWide = true;
     },
 
-    async handleStatusOne() {
+    async startTA() {
       await this.loadSoalTa();
     },
 
-    async handleStatusTwo(isRealtime) {
+    async startJurnal(isRealtime) {
       if (isRealtime) {
         await this.submitJawaban('/praktikan/jawaban/ta', this.chosenJawaban, (data) => {
           this.nilaiTA = data.nilaiTa;
           this.showNilaiTA = true;
+          // Clear TA autosave after successful submission
+          this.clearAutosave('ta');
         });
       }
 
       await this.loadSoalJurnalAndFitb();
     },
 
-    async handleStatusThree(isRealtime) {
+    async startMandiri(isRealtime) {
       if (isRealtime) {
         await Promise.all([
-          this.submitJawaban('/praktikan/jawaban/jurnal', this.jawabanJurnal),
-          this.submitJawaban('/praktikan/jawaban/fitb', this.jawabanFitb),
+          this.submitJawaban('/praktikan/jawaban/jurnal', this.jawabanJurnal, () => {
+            this.clearAutosave('jurnal');
+          }),
+          this.submitJawaban('/praktikan/jawaban/fitb', this.jawabanFitb, () => {
+            this.clearAutosave('fitb');
+          }),
         ]);
       }
 
       await this.loadSoalMandiri();
     },
 
-    async handleStatusFour(isRealtime) {
+    async startTK(isRealtime) {
       if (isRealtime) {
-        await this.submitJawaban('/praktikan/jawaban/mandiri', this.jawabanMandiri);
+        await this.submitJawaban('/praktikan/jawaban/mandiri', this.jawabanMandiri, () => {
+          this.clearAutosave('mandiri');
+        });
       }
 
       await this.loadSoalTk();
     },
 
-    async handleStatusFive(isRealtime) {
+    async startFeedback(isRealtime) {
       if (this.isRunmod) {
         if (isRealtime) {
           await this.submitJawaban('/praktikan/jawaban/jurnal', this.jawabanRunmod);
@@ -1217,6 +1360,8 @@ export default {
         await this.submitJawaban('/praktikan/jawaban/tk', this.chosenJawaban, (data) => {
           this.nilaiTK = data.nilaiTk;
           this.showNilaiTK = true;
+          // Clear TK autosave after successful submission
+          this.clearAutosave('tk');
         });
       }
 
@@ -1244,6 +1389,17 @@ export default {
       const entry = target[answerIndex];
       if (entry && typeof entry === 'object') {
         entry.jawaban = value;
+
+        // Trigger autosave for text answers
+        const tipesoalMap = {
+          'jawabanJurnal': 'jurnal',
+          'jawabanFitb': 'fitb',
+          'jawabanMandiri': 'mandiri'
+        };
+
+        if (tipesoalMap[arrayName]) {
+          this.saveTextAutosave(tipesoalMap[arrayName], target);
+        }
       }
     },
 
@@ -1260,23 +1416,10 @@ export default {
         payload.option,
         soalId,
         payload.questionIndex,
-        payload.optionIndex,
-      );
+        payload.optionIndex,);
     },
 
-    tpPickRandomProgram: function()
-    {
-         return Math.floor(Math.random()*3)+5;
-    },
-    
-    pickATCnim: function()
-    {
-        if(this.currentUser.kelas.substring(6, 10) == 'INT'){
-          return '1101170002';
-        } else return '1101170001';
-    },
-
-    shuffleArr: function($arr){
+    shuffleArr: function ($arr) {
 
       for (let i = $arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -1291,10 +1434,8 @@ export default {
       try {
         const { data } = await this.$axios.post('/praktikan/tp/save-jawaban', this.jawabanTP);
 
-        if(data.message === "success") {
-          
-          this.toast.success("TP ANDA BERHASIL DISIMPAN"
-          );
+        if (data.message === "success") {
+          this.toast.success("TP ANDA BERHASIL DISIMPAN");
         } else {
           this.toast.error(data.message);
         }
@@ -1302,30 +1443,30 @@ export default {
         this.handleRequestError(error, 'Gagal menyimpan jawaban TP');
       }
     },
-    
-    async finishPraktikum(){
 
-      if(this.laporanPraktikan.asisten_id === ''){
+    async finishPraktikum() {
+
+      if (this.laporanPraktikan.asisten_id === '') {
         this.toast.error('Pilih asisten yang mengajar anda terlebih dahulu <br> (dibagian paling atas samping kiri rating)');
         return;
       }
 
-      if(this.laporanPraktikan.pesan === ''){
+      if (this.laporanPraktikan.pesan === '') {
         this.toast.error('Masukkan pesan untuk praktikum / asisten terlebih dahulu');
         return;
       }
 
-      if(this.laporanPraktikan.pesan.length < 20){
+      if (this.laporanPraktikan.pesan.length < 20) {
         this.toast.error('Pesan berisi minimal 20 karakter');
         return;
       }
 
-      if(this.laporanPraktikan.rating_asisten === 0){
+      if (this.laporanPraktikan.rating_asisten === 0) {
         this.toast.error('Beri rating untuk asisten terlebih dahulu');
         return;
       }
 
-      if(this.laporanPraktikan.rating_praktikum === 0){
+      if (this.laporanPraktikan.rating_praktikum === 0) {
         this.toast.error('Beri rating untuk praktikum terlebih dahulu');
         return;
       }
@@ -1336,27 +1477,29 @@ export default {
       try {
         const { data } = await this.$axios.post('/praktikan/laporan', this.laporanPraktikan);
 
-        if(data.message === "success") {
+        if (data.message === "success") {
           this.current_praktikum.status = 777;
-          this.toast.success("Praktikum telah selesai :)"
-          );
+
+          // Clear all autosaved answers when praktikum ends
+          await this.clearAutosave();
+
+          this.toast.success("Praktikum telah selesai :)");
         } else {
-          this.toast.error(data.message
-          );
+          this.toast.error(data.message);
         }
       } catch (error) {
         this.handleRequestError(error, 'Gagal mengirim laporan praktikum');
       }
     },
 
-    setCurrentPraktikumState: async function(current_praktikum, isRealtime){
+    setCurrentPraktikumState: async function (current_praktikum, isRealtime) {
 
       this.current_praktikum.asisten_id = current_praktikum.asisten_id;
       this.current_praktikum.modul_id = current_praktikum.modul_id;
       this.current_praktikum.kelas_id = current_praktikum.kelas_id;
       this.current_praktikum.status = current_praktikum.status;
 
-      if(this.current_praktikum.kelas_id !== this.currentUser.kelas_id){
+      if (this.current_praktikum.kelas_id !== this.currentUser.kelas_id) {
         return;
       }
 
@@ -1365,27 +1508,27 @@ export default {
       switch (this.current_praktikum.status) {
 
         case 0:
-          this.handleStatusZero();
+          this.startPraktikum();
           break;
 
         case 1:
-          await this.handleStatusOne();
+          await this.startTA();
           break;
 
         case 2:
-          await this.handleStatusTwo(isRealtime);
+          await this.startJurnal(isRealtime);
           break;
 
         case 3:
-          await this.handleStatusThree(isRealtime);
+          await this.startMandiri(isRealtime);
           break;
 
         case 4:
-          await this.handleStatusFour(isRealtime);
+          await this.startTK(isRealtime);
           break;
 
         case 5:
-          await this.handleStatusFive(isRealtime);
+          await this.startFeedback(isRealtime);
           break;
 
         case 123:
@@ -1398,52 +1541,51 @@ export default {
       }
     },
 
-    chooseJawaban: function($soalType, $jawaban, $soalId, $soalIndex, $jawabanIndex) {
+    chooseJawaban: function ($soalType, $jawaban, $soalId, $soalIndex, $jawabanIndex) {
       // Determine which array to use based on soal type
       const jawabanArray = $soalType === "TA" ? this.jawabanTA : this.jawabanTK;
-      
+
       // Find the corresponding chosen jawaban entry
       const chosenJawabanIndex = this.chosenJawaban.findIndex(item => item.soal_id === $soalId);
-      
+
       if (chosenJawabanIndex !== -1) {
         const currentAnswer = this.chosenJawaban[chosenJawabanIndex].jawaban;
-        
-        // If there's a previous answer, reset its styling
+
+        // If there's a previous answer, clear its selection state
         if (currentAnswer !== '') {
           for (let i = 0; i < jawabanArray[chosenJawabanIndex].length; i++) {
             if (jawabanArray[chosenJawabanIndex][i] === currentAnswer) {
-              const previousSelector = `.jawaban-${chosenJawabanIndex}${i}`;
-              $(previousSelector)
-                .addClass('bg-green-200 hover:bg-green-300')
-                .removeClass('bg-green-500 text-white');
+              const previousKey = `${chosenJawabanIndex}-${i}`;
+              this.selectedAnswers[previousKey] = false;
               break;
             }
           }
         }
-        
+
         // Update the answer in the chosen jawaban array
         this.chosenJawaban[chosenJawabanIndex].jawaban = $jawaban;
+
+        // Set the new selection state
+        const currentKey = `${$soalIndex}-${$jawabanIndex}`;
+        this.selectedAnswers[currentKey] = true;
+
+        // Trigger autosave after answer change
+        this.saveAutosave($soalType.toLowerCase());
       }
-      
-      // Update styling for the newly selected answer
-      const currentSelector = `.jawaban-${$soalIndex}${$jawabanIndex}`;
-      $(currentSelector)
-        .removeClass('bg-green-200 hover:bg-green-300')
-        .addClass('bg-green-500 text-white');
     },
 
     handlePollingSaved() {
       this.pollingComplete_mutable = true;
     },
 
-    showPraktikum: function(){
+    showPraktikum: function () {
 
       this.isPraktikum = true;
       this.isTP = false;
       this.isNilai = false;
       this.isProfil = false;
       this.isJawaban = false;
-            
+
       this.allJawabanJurnal = [];
       this.jawabanShown = false;
       this.currentJawabanJurnal = '';
@@ -1452,20 +1594,20 @@ export default {
       $('.tpIcon , .nilaiIcon , .profilIcon, .jawabanIcon').removeClass('youngYellowIcon');
       $('.tpIcon , .nilaiIcon , .profilIcon, .jawabanIcon').addClass('iconYellowHover');
       $('.tpIcon , .nilaiIcon , .profilIcon, .jawabanIcon').addClass('w-full');
-      
+
       $('.praktikumIcon').removeClass('w-full');
       $('.praktikumIcon').removeClass('iconYellowHover');
       $('.praktikumIcon').addClass('youngYellowIcon');
       $('.praktikumIcon').addClass('w-3/12');
     },
 
-    showNilai: function(){
+    showNilai: function () {
       this.isPraktikum = false;
       this.isTP = false;
       this.isNilai = true;
       this.isProfil = false;
       this.isJawaban = false;
-            
+
       this.allJawabanJurnal = [];
       this.jawabanShown = false;
       this.currentJawabanJurnal = '';
@@ -1474,20 +1616,20 @@ export default {
       $('.praktikumIcon , .tpIcon , .profilIcon, .jawabanIcon').removeClass('youngYellowIcon');
       $('.praktikumIcon , .tpIcon , .profilIcon, .jawabanIcon').addClass('iconYellowHover');
       $('.praktikumIcon , .tpIcon , .profilIcon, .jawabanIcon').addClass('w-full');
-      
+
       $('.nilaiIcon').removeClass('w-full');
       $('.nilaiIcon').removeClass('iconYellowHover');
       $('.nilaiIcon').addClass('youngYellowIcon');
       $('.nilaiIcon').addClass('w-3/12');
     },
 
-    showTP: function(){
+    showTP: function () {
       this.isPraktikum = false;
       this.isTP = true;
       this.isNilai = false;
       this.isProfil = false;
       this.isJawaban = false;
-      
+
       this.allJawabanJurnal = [];
       this.jawabanShown = false;
       this.currentJawabanJurnal = '';
@@ -1496,14 +1638,14 @@ export default {
       $('.praktikumIcon , .nilaiIcon , .profilIcon, .jawabanIcon').removeClass('youngYellowIcon');
       $('.praktikumIcon , .nilaiIcon , .profilIcon, .jawabanIcon').addClass('iconYellowHover');
       $('.praktikumIcon , .nilaiIcon , .profilIcon, .jawabanIcon').addClass('w-full');
-      
+
       $('.tpIcon').removeClass('iconYellowHover');
       $('.tpIcon').removeClass('w-full');
       $('.tpIcon').addClass('youngYellowIcon');
       $('.tpIcon').addClass('w-3/12');
     },
 
-    showProfil: function(){
+    showProfil: function () {
       this.isPraktikum = false;
       this.isTP = false;
       this.isNilai = false;
@@ -1518,14 +1660,14 @@ export default {
       $('.praktikumIcon , .nilaiIcon , .tpIcon, .jawabanIcon').removeClass('youngYellowIcon');
       $('.praktikumIcon , .nilaiIcon , .tpIcon, .jawabanIcon').addClass('iconYellowHover');
       $('.praktikumIcon , .nilaiIcon , .tpIcon, .jawabanIcon').addClass('w-full');
-      
+
       $('.profilIcon').removeClass('iconYellowHover');
       $('.profilIcon').removeClass('w-full');
       $('.profilIcon').addClass('youngYellowIcon');
       $('.profilIcon').addClass('w-3/12');
     },
 
-    showJawaban: function(){
+    showJawaban: function () {
       this.isPraktikum = false;
       this.isTP = false;
       this.isNilai = false;
@@ -1536,7 +1678,7 @@ export default {
       $('.praktikumIcon , .nilaiIcon , .tpIcon, .profilIcon').removeClass('youngYellowIcon');
       $('.praktikumIcon , .nilaiIcon , .tpIcon, .profilIcon').addClass('iconYellowHover');
       $('.praktikumIcon , .nilaiIcon , .tpIcon, .profilIcon').addClass('w-full');
-      
+
       $('.jawabanIcon').removeClass('iconYellowHover');
       $('.jawabanIcon').removeClass('w-full');
       $('.jawabanIcon').addClass('youngYellowIcon');
@@ -1552,16 +1694,43 @@ export default {
 
           this.jawabanShown = true;
           this.currentJawabanJurnal = id;
+          
+          // Fetch jurnal answers
           this.$axios.post(`/praktikan/jawaban/jurnal/${this.currentUser.id}/${id}`).then(response => {
-            
-            if(response.data.message === "success"){
-    
+            if (response.data.message === "success") {
               this.allJawabanJurnal = response.data.allJawabanJurnal;
             } else {
-              this.toast.error(response.data.message
-              );
+              this.toast.error(response.data.message);
             }
-          });  
+          });
+
+          // Fetch TA answers
+          this.$axios.get(`/praktikan/jawaban/ta/${this.currentUser.id}/${id}`).then(response => {
+            if (response.data.message === "success") {
+              this.jawabanTaAnswers = response.data.data;
+              console.log('TA Answers (Praktikan):', response.data.data);
+            } else {
+              console.log('Failed to fetch TA answers:', response.data.message);
+              this.jawabanTaAnswers = [];
+            }
+          }).catch(error => {
+            console.error('Error fetching TA answers:', error);
+            this.jawabanTaAnswers = [];
+          });
+
+          // Fetch TK answers
+          this.$axios.get(`/praktikan/jawaban/tk/${this.currentUser.id}/${id}`).then(response => {
+            if (response.data.message === "success") {
+              this.jawabanTkAnswers = response.data.data;
+              console.log('TK Answers (Praktikan):', response.data.data);
+            } else {
+              console.log('Failed to fetch TK answers:', response.data.message);
+              this.jawabanTkAnswers = [];
+            }
+          }).catch(error => {
+            console.error('Error fetching TK answers:', error);
+            this.jawabanTkAnswers = [];
+          });
         }
       }, 250);
 
@@ -1571,51 +1740,44 @@ export default {
       }, 1000);
     },
 
-    travel: function($whereTo){
+    travel: function ($whereTo) {
       setTimeout(() => {
-          this.$inertia.get('/praktikan/' + $whereTo, {}, {
-            replace: true,
-          });
-        }, 500); 
+        this.$inertia.get('/praktikan/' + $whereTo, {}, {
+          replace: true,
+        });
+      }, 500);
     },
 
-    signOut: function() {
+    signOut: function () {
 
       this.pageActive = false;
       this.isMenuShown = false;
       setTimeout(() => {
-          this.$inertia.get('/logoutPraktikan', {}, {
-            replace: true,
-          });
-        }, 1010); 
+        this.$inertia.get('/logoutPraktikan', {}, {
+          replace: true,
+        });
+      }, 1010);
     },
 
-    async sendMessage(){
+    async sendMessage() {
 
       try {
         const { data } = await this.$axios.post('/praktikan/pesan', this.formMessage);
 
-        if(data.message === "success") {
-
-          this.toast.success("Pesan berhasil terkirim"
-          );
+        if (data.message === "success") {
+          this.toast.success("Pesan berhasil terkirim");
           this.messageOpened = false;
-
         } else {
-
-          this.toast.error(data.message
-          );
+          this.toast.error(data.message);
         }
       } catch (error) {
         const errors = error?.response?.data?.errors;
         if (errors) {
           if (errors.kode?.[0]) {
-            this.toast.error(errors.kode[0]
-            );
+            this.toast.error(errors.kode[0]);
           }
           if (errors.pesan?.[0]) {
-            this.toast.error(errors.pesan[0]
-            );
+            this.toast.error(errors.pesan[0]);
           }
         } else {
           this.handleRequestError(error, 'Gagal mengirim pesan');
@@ -1623,38 +1785,31 @@ export default {
       }
     },
 
-    formPassword: function($bool){
-        this.viewPassForm = $bool;
-      if(!$bool){
+    formPassword: function ($bool) {
+      this.viewPassForm = $bool;
+      if (!$bool) {
         this.resetPass.password = '';
         this.resetPass.repeatpass = '';
       }
     },
 
-    async resetPassword(){
+    async resetPassword() {
       try {
         const { data } = await this.$axios.post('/praktikan/reset-password', this.resetPass);
 
-        if(data.message === "success") {
-          this.toast.success("Password berhasil diperbaharui"   
-          );
-      
-
+        if (data.message === "success") {
+          this.toast.success("Password berhasil diperbaharui");
           this.signOut();
-
         } else {
-          this.toast.error(data.message
-          );
+          this.toast.error(data.message);
         }
       } catch (error) {
         const errors = error?.response?.data?.errors;
         if (errors) {
-          if(errors.password?.[0])
-            this.toast.error(errors.password[0]
-            );
-          if(errors.repeatpass?.[0])
-            this.toast.error(errors.repeatpass[0]
-            );
+          if (errors.password?.[0])
+            this.toast.error(errors.password[0]);
+          if (errors.repeatpass?.[0])
+            this.toast.error(errors.repeatpass[0]);
         } else {
           this.handleRequestError(error, 'Gagal memperbarui password');
         }

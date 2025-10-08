@@ -473,15 +473,12 @@ export default {
       const globe = this;
         this.$axios.post('/asisten/modul/jawaban-config', $modul).then(response => {
           if(response.data.message === "success" && $modul.isUnlocked === true) {
-            globe.toast.success("Jawaban berhasil diaktifkan"
-            );
+            globe.toast.success("Jawaban berhasil diaktifkan");
           } else if(response.data.message === "success" && $modul.isUnlocked === false) {
-            globe.toast.success("Jawaban berhasil dinon-aktifkan"
-            );
+            globe.toast.success("Jawaban berhasil dinon-aktifkan");
           }
           else {
-            globe.toast.error(response.data.message
-            );
+            globe.toast.error(response.data.message);
           }
         })
     },

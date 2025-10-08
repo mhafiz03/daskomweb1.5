@@ -49,12 +49,24 @@
           <div class="w-full h-full overflow-y-auto">
             <div class="w-full h-auto flex-row">
               <QuestionBlock
+                v-if="soalTa && soalTa.length > 0"
                 mode="options"
                 :questions="soalTa"
                 :options-list="jawabanTa"
+                :selected-answers="selectedAnswers"
                 question-key="pertanyaan"
                 :on-option-select="payload => emitQuestionOptionSelect('TA', payload)"
               />
+              <div
+                v-else
+                class="w-full h-32 flex items-center justify-center mt-72 pt-32"
+              >
+                <div class="w-full h-24full flex">
+                  <div class="font-overpass text-3xl m-auto px-16">
+                      <span class="font-merri-bold text-5xl"> Tidak ada soal </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -271,12 +283,24 @@
           <div class="w-full h-full overflow-y-auto">
             <div class="w-full h-auto flex-row">
               <QuestionBlock
+                v-if="soalTk && soalTk.length > 0"
                 mode="options"
                 :questions="soalTk"
                 :options-list="jawabanTk"
+                :selected-answers="selectedAnswers"
                 question-key="pertanyaan"
                 :on-option-select="payload => emitQuestionOptionSelect('TK', payload)"
               />
+              <div
+                v-else
+                class="w-full h-32 flex items-center justify-center mt-72 pt-32"
+              >
+                <div class="w-full h-24full flex">
+                  <div class="font-overpass text-3xl m-auto px-16">
+                      <span class="font-merri-bold text-5xl"> Tidak ada soal </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -525,6 +549,10 @@ export default {
     generateScoreText: {
       type: Function,
       required: true,
+    },
+    selectedAnswers: {
+      type: Object,
+      default: () => ({}),
     },
   },
   emits: [

@@ -677,12 +677,9 @@ export default {
 
       const globe = this;
       this.$axios.put('/asisten/kelas', this.formKelas).then(response => {
-        
-        console.log(response.data)
         if(response.data.message === "success") {
 
-          globe.toast.success("Kelas berhasil diperbaharui"
-          );
+          globe.toast.success("Kelas berhasil diperbaharui");
 
           for(var i=0; i<globe.listAllKelas.length; i++){
             if(globe.listAllKelas[i].id === globe.formKelas.id){
@@ -699,8 +696,7 @@ export default {
           globe.formKelas.totalGroup = "";
 
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       }).catch(function (error) {
         if (error.response) {
@@ -708,17 +704,13 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.kelas != null)
-              globe.toast.error(error.response.data.errors.kelas[0]
-              );
+              globe.toast.error(error.response.data.errors.kelas[0]);
             if(error.response.data.errors.hari != null)
-              globe.toast.error(error.response.data.errors.hari[0]
-              );
+              globe.toast.error(error.response.data.errors.hari[0]);
             if(error.response.data.errors.shift != null)
-              globe.toast.error(error.response.data.errors.shift[0]
-              );
+              globe.toast.error(error.response.data.errors.shift[0]);
             if(error.response.data.errors.totalGroup != null)
-              globe.toast.error(error.response.data.errors.totalGroup[0]
-              );
+              globe.toast.error(error.response.data.errors.totalGroup[0]);
           }
         }
       });
@@ -733,16 +725,14 @@ export default {
         $('.kelas-'+this.chosenKelas.id).addClass('opacity-75 pr-8 hover:pr-4');
       } else {
 
-        globe.toast.error("Pilih salah satu kelas yang ingin di hapus terlebih dahulu"
-        );
+        globe.toast.error("Pilih salah satu kelas yang ingin di hapus terlebih dahulu");
         return;
       }
       this.$axios.delete('/asisten/kelas', { data: { id: this.formKelas.id } }).then(response => {
         
         if(response.data.message === "success") {
 
-          globe.toast.success("Kelas berhasil dihapus"
-          );
+          globe.toast.success("Kelas berhasil dihapus");
 
           var i;
           for(i=0; i<globe.listAllKelas.length; i++){
@@ -752,8 +742,7 @@ export default {
           }
           globe.listAllKelas.splice(i, 1);
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       }).catch(function (error) {
         if (error.response) {
@@ -761,14 +750,11 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.kelas != null)
-              globe.toast.error(error.response.data.errors.kelas[0]
-              );
+              globe.toast.error(error.response.data.errors.kelas[0]);
             if(error.response.data.errors.hari != null)
-              globe.toast.error(error.response.data.errors.hari[0]
-              );
+              globe.toast.error(error.response.data.errors.hari[0]);
             if(error.response.data.errors.shift != null)
-              globe.toast.error(error.response.data.errors.shift[0]
-              );
+              globe.toast.error(error.response.data.errors.shift[0]);
           }
         }
       });
@@ -782,8 +768,7 @@ export default {
         if(this.listAllKelas[i].hari === globe.formKelas.hari &&
           this.listAllKelas[i].shift === globe.formKelas.shift) {
 
-          globe.toast.error("Terdapat kelas "+ this.listAllKelas[i].kelas.toUpperCase() +" pada hari "+ globe.formKelas.hari +" shift "+ globe.formKelas.shift
-          );
+          globe.toast.error("Terdapat kelas "+ this.listAllKelas[i].kelas.toUpperCase() +" pada hari "+ globe.formKelas.hari +" shift "+ globe.formKelas.shift);
           notError = false;
           break;
         }
@@ -794,8 +779,7 @@ export default {
           
           if(response.data.message === "success") {
 
-            globe.toast.success("Kelas berhasil ditambahkan"
-            );
+            globe.toast.success("Kelas berhasil ditambahkan");
             globe.listAllKelas.push({
               id: response.data.id,
               kelas: globe.formKelas.kelas,
@@ -804,8 +788,7 @@ export default {
               totalGroup: globe.formKelas.totalGroup,
             })
           } else {
-            globe.toast.error(response.data.message
-            );
+            globe.toast.error(response.data.message);
           }
         }).catch(function (error) {
           if (error.response) {
@@ -813,17 +796,13 @@ export default {
             // that falls out of the range of 2xx
             if(error.response.data.errors != null){
               if(error.response.data.errors.kelas != null)
-                globe.toast.error(error.response.data.errors.kelas[0]
-                );
+                globe.toast.error(error.response.data.errors.kelas[0]);
               if(error.response.data.errors.hari != null)
-                globe.toast.error(error.response.data.errors.hari[0]
-                );
+                globe.toast.error(error.response.data.errors.hari[0]);
               if(error.response.data.errors.shift != null)
-                globe.toast.error(error.response.data.errors.shift[0]
-                );
+                globe.toast.error(error.response.data.errors.shift[0]);
               if(error.response.data.errors.totalGroup != null)
-              globe.toast.error(error.response.data.errors.totalGroup[0]
-              );
+              globe.toast.error(error.response.data.errors.totalGroup[0]);
             }
           }
         });

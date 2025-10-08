@@ -133,42 +133,6 @@ library.add(
 
 dom.watch();
 
-function registerToastHelpers(app) {
-    const defaultError = "Maaf, telah terjadi sesuatu\n(Panggil CEN untuk dilihat lebih lanjut)";
-    const defaultSuccess = 'Proses telah berhasil';
-
-    /**
-     * @param {unknown} payload
-     * @param {string} fallback
-     */
-    const getMessage = (payload, fallback) => {
-        if (!payload || typeof payload !== 'object') {
-            return fallback;
-        }
-
-        if ('message' in payload && typeof payload.message === 'string') {
-            return payload.message;
-        }
-
-        return fallback;
-    };
-
-    app.config.globalProperties.$toasted = {
-        global: {
-            showError(payload = {}) {
-                app.config.globalProperties.$toast?.error(getMessage(payload, defaultError), {
-                    icon: ['fas', 'exclamation-circle'],
-                });
-            },
-            showSuccess(payload = {}) {
-                app.config.globalProperties.$toast?.success(getMessage(payload, defaultSuccess), {
-                    icon: ['fas', 'check-circle'],
-                });
-            },
-        },
-    };
-}
-
 function registerScrollbarDirective(app) {
     app.directive('scrollbar', {
         mounted(el) {
@@ -205,7 +169,6 @@ export default function installUi(app) {
     window.$ = window.jQuery = jQuery;
 
     app.use(Vue3Toastify, { autoClose: 3000, position: 'top-right' });
-    registerToastHelpers(app);
     registerScrollbarDirective(app);
     registerScrollDirective(app);
 

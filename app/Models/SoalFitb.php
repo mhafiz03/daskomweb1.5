@@ -15,6 +15,17 @@ class SoalFitb extends Model
      * @var array
      */
     protected $fillable = [
-        'soal', 'modul_id',
+        'soal',
+        'modul_id',
     ];
+
+    public function comments()
+    {
+        return $this->morphMany(SoalComment::class, 'soal', 'tipe_soal', 'soal_id');
+    }
+
+    public function modul()
+    {
+        return $this->belongsTo(Modul::class);
+    }
 }

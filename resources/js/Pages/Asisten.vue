@@ -110,9 +110,9 @@
             </div>
           </div>
           <div class="absolute w-full h-16 px-16 pt-2 z-20">
-            <div class="bg-yellow-700 rounded-lg w-full h-full flex">
+            <div class="bg-yellow-700 rounded-lg w-full h-full flex align-middle">
               <div class="flex w-1/2">
-                <star-rating class="ml-auto mr-4"
+                <star-rating class="ml-auto pl-16"
                   style="width: 150px;" 
                   :increment="0.01" 
                   :fixed-points="2"
@@ -121,10 +121,10 @@
                   :rating="ratingAsisten"
                   :star-size='30'/>
               </div>
-              <div class="w-1 h-3/4 my-auto bg-yellow-500"/>
+              <!-- <div class="w-1 h-3/4 my-auto bg-yellow-500"/>
               <div class="flex w-1/2 mr-auto h-full pt-1 items-center font-overpass-bold text-2xl text-white ml-4">
-                <span class="whitespace-pre-wrap">Rp. {{ gajiAsisten }} | Pajak kas: {{ taxRate*100 }}% x gaji</span> 
-              </div>
+                <span class="whitespace-pre-wrap">Jaga Reguler: {{ jagaReguler }} | Jaga Inter: {{ jagaInter }}</span> 
+              </div> -->
             </div>
           </div>
         </div>
@@ -308,10 +308,10 @@ export default {
       animate: true,
       userMessages: this.messages,
 
-      gajiAsisten: 0,
       ratingAsisten: 0,
       showEditForm: false,
-      taxRate: 0,
+      jagaInter: 0,
+      jagaReguler: 0,
 
       formDesc: {
         id: '',
@@ -386,12 +386,11 @@ export default {
 
       if(response.data.message === "success") {
         globe.ratingAsisten = response.data.ratingAsisten;
-        globe.gajiAsisten = response.data.gajiAsisten;
-        globe.taxRate = response.data.taxRate;
+        globe.jagaReguler = response.data.jagaReguler;
+        globe.jagaInter = response.data.jagaInter;
 
       } else {
-        globe.toast.error(response.data.message
-        );
+        globe.toast.error(response.data.message);
       }
     });
 
@@ -426,8 +425,7 @@ export default {
         
         if(response.data.message === "success") {
 
-          globe.toast.success("Deskripsi berhasil diperbaharui"   
-          );
+          globe.toast.success("Deskripsi berhasil diperbaharui"   );
 
           globe.$inertia.get('/asisten', {}, {
             replace: true,
@@ -435,8 +433,7 @@ export default {
           globe.editDescription(false);
 
         } else {
-          globe.toast.error(response.data.message
-          );
+          globe.toast.error(response.data.message);
         }
       }).catch(function (error) {
         if (error.response) {
@@ -444,17 +441,13 @@ export default {
           // that falls out of the range of 2xx
           if(error.response.data.errors != null){
             if(error.response.data.errors.deskripsi != null)
-              globe.toast.error(error.response.data.errors.deskripsi[0]
-              );
+              globe.toast.error(error.response.data.errors.deskripsi[0]);
             if(error.response.data.errors.nomor_telepon != null)
-              globe.toast.error(error.response.data.errors.nomor_telepon[0]
-              );
+              globe.toast.error(error.response.data.errors.nomor_telepon[0]);
             if(error.response.data.errors.id_line != null)
-              globe.toast.error(error.response.data.errors.id_line[0]
-              );
+              globe.toast.error(error.response.data.errors.id_line[0]);
             if(error.response.data.errors.instagram != null)
-              globe.toast.error(error.response.data.errors.instagram[0]
-              );
+              globe.toast.error(error.response.data.errors.instagram[0]);
           }
         }
       });
@@ -502,8 +495,7 @@ export default {
         //Do nothing 
       }).catch(function (error) {
         if (error.response) {
-          globe.toast.error(error.response.data.errors
-          );
+          globe.toast.error(error.response.data.errors);
         }
       });
 

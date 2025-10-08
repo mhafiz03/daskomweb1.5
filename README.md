@@ -1,6 +1,6 @@
 # Selamat datang di Daskom Laboratory
 
-Daskom Web 1 berevolusi menjadi Laravel 12, oleh karena namanya menjadi Daskom Web 1.2
+Daskom Web 1 berevolusi dengan Laravel 12, oleh karena itu namanya menjadi Daskom Web 1.2
 
 ```C
 #include<stdio.h>
@@ -24,4 +24,4 @@ int main() {
 - [Vincentius Adisurya Fransisco Antu [CEN]](https://vincentiusantu.github.io/)
 - [Aliza Nurfitrian Meizahra [ALL]](https://allzanrv3.vercel.app/)
 - [Muhammad Hafiz [MHZ]](https://mhafiz03.github.io/)
-- [Umar Zaki Gunawan [UZY]](marzk-porto.vercel.app)
+- [Umar Zaki Gunawan [UZY]](https://marzk-porto.vercel.app)
