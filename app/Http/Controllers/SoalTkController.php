@@ -154,8 +154,26 @@ class SoalTkController extends Controller
      * @param  \App\Models\SoalTk  $soal_Tk
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SoalTk $soal_Tk)
+    public function destroy($id)
     {
-        //
+        try {
+            $soal = SoalTk::find($id);
+    
+            if (!$soal) {
+                return response()->json(['message' => 'Soal not found'], 404);
+            }
+    
+            $soal->delete();
+    
+            return response()->json(['message' => 'success']);
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Failed to delete SoalTk: '.$e->getMessage());
+    
+            return response()->json([
+                'message' => 'Failed to delete soal',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

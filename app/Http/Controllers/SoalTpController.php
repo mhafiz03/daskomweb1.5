@@ -209,9 +209,25 @@ class SoalTpController extends Controller
      */
     public function destroy($id)
     {
-        $soal = SoalTp::find($id);
-        $soal->delete();
-
-        return '{"message": "success"}';
+        try {
+            $soal = SoalTp::find($id);
+    
+            if (!$soal) {
+                return response()->json(['message' => 'Soal not found'], 404);
+            }
+    
+            $soal->delete();
+    
+            return response()->json(['message' => 'success']);
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Failed to delete SoalTp: '.$e->getMessage());
+    
+            return response()->json([
+                'message' => 'Failed to delete soal',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
+    
 }

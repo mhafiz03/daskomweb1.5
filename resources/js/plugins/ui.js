@@ -55,6 +55,13 @@ import {
     faArrowRight,
     faArrowUp,
     faArrowDown,
+    faComment,
+    faCommentAlt,
+    faCommentSlash,
+    faCommenting,
+    faCommentSms,
+    faCommentDots,
+    faCommentNodes,
 } from '@fortawesome/free-solid-svg-icons';
 import { faLine, faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons';
 
@@ -115,6 +122,13 @@ library.add(
     faLine,
     faInstagram,
     faYoutube,
+    faComment,
+    faCommentAlt,
+    faCommentSlash,
+    faCommenting,
+    faCommentSms,
+    faCommentDots,
+    faCommentNodes,
 );
 
 dom.watch();

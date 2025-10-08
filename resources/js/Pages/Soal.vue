@@ -2,75 +2,52 @@
   <div class="bg-green-900 w-full h-full overflow-hidden">
 
     <!-- Main Menu -->
-    <SidebarMenu
-      :page-active="pageActive"
-      :items="visibleMenuItems"
-      :menu-container-class="menuContainerClass"
-      :highlighted-menu="highlightedMenu"
-      :menu-ref="menuContainerRef.ref"
-      @hover="isMenuShown = false"
-      @select="handleMenuSelect"
-    />
+    <SidebarMenu :page-active="pageActive" :items="visibleMenuItems" :menu-container-class="menuContainerClass"
+      :highlighted-menu="highlightedMenu" :menu-ref="menuContainerRef.ref" @hover="isMenuShown = false"
+      @select="handleMenuSelect" />
 
     <!-- Profile Menu -->
-    <AsistenProfilePanel
-      :page-active="pageActive"
-      :is-menu-shown="isMenuShown"
-      :current-user="currentUser"
-      :user-role="userRole"
-      @update:isMenuShown="isMenuShown = $event"
-      @sign-out="signOut"
-    />
+    <AsistenProfilePanel :page-active="pageActive" :is-menu-shown="isMenuShown" :current-user="currentUser"
+      :user-role="userRole" @update:isMenuShown="isMenuShown = $event" @sign-out="signOut" />
 
     <!-- Soal Layout -->
-    <div class="absolute py-8 pr-8 h-full w-120full flex animation-enable"
-        :class="[{ 'left-0': currentPage },
-                { 'left-minFull': !currentPage }]" @mouseover="isMenuShown = false">
+    <div class="absolute py-8 pr-8 h-full w-120full flex animation-enable" :class="[{ 'left-0': currentPage },
+    { 'left-minFull': !currentPage }]" @mouseover="isMenuShown = false">
       <div class="rounded-r-large relative bg-green-400 text-center font-monda-bold text-3xl w-full h-full flex-row">
         <div class="relative w-full h-16 flex">
-          <div class="w-1/6 h-16 p-3 hover:bg-green-200 cursor-pointer"
-              v-on:click='setActiveSoal("TP")'>
+          <div class="w-1/6 h-16 p-3 hover:bg-green-200 cursor-pointer" v-on:click='setActiveSoal("TP")'>
             TP
           </div>
-          <div class="w-1/6 h-16 p-3 hover:bg-green-200 cursor-pointer"
-              v-on:click='setActiveSoal("TA")'>
+          <div class="w-1/6 h-16 p-3 hover:bg-green-200 cursor-pointer" v-on:click='setActiveSoal("TA")'>
             TA
           </div>
-          <div class="w-1/6 h-16 p-3 hover:bg-green-200 cursor-pointer"
-              v-on:click='setActiveSoal("TK")'>
+          <div class="w-1/6 h-16 p-3 hover:bg-green-200 cursor-pointer" v-on:click='setActiveSoal("TK")'>
             TK
           </div>
-          <div class="w-1/6 h-16 p-3 hover:bg-green-200 cursor-pointer"
-              v-on:click='setActiveSoal("Jurnal")'>
+          <div class="w-1/6 h-16 p-3 hover:bg-green-200 cursor-pointer" v-on:click='setActiveSoal("Jurnal")'>
             Jurnal
           </div>
-          <div class="w-1/6 h-16 p-3 hover:bg-green-200 cursor-pointer"
-              v-on:click='setActiveSoal("Mandiri")'>
+          <div class="w-1/6 h-16 p-3 hover:bg-green-200 cursor-pointer" v-on:click='setActiveSoal("Mandiri")'>
             Mandiri
           </div>
           <div class="w-1/6 h-16 p-3 hover:bg-green-200 cursor-pointer rounded-tr-large"
-              v-on:click='setActiveSoal("FITB")'>
+            v-on:click='setActiveSoal("FITB")'>
             FITB
           </div>
           <div class="absolute pointer-events-none w-full h-16">
             <div class="absolute bottom-0 w-full flex h-1">
-              <div class="h-full animation-enable-medium"
-                  :class="[{ 'w-1/6': isTA },
-                          { 'w-0': !isTA }]"/>
-              <div class="h-full animation-enable-medium"
-                  :class="[{ 'w-2/6': isTK },
-                          { 'w-0': !isTK }]"/>
-              <div class="h-full animation-enable-medium"
-                  :class="[{ 'w-3/6': isJurnal },
-                          { 'w-0': !isJurnal }]"/>
-              <div class="h-full animation-enable-medium"
-                  :class="[{ 'w-4/6': isMandiri },
-                          { 'w-0': !isMandiri }]"/>
-              <div class="h-full animation-enable-medium"
-                  :class="[{ 'w-5/6': isFITB },
-                          { 'w-0': !isFITB }]"/>
+              <div class="h-full animation-enable-medium" :class="[{ 'w-1/6': isTA },
+              { 'w-0': !isTA }]" />
+              <div class="h-full animation-enable-medium" :class="[{ 'w-2/6': isTK },
+              { 'w-0': !isTK }]" />
+              <div class="h-full animation-enable-medium" :class="[{ 'w-3/6': isJurnal },
+              { 'w-0': !isJurnal }]" />
+              <div class="h-full animation-enable-medium" :class="[{ 'w-4/6': isMandiri },
+              { 'w-0': !isMandiri }]" />
+              <div class="h-full animation-enable-medium" :class="[{ 'w-5/6': isFITB },
+              { 'w-0': !isFITB }]" />
               <div class="w-1/6 px-4 h-full">
-                <div class="w-full h-full rounded-full bg-black" ref="chosenMenu"/>
+                <div class="w-full h-full rounded-full bg-black" ref="chosenMenu" />
               </div>
             </div>
           </div>
@@ -79,13 +56,13 @@
         <div class="relative w-full h-12 flex">
           <div class="w-full h-full flex-row px-5">
             <select v-model="chosenModulID"
-                  class="block font-monda-bold text-xl appearance-none w-full h-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-teal-500">
-            <option class="hidden" value="" disabled selected>
-              Pilih modul
-            </option>
-            <option v-for="modul in allModul" v-bind:key="modul.id" :value="modul.id" :disabled="!modul.id">
-              {{ modul.judul }}
-            </option>  
+              class="block font-monda-bold text-xl appearance-none w-full h-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-teal-500">
+              <option class="hidden" value="" disabled selected>
+                Pilih modul
+              </option>
+              <option v-for="modul in allModul" v-bind:key="modul.id" :value="modul.id" :disabled="!modul.id">
+                {{ modul.judul }}
+              </option>
             </select>
           </div>
         </div>
@@ -96,8 +73,8 @@
             <div class="px-8 pt-4">
               <div v-if="!isTA && !isTK && !isJurnal && !isMandiri && !isFITB" class="w-full h-full flex-row">
                 <transition-group name="soal-list" tag="div">
-                  <div v-for="soal in listAllTP.filter( function(item){return (item.modul_id===chosenModulID);} )" v-bind:key="soal.id"
-                      class="animation-enable w-full h-48 mb-4">
+                  <div v-for="soal in listAllTP.filter(function (item) { return (item.modul_id === chosenModulID); })"
+                    v-bind:key="soal.id" class="animation-enable w-full h-64 mb-4">
                     <div class="w-full h-full flex rounded-lg bg-yellow-200">
                       <div class="w-2/5 h-full flex-row">
                         <div class="w-full h-2/3 flex rounded-tl-lg font-merri-bold text-2xl bg-yellow-400">
@@ -108,44 +85,30 @@
                         <div class="w-full h-1/3 flex font-overpass-mono-bold text-xl rounded-bl-lg bg-yellow-300">
                           <div class="w-auto h-auto m-auto">
                             <span v-if="soal.isEssay">
-                              Essay 
+                              Essay
                             </span>
                             <span v-if="soal.isProgram">
-                              Program 
+                              Program
                             </span>
                           </div>
                         </div>
                       </div>
                       <div class="w-3/5 h-full flex">
                         <div class="w-16full h-full flex">
-                          <div class="w-full h-full overflow-y-auto break-words whitespace-pre-wrap p-4 text-left font-overpass-bold text-xl">
-                            <span>{{ soal.soal }}</span>  
+                          <div
+                            class="w-full h-full overflow-y-auto break-words whitespace-pre-wrap p-4 text-left font-overpass-bold text-xl">
+                            <span>{{ soal.soal }}</span>
                           </div>
                         </div>
-                        <div class="w-16 bg-gray-400 rounded-r-lg h-full flex-row"
-                            v-if="editPriviledge.includes(currentUser.role_id)">
-
-                          <!-- Open this only when needed -->
-                          <div class="w-full h-1/2 flex">
-                            <span class="w-full h-full p-3 hover:p-4 cursor-pointer animation-enable-short"
-                                v-on:click="deleteSoal(soal.id)">
-                              <img class="w-full h-full p-1 fas fa-trash">
-                            </span>
-                          </div>
-
-                          <div class="w-full h-1/2 flex">
-                            <span class="w-full h-full p-3 visible hover:p-4 cursor-pointer animation-enable-short"
-                                :class="'editOpenTP-'+soal.id"
-                                v-on:click="editSoal(soal, true)">
-                              <img class="w-full h-full p-1 fas fa-pen">
-                            </span>
-                            <span class="w-full h-full hidden p-3 hover:p-4 cursor-pointer animation-enable-short"
-                                :class="'editCloseTP-'+soal.id"
-                                v-on:click="editSoal(soal, false)">
-                              <img class="w-full h-full p-1 fas fa-times">
-                            </span>
-                          </div>
-                        </div>
+                        <SoalAction 
+                          :soal="soal" 
+                          :editPriviledge="editPriviledge" 
+                          :currentUser="currentUser"
+                          :commentCount="3" 
+                          @delete="deleteSoal" 
+                          @edit="editSoal" 
+                          @toggle-comments="toggleComments" 
+                          />
                       </div>
                     </div>
                   </div>
@@ -154,23 +117,27 @@
               <div v-if="isTA || isTK" class="w-full h-full">
                 <div v-if="isTA" class="w-full h-full flex-row">
                   <transition-group name="soal-list" tag="div">
-                    <div v-for="soal in listAllTA.filter( function(item){return (item.modul_id===chosenModulID);} )" v-bind:key="soal.id"
-                        class="animation-enable w-full h-64 mb-4">
+                    <div v-for="soal in listAllTA.filter(function (item) { return (item.modul_id === chosenModulID); })"
+                      v-bind:key="soal.id" class="animation-enable w-full h-64 mb-4">
                       <div class="w-full h-full flex rounded-lg bg-yellow-200">
                         <div class="w-1/2 h-full flex-row">
                           <div class="w-full h-1/3 flex rounded-tl-lg font-merri-bold text-xl bg-yellow-400">
                             <div class="w-auto h-auto m-auto">
-                              {{ soal.judul }} 
+                              {{ soal.judul }}
                             </div>
                           </div>
-                          <div class="w-full h-2/3 flex font-overpass-mono-bold text-xl rounded-bl-lg bg-yellow-300 overflow-y-auto">
+                          <div
+                            class="w-full h-2/3 flex font-overpass-mono-bold text-xl rounded-bl-lg bg-yellow-300 overflow-y-auto">
                             <div class="w-auto h-auto text-left p-4 break-words whitespace-pre-wrap m-auto">
                               <span>{{ soal.pertanyaan }}</span>
                             </div>
+
                           </div>
+
                         </div>
                         <div class="w-1/2 h-full flex">
-                          <div class="w-full h-full flex-row overflow-y-auto overflow-x-hidden p-4 text-left font-overpass-bold text-xl">
+                          <div
+                            class="w-full h-full flex-row overflow-y-auto overflow-x-hidden p-4 text-left font-overpass-bold text-xl">
                             <div class="w-full h-auto break-words whitespace-pre-wrap mb-4 p-4 bg-green-500 rounded-lg">
                               <span>{{ soal.jawaban_benar }}</span>
                             </div>
@@ -185,46 +152,26 @@
                             </div>
                           </div>
                         </div>
-                        <div class="w-16 bg-gray-400 rounded-r-lg h-full flex-row"
-                            v-if="editPriviledge.includes(currentUser.role_id)">
+                        <SoalAction :soal="soal" :editPriviledge="editPriviledge" :currentUser="currentUser"
+                          :commentCount="3" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
 
-                          <!-- Open this only when needed -->
-                          <div class="w-full h-1/2 flex">
-                            <span class="w-full h-full p-3 hover:p-4 cursor-pointer animation-enable-short"
-                                v-on:click="deleteSoal(soal.id)">
-                              <img class="w-full h-full p-1 fas fa-trash">
-                            </span>
-                          </div>
-
-                          <div class="w-full h-1/2 flex">
-                            <span class="w-full h-full p-3 visible hover:p-4 cursor-pointer animation-enable-short"
-                                :class="'editOpenTA-'+soal.id"
-                                v-on:click="editSoal(soal, true)">
-                              <img class="w-full h-full p-1 fas fa-pen">
-                            </span>
-                            <span class="w-full h-full hidden p-3 hover:p-4 cursor-pointer animation-enable-short"
-                                :class="'editCloseTA-'+soal.id"
-                                v-on:click="editSoal(soal, false)">
-                              <img class="w-full h-full p-1 fas fa-times">
-                            </span>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </transition-group>
                 </div>
                 <div v-if="isTK" class="w-full h-full flex-row">
                   <transition-group name="soal-list" tag="div">
-                    <div v-for="soal in listAllTK.filter( function(item){return (item.modul_id===chosenModulID);} )" v-bind:key="soal.id"
-                        class="animation-enable w-full h-64 mb-4">
+                    <div v-for="soal in listAllTK.filter(function (item) { return (item.modul_id === chosenModulID); })"
+                      v-bind:key="soal.id" class="animation-enable w-full h-64 mb-4">
                       <div class="w-full h-full flex rounded-lg bg-yellow-200">
                         <div class="w-1/2 h-full flex-row">
                           <div class="w-full h-1/3 flex rounded-tl-lg font-merri-bold text-xl bg-yellow-400">
                             <div class="w-auto h-auto m-auto">
-                              {{ soal.judul }} 
+                              {{ soal.judul }}
                             </div>
                           </div>
-                          <div class="w-full h-2/3 flex font-overpass-mono-bold text-xl rounded-bl-lg bg-yellow-300 overflow-y-auto">
+                          <div
+                            class="w-full h-2/3 flex font-overpass-mono-bold text-xl rounded-bl-lg bg-yellow-300 overflow-y-auto">
                             <div class="w-auto h-auto text-left p-4 break-words whitespace-pre-wrap m-auto">
                               <span>{{ soal.pertanyaan }}</span>
                             </div>
@@ -246,30 +193,8 @@
                             </div>
                           </div>
                         </div>
-                        <div class="w-16 bg-gray-400 rounded-r-lg h-full flex-row"
-                            v-if="editPriviledge.includes(currentUser.role_id)">
-
-                          <!-- Open this only when needed -->
-                          <div class="w-full h-1/2 flex">
-                            <span class="w-full h-full p-3 hover:p-4 cursor-pointer animation-enable-short"
-                                v-on:click="deleteSoal(soal.id)">
-                              <img class="w-full h-full p-1 fas fa-trash">
-                            </span>
-                          </div>
-
-                          <div class="w-full h-1/2 flex">
-                            <span class="w-full h-full p-3 visible hover:p-4 cursor-pointer animation-enable-short"
-                                :class="'editOpenTK-'+soal.id"
-                                v-on:click="editSoal(soal, true)">
-                              <img class="w-full h-full p-1 fas fa-pen">
-                            </span>
-                            <span class="w-full h-full hidden p-3 hover:p-4 cursor-pointer animation-enable-short"
-                                :class="'editCloseTK-'+soal.id"
-                                v-on:click="editSoal(soal, false)">
-                              <img class="w-full h-full p-1 fas fa-times">
-                            </span>
-                          </div>
-                        </div>
+                        <SoalAction :soal="soal" :editPriviledge="editPriviledge" :currentUser="currentUser"
+                          :commentCount="3" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
                       </div>
                     </div>
                   </transition-group>
@@ -278,8 +203,8 @@
               <div v-if="isJurnal || isMandiri || isFITB" class="w-full h-full">
                 <div v-if="isJurnal" class="w-full h-full flex-row">
                   <transition-group name="soal-list" tag="div">
-                    <div v-for="soal in listAllJurnal.filter( function(item){return (item.modul_id===chosenModulID);} )" v-bind:key="soal.id"
-                        class="animation-enable w-full h-120 mb-4">
+                    <div v-for="soal in listAllJurnal.filter(function (item) { return (item.modul_id === chosenModulID); })"
+                      v-bind:key="soal.id" class="animation-enable w-full h-120 mb-4">
                       <div class="w-full h-full flex rounded-lg bg-yellow-200">
                         <div class="w-1/3 h-full flex-row">
                           <div class="w-full h-full flex rounded-l-lg font-merri-bold text-3xl bg-yellow-400">
@@ -290,34 +215,13 @@
                         </div>
                         <div class="w-2/3 h-full flex">
                           <div class="w-16full h-full flex">
-                            <div class="w-full h-full break-words whitespace-pre-wrap flex-row overflow-y-auto p-4 text-left font-overpass-bold text-2xl">
+                            <div
+                              class="w-full h-full break-words whitespace-pre-wrap flex-row overflow-y-auto p-4 text-left font-overpass-bold text-2xl">
                               <span>{{ soal.soal }}</span>
                             </div>
                           </div>
-                          <div class="w-16 bg-gray-400 rounded-r-lg h-full flex-row"
-                            v-if="editPriviledge.includes(currentUser.role_id)">
-
-                            <!-- Open this only when needed -->
-                            <div class="w-full h-1/2 flex">
-                              <span class="w-full h-full p-3 hover:p-4 cursor-pointer animation-enable-short"
-                                  v-on:click="deleteSoal(soal.id)">
-                                <img class="w-full h-full p-1 fas fa-trash">
-                              </span>
-                            </div>
-
-                            <div class="w-full h-1/2 flex">
-                              <span class="w-full h-full p-3 visible hover:p-4 cursor-pointer animation-enable-short"
-                                  :class="'editOpenJurnal-'+soal.id"
-                                  v-on:click="editSoal(soal, true)">
-                                <img class="w-full h-full p-1 fas fa-pen">
-                              </span>
-                              <span class="w-full h-full hidden p-3 hover:p-4 cursor-pointer animation-enable-short"
-                                  :class="'editCloseJurnal-'+soal.id"
-                                  v-on:click="editSoal(soal, false)">
-                                <img class="w-full h-full p-1 fas fa-times">
-                              </span>
-                            </div>
-                          </div>
+                          <SoalAction :soal="soal" :editPriviledge="editPriviledge" :currentUser="currentUser"
+                            :commentCount="3" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
                         </div>
                       </div>
                     </div>
@@ -325,8 +229,9 @@
                 </div>
                 <div v-if="isMandiri" class="w-full h-full flex-row">
                   <transition-group name="soal-list" tag="div">
-                    <div v-for="soal in listAllMandiri.filter( function(item){return (item.modul_id===chosenModulID);} )" v-bind:key="soal.id"
-                        class="animation-enable w-full h-120 mb-4">
+                    <div
+                      v-for="soal in listAllMandiri.filter(function (item) { return (item.modul_id === chosenModulID); })"
+                      v-bind:key="soal.id" class="animation-enable w-full h-120 mb-4">
                       <div class="w-full h-full flex rounded-lg bg-yellow-200">
                         <div class="w-1/3 h-full flex-row">
                           <div class="w-full h-full flex rounded-l-lg font-merri-bold text-3xl bg-yellow-400">
@@ -337,34 +242,13 @@
                         </div>
                         <div class="w-2/3 h-full flex">
                           <div class="w-16full h-full flex">
-                            <div class="w-full h-full break-words whitespace-pre-wrap flex-row overflow-y-auto p-4 text-left font-overpass-bold text-2xl">
+                            <div
+                              class="w-full h-full break-words whitespace-pre-wrap flex-row overflow-y-auto p-4 text-left font-overpass-bold text-2xl">
                               <span>{{ soal.soal }}</span>
                             </div>
                           </div>
-                          <div class="w-16 bg-gray-400 rounded-r-lg h-full flex-row"
-                            v-if="editPriviledge.includes(currentUser.role_id)">
-
-                            <!-- Open this only when needed -->
-                            <div class="w-full h-1/2 flex">
-                              <span class="w-full h-full p-3 hover:p-4 cursor-pointer animation-enable-short"
-                                  v-on:click="deleteSoal(soal.id)">
-                                <img class="w-full h-full p-1 fas fa-trash">
-                              </span>
-                            </div>
-
-                            <div class="w-full h-1/2 flex">
-                              <span class="w-full h-full p-3 visible hover:p-4 cursor-pointer animation-enable-short"
-                                  :class="'editOpenMandiri-'+soal.id"
-                                  v-on:click="editSoal(soal, true)">
-                                <img class="w-full h-full p-1 fas fa-pen">
-                              </span>
-                              <span class="w-full h-full hidden p-3 hover:p-4 cursor-pointer animation-enable-short"
-                                  :class="'editCloseMandiri-'+soal.id"
-                                  v-on:click="editSoal(soal, false)">
-                                <img class="w-full h-full p-1 fas fa-times">
-                              </span>
-                            </div>
-                          </div>
+                          <SoalAction :soal="soal" :editPriviledge="editPriviledge" :currentUser="currentUser"
+                            :commentCount="3" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
                         </div>
                       </div>
                     </div>
@@ -372,8 +256,8 @@
                 </div>
                 <div v-if="isFITB" class="w-full h-full flex-row">
                   <transition-group name="soal-list" tag="div">
-                    <div v-for="soal in listAllFITB.filter( function(item){return (item.modul_id===chosenModulID);} )" v-bind:key="soal.id"
-                        class="animation-enable w-full h-120 mb-4">
+                    <div v-for="soal in listAllFITB.filter(function (item) { return (item.modul_id === chosenModulID); })"
+                      v-bind:key="soal.id" class="animation-enable w-full h-120 mb-4">
                       <div class="w-full h-full flex rounded-lg bg-yellow-200">
                         <div class="w-1/3 h-full flex-row">
                           <div class="w-full h-full flex rounded-l-lg font-merri-bold text-3xl bg-yellow-400">
@@ -384,34 +268,13 @@
                         </div>
                         <div class="w-2/3 h-full flex">
                           <div class="w-16full h-full flex">
-                            <div class="w-full h-full break-words whitespace-pre-wrap flex-row overflow-y-auto p-4 text-left font-overpass-bold text-2xl">
+                            <div
+                              class="w-full h-full break-words whitespace-pre-wrap flex-row overflow-y-auto p-4 text-left font-overpass-bold text-2xl">
                               <span>{{ soal.soal }}</span>
                             </div>
                           </div>
-                          <div class="w-16 bg-gray-400 rounded-r-lg h-full flex-row"
-                            v-if="editPriviledge.includes(currentUser.role_id)">
-
-                            <!-- Open this only when needed -->
-                            <div class="w-full h-1/2 flex">
-                              <span class="w-full h-full p-3 hover:p-4 cursor-pointer animation-enable-short"
-                                  v-on:click="deleteSoal(soal.id)">
-                                <img class="w-full h-full p-1 fas fa-trash">
-                              </span>
-                            </div>
-
-                            <div class="w-full h-1/2 flex">
-                              <span class="w-full h-full p-3 visible hover:p-4 cursor-pointer animation-enable-short"
-                                  :class="'editOpenFITB-'+soal.id"
-                                  v-on:click="editSoal(soal, true)">
-                                <img class="w-full h-full p-1 fas fa-pen">
-                              </span>
-                              <span class="w-full h-full hidden p-3 hover:p-4 cursor-pointer animation-enable-short"
-                                  :class="'editCloseFITB-'+soal.id"
-                                  v-on:click="editSoal(soal, false)">
-                                <img class="w-full h-full p-1 fas fa-times">
-                              </span>
-                            </div>
-                          </div>
+                          <SoalAction :soal="soal" :editPriviledge="editPriviledge" :currentUser="currentUser"
+                            :commentCount="3" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
                         </div>
                       </div>
                     </div>
@@ -422,17 +285,91 @@
           </div>
         </div>
 
+        <!-- Comment Section -->
+        <transition name="slide-up" enter-active-class="transition-all duration-300 ease-out"
+          leave-active-class="transition-all duration-100 ease-in" enter-from-class="opacity-0 translate-y-10"
+          enter-to-class="opacity-100 translate-y-0" leave-from-class="opacity-100 translate-y-0"
+          leave-to-class="opacity-0 translate-y-10">
+          <div v-if="commentsVisible"
+            class="absolute bottom-0 w-full h-140 pb-8 flex flex-col bg-white rounded-2xl shadow-lg">
+            <!-- Header with Question and Close Button -->
+            <div class="relative w-full px-5 py-4 bg-white rounded-t-2xl shadow-sm border-b border-gray-200">
+              <p class="text-sm font-semibold text-gray-500 mb-1 text-start">Pertanyaan:</p>
+              <p class="text-lg font-medium text-gray-800 text-start">
+                Siapakah penemu bahasa C?
+              </p>
+
+              <!-- Close Button -->
+              <button @click="commentsVisible = false"
+                class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 transition-colors">
+                <i class="fas fa-times text-2xl"></i>
+              </button>
+            </div>
+
+            <!-- Comment List -->
+            <div class="flex-grow overflow-y-auto p-6 space-y-6">
+              <!-- Comment 1 -->
+              <div class="flex items-start">
+                <div class="ml-4">
+                  <div class="flex items-center">
+                    <i class="fas fa-comment text-2xl text-gray-600 mr-3"></i>
+                    <p class="font-semibold text-2xl text-gray-900">ATC 1</p>
+                  </div>
+                  <div class="px-5 py-3 bg-white border-4 border-gray-700 rounded-2xl mt-3">
+                    <p class="text-gray-700 mt-1 text-start text-lg">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam
+                      perferendis dolores, odio sit officia deserunt error magni expedita
+                      mollitia amet.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Comment 2 -->
+              <div class="flex items-start">
+                <div class="ml-4">
+                  <div class="flex items-center">
+                    <i class="fas fa-comment text-2xl text-gray-600 mr-3"></i>
+                    <p class="font-semibold text-2xl text-gray-900">RDC 2</p>
+                  </div>
+                  <div class="px-5 py-3 bg-white border-4 border-gray-700 rounded-2xl mt-3">
+                    <p class="text-gray-700 mt-1 text-start text-lg">
+                      Aliquam perferendis dolores, odio sit officia deserunt error magni
+                      expedita mollitia amet porro illum cumque.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Comment 3 -->
+              <div class="flex items-start">
+                <div class="ml-4">
+                  <div class="flex items-center">
+                    <i class="fas fa-comment text-2xl text-gray-600 mr-3"></i>
+                    <p class="font-semibold text-2xl text-gray-900">CMD 4</p>
+                  </div>
+                  <div class="px-5 py-3 bg-white border-4 border-gray-700 rounded-2xl mt-3">
+                    <p class="text-gray-700 mt-1 text-start text-lg">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita
+                      mollitia amet porro illum cumque commodi asperiores reiciendis.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
+        <!-- End Of Comment Section -->
+
         <!-- Menu Layout -->
         <div class="absolute bottom-0 w-full h-140 pb-8 flex pointer-events-none"
-            v-if="editPriviledge.includes(currentUser.role_id)">
-          <div class="absolute w-4full pb-8 h-full flex animation-enable pointer-events-auto"
-              :class="[{ 'left-0': soalMenuShown },
-                      { 'left-minFull': !soalMenuShown }]">
+          v-if="editPriviledge.includes(currentUser.role_id)">
+
+          <div class="absolute w-4full pb-8 h-full flex animation-enable pointer-events-auto" :class="[{ 'left-0': soalMenuShown },
+          { 'left-minFull': !soalMenuShown }]">
             <div class="w-16full h-full bg-gray-400">
-              <form id="tatkForm" 
-                  class="w-full h-full p-4 flex"
-                  :class="[{ 'visible': isTA || isTK },
-                          { 'hidden': !isTA && !isTK }]">
+              <form id="tatkForm" class="w-full h-full p-4 flex" :class="[{ 'visible': isTA || isTK },
+              { 'hidden': !isTA && !isTK }]">
                 <div class="w-1/2 h-full flex-row">
                   <div class="w-full h-2/5">
                     <div class="w-full px-2 h-full flex-row">
@@ -442,12 +379,14 @@
                         </span>
                       </div>
                       <div class="w-full h-2/3 tatkOption">
-                        <select v-model="formTATK.modul_id" 
-                              class="block font-monda-bold text-xl appearance-none w-full h-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-teal-500" id="grid-state">
+                        <select v-model="formTATK.modul_id"
+                          class="block font-monda-bold text-xl appearance-none w-full h-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                          id="grid-state">
                           <option class="hidden" value="" disabled selected>
                             Pilih modul
                           </option>
-                          <option v-for="modul in allModul" v-bind:key="modul.id" :value="modul.id" :disabled="!modul.id">
+                          <option v-for="modul in allModul" v-bind:key="modul.id" :value="modul.id"
+                            :disabled="!modul.id">
                             {{ modul.judul }}
                           </option>
                         </select>
@@ -463,8 +402,8 @@
                       </div>
                       <div class="w-full h-3/4">
                         <textarea v-model="formTATK.pertanyaan" cols="30" rows="10"
-                              class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                              id="Pertanyaan" type="text" placeholder="Siapakah penemu bahasa C ?"/>
+                          class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                          id="Pertanyaan" type="text" placeholder="Siapakah penemu bahasa C ?" />
                       </div>
                     </div>
                   </div>
@@ -480,8 +419,8 @@
                         </div>
                         <div class="w-full h-4/5">
                           <textarea v-model="formTATK.jawaban_benar" cols="30" rows="10"
-                                class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                                id="Pertanyaan" type="text" placeholder="Dennis Ritchie"/>
+                            class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                            id="Pertanyaan" type="text" placeholder="Dennis Ritchie" />
                         </div>
                       </div>
                     </div>
@@ -494,8 +433,8 @@
                         </div>
                         <div class="w-full h-4/5">
                           <textarea v-model="formTATK.jawaban_salah1" cols="30" rows="10"
-                                class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                                id="Pertanyaan" type="text" placeholder="Steve Wozniak"/>
+                            class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                            id="Pertanyaan" type="text" placeholder="Steve Wozniak" />
                         </div>
                       </div>
                     </div>
@@ -508,8 +447,8 @@
                         </div>
                         <div class="w-full h-4/5">
                           <textarea v-model="formTATK.jawaban_salah2" cols="30" rows="10"
-                                class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                                id="Pertanyaan" type="text" placeholder="Muhammad Fakhri"/>
+                            class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                            id="Pertanyaan" type="text" placeholder="Muhammad Fakhri" />
                         </div>
                       </div>
                     </div>
@@ -522,8 +461,8 @@
                         </div>
                         <div class="w-full h-4/5">
                           <textarea v-model="formTATK.jawaban_salah3" cols="30" rows="10"
-                                class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                                id="Pertanyaan" type="text" placeholder="Linus Torvalds"/>
+                            class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                            id="Pertanyaan" type="text" placeholder="Linus Torvalds" />
                         </div>
                       </div>
                     </div>
@@ -531,10 +470,8 @@
                 </div>
               </form>
 
-              <form id="tpForm" 
-                  class="w-full h-full p-4 flex"
-                  :class="[{ 'visible': !isTA && !isTK && !isJurnal && !isMandiri && !isFITB },
-                          { 'hidden': isTA || isTK || isJurnal || isMandiri || isFITB }]">
+              <form id="tpForm" class="w-full h-full p-4 flex" :class="[{ 'visible': !isTA && !isTK && !isJurnal && !isMandiri && !isFITB },
+              { 'hidden': isTA || isTK || isJurnal || isMandiri || isFITB }]">
                 <div class="w-1/3 h-full flex-row">
                   <div class="w-full h-1/2">
                     <div class="w-full px-2 h-full flex-row">
@@ -544,12 +481,14 @@
                         </span>
                       </div>
                       <div class="w-full h-2/3 tpOption">
-                        <select v-model="formTP.modul_id" 
-                              class="block font-monda-bold text-xl appearance-none w-full h-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-teal-500" id="grid-state">
+                        <select v-model="formTP.modul_id"
+                          class="block font-monda-bold text-xl appearance-none w-full h-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                          id="grid-state">
                           <option class="hidden" value="" disabled selected>
                             Pilih modul
                           </option>
-                          <option v-for="modul in allModul" v-bind:key="modul.id" :value="modul.id" :disabled="!modul.id">
+                          <option v-for="modul in allModul" v-bind:key="modul.id" :value="modul.id"
+                            :disabled="!modul.id">
                             {{ modul.judul }}
                           </option>
                         </select>
@@ -564,8 +503,9 @@
                         </span>
                       </div>
                       <div class="w-full h-2/3 jenisSoalOption">
-                        <select v-model="formTP.jenisSoal" 
-                              class="block font-monda-bold text-xl appearance-none w-full h-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-teal-500" id="grid-state">
+                        <select v-model="formTP.jenisSoal"
+                          class="block font-monda-bold text-xl appearance-none w-full h-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                          id="grid-state">
                           <option class="hidden" value="" disabled selected>
                             Pilih jenis soal
                           </option>
@@ -586,18 +526,16 @@
                       </div>
                       <div class="w-full h-4full flex">
                         <textarea v-model="formTP.soal" cols="30" rows="10"
-                              class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                              id="Pertanyaan" type="text" placeholder="Siapakah penemu bahasa C ?"/>
+                          class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                          id="Pertanyaan" type="text" placeholder="Siapakah penemu bahasa C ?" />
                       </div>
                     </div>
                   </div>
                 </div>
               </form>
 
-              <form id="jmfitbForm" 
-                  class="w-full h-full p-4 flex-row"
-                  :class="[{ 'visible': isJurnal },
-                          { 'hidden': !isJurnal }]">
+              <form id="jmfitbForm" class="w-full h-full p-4 flex-row" :class="[{ 'visible': isJurnal },
+              { 'hidden': !isJurnal }]">
                 <div class="w-full h-1/4 flex-row">
                   <div class="w-full h-full flex">
                     <div class="w-1/2 px-2 h-full flex-row">
@@ -607,12 +545,14 @@
                         </span>
                       </div>
                       <div class="w-full h-2/3 jmfitbOption">
-                        <select v-model="formJMFITB.modul_id" 
-                              class="block font-monda-bold text-3xl appearance-none w-full h-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-teal-500" id="grid-state">
+                        <select v-model="formJMFITB.modul_id"
+                          class="block font-monda-bold text-3xl appearance-none w-full h-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                          id="grid-state">
                           <option class="hidden" value="" disabled selected>
                             Pilih modul
                           </option>
-                          <option v-for="modul in allModul" v-bind:key="modul.id" :value="modul.id" :disabled="!modul.id">
+                          <option v-for="modul in allModul" v-bind:key="modul.id" :value="modul.id"
+                            :disabled="!modul.id">
                             {{ modul.judul }}
                           </option>
                         </select>
@@ -626,14 +566,8 @@
                       </div>
                       <div class="w-1/2 h-full flex">
                         <div class="w-auto h-auto m-auto">
-                          <toggle-button
-                            v-model="formJMFITB.isSulit"
-                            :value="formJMFITB.isSulit"
-                            :sync="true"
-                            :labels="true"
-                            :width="100"
-                            :height="30"
-                            :font-size="15"/>
+                          <toggle-button v-model="formJMFITB.isSulit" :value="formJMFITB.isSulit" :sync="true"
+                            :labels="true" :width="100" :height="30" :font-size="15" />
                         </div>
                       </div>
                     </div>
@@ -649,18 +583,16 @@
                       </div>
                       <div class="w-full h-4full flex">
                         <textarea v-model="formJMFITB.soal" cols="30" rows="10"
-                              class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                              id="Pertanyaan" type="text" placeholder="Siapakah penemu bahasa C ?"/>
+                          class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                          id="Pertanyaan" type="text" placeholder="Siapakah penemu bahasa C ?" />
                       </div>
                     </div>
                   </div>
                 </div>
               </form>
 
-              <form id="jmfitbForm" 
-                  class="w-full h-full p-4 flex-row"
-                  :class="[{ 'visible': isMandiri || isFITB },
-                          { 'hidden': !isMandiri && !isFITB }]">
+              <form id="jmfitbForm" class="w-full h-full p-4 flex-row" :class="[{ 'visible': isMandiri || isFITB },
+              { 'hidden': !isMandiri && !isFITB }]">
                 <div class="w-full h-1/4 flex-row">
                   <div class="w-full h-full">
                     <div class="w-full px-2 h-full flex-row">
@@ -670,12 +602,14 @@
                         </span>
                       </div>
                       <div class="w-full h-2/3 jmfitbOption">
-                        <select v-model="formJMFITB.modul_id" 
-                              class="block font-monda-bold text-3xl appearance-none w-full h-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-teal-500" id="grid-state">
+                        <select v-model="formJMFITB.modul_id"
+                          class="block font-monda-bold text-3xl appearance-none w-full h-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                          id="grid-state">
                           <option class="hidden" value="" disabled selected>
                             Pilih modul
                           </option>
-                          <option v-for="modul in allModul" v-bind:key="modul.id" :value="modul.id" :disabled="!modul.id">
+                          <option v-for="modul in allModul" v-bind:key="modul.id" :value="modul.id"
+                            :disabled="!modul.id">
                             {{ modul.judul }}
                           </option>
                         </select>
@@ -693,8 +627,8 @@
                       </div>
                       <div class="w-full h-4full flex">
                         <textarea v-model="formJMFITB.soal" cols="30" rows="10"
-                              class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500" 
-                              id="Pertanyaan" type="text" placeholder="Siapakah penemu bahasa C ?"/>
+                          class="font-overpass-mono-bold text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
+                          id="Pertanyaan" type="text" placeholder="Siapakah penemu bahasa C ?" />
                       </div>
                     </div>
                   </div>
@@ -702,54 +636,49 @@
               </form>
             </div>
             <div class="w-16 h-full flex-row rounded-r-large bg-gray-600">
-              <div class="w-16 h-full text-white m-auto p-5 hover:p-6 cursor-pointer animation-enable-short"
-                  :class="[{ 'hidden': editing },
-                          { 'visible': !editing }]"
-                  v-on:click="createSoal">
+              <div class="w-16 h-full text-white m-auto p-5 hover:p-6 cursor-pointer animation-enable-short" :class="[{ 'hidden': editing },
+              { 'visible': !editing }]" v-on:click="createSoal">
                 <span class="w-full h-full flex">
                   <img class="w-full h-full fas fa-plus">
                 </span>
               </div>
-              <div class="w-16 h-full text-white m-auto p-5 hover:p-6 cursor-pointer animation-enable-short"
-                  :class="[{ 'hidden': !editing },
-                          { 'visible': editing }]"
-                  v-on:click="updateSoal">
+              <div class="w-16 h-full text-white m-auto p-5 hover:p-6 cursor-pointer animation-enable-short" :class="[{ 'hidden': !editing },
+              { 'visible': editing }]" v-on:click="updateSoal">
                 <span class="w-full h-full flex">
                   <img class="w-full h-full fas fa-check">
                 </span>
               </div>
             </div>
           </div>
-          <div class="absolute right-0 h-full pb-8 animation-enable flex pointer-events-none"
-              :class="[{ 'w-8': soalMenuShown },
-                      { 'w-full': !soalMenuShown }]">
+          <div class="absolute right-0 h-full pb-8 animation-enable flex pointer-events-none" :class="[{ 'w-8': soalMenuShown },
+          { 'w-full': !soalMenuShown }]">
             <div class="w-8 h-full flex text-gray-700 animation-enable pointer-events-none">
               <div class="w-8 h-full m-auto p-1 hover:p-2 cursor-pointer animation-enable-short pointer-events-auto"
-                  v-on:click="soalMenuShown = !soalMenuShown">
-                <span class="w-full h-full"
-                      :class="[{ 'visible': soalMenuShown },
-                              { 'hidden': !soalMenuShown }]">
+                v-on:click="soalMenuShown = !soalMenuShown">
+                <span class="w-full h-full" :class="[{ 'visible': soalMenuShown },
+                { 'hidden': !soalMenuShown }]">
                   <img class="w-full h-full p-1 fas fa-caret-left">
                 </span>
-                <span class="w-full h-full"
-                      :class="[{ 'visible': !soalMenuShown },
-                              { 'hidden': soalMenuShown }]">
+                <span class="w-full h-full" :class="[{ 'visible': !soalMenuShown },
+                { 'hidden': soalMenuShown }]">
                   <img class="w-full h-full p-1 fas fa-caret-right">
                 </span>
               </div>
             </div>
           </div>
         </div>
-      </div>   
+      </div>
     </div>
   </div>
 </template>
 
 <style>
-.soal-list-enter, .soal-list-leave-to{
+.soal-list-enter,
+.soal-list-leave-to {
   opacity: 0;
   transform: translateX(-100%);
 }
+
 .soal-list-leave-active {
   position: absolute;
 }
@@ -763,6 +692,7 @@ import { useToast } from '@/composables/useToast';
 import { useSidebarMenu } from '@/composables/useSidebarMenu';
 import SidebarMenu from '@/components/asisten/SidebarMenu.vue';
 import AsistenProfilePanel from '@/components/asisten/ProfilePanel.vue';
+import SoalAction from '@/components/asisten/soal/SoalAction.vue'
 export default {
   props: [
     'comingFrom',
@@ -782,6 +712,7 @@ export default {
   components: {
     SidebarMenu,
     AsistenProfilePanel,
+    SoalAction
   },
 
   setup(props) {
@@ -874,6 +805,8 @@ export default {
         isEssay: false,
         isProgram: false,
       },
+      commentsVisible: false,
+
     }
   },
 
@@ -951,6 +884,9 @@ export default {
   },
 
   methods: {
+    toggleComments() {
+      this.commentsVisible = !this.commentsVisible;
+    },
     handleMenuSelect(target) {
       this.setActiveMenu(target);
       this.travel(target);
@@ -1234,7 +1170,7 @@ export default {
       this.activeSoalType = soalMenu;
     },
 
-    editSoal(soal, editing) {
+    editSoal({ soal, editing }) {
       if (!this.canEdit) {
         return;
       }
@@ -1243,7 +1179,11 @@ export default {
         this.editing = true;
         this.activeEditId = soal.id;
         this.populateFormForCurrentType(soal);
+        document.querySelector(`.editOpenTA-${soal.id}`).classList.add('hidden');
+        document.querySelector(`.editCloseTA-${soal.id}`).classList.remove('hidden');
       } else {
+        document.querySelector(`.editOpenTA-${soal.id}`).classList.remove('hidden');
+        document.querySelector(`.editCloseTA-${soal.id}`).classList.add('hidden');
         this.resetEditing();
       }
     },
@@ -1311,6 +1251,7 @@ export default {
       if (!config) {
         return;
       }
+      console.log(this.id)
 
       this.$axios.delete(config.deleteUrl(id)).then(response => {
         if (response.data.message === 'success') {
@@ -1321,8 +1262,7 @@ export default {
             this.resetEditing();
           }
         } else {
-          this.toast.error(response.data.message,
-          );
+          this.toast.error(response.data.message);
         }
       }).catch(error => {
         this.handleValidationErrors(error, config.errorFields);

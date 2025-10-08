@@ -51,6 +51,39 @@
           </div>
         </div>
       </div>
+      <div class="p-5 mt-3">
+        <div class="w-full flex flex-col items-start px-10">
+          <button
+            class="bg-green-800 font-merri text-white mb-2 px-3 py-1 rounded hover:bg-green-600 focus:outline-none focus:ring-0"
+            @click="toggleComment(questionIndex)"
+          >
+            <i class="fas fa-comment-dots"></i>
+          </button>
+
+        </div>
+
+        <transition name="fade">
+          <div v-if="commentsVisible[questionIndex]" class="relative mt-3">
+            <!-- Comment textarea -->
+            <textarea
+              :value="commentsLocal[questionIndex]"
+              rows="4"
+              placeholder="Write your comment here..."
+              class="w-full p-5 font-merri border rounded-2xl focus:outline-none bg-amber-200"
+              @input="updateComment(questionIndex, $event.target.value)"
+            />
+
+            <!-- Floating Paper Plane Submit Button -->
+            <button
+              @click="submitComment(questionIndex)"
+              class="absolute bottom-3 right-3  text-black p-3 transition-colors duration-300 focus:outline-none hover:scale-110 active:scale-90 transform  ease-in-out"
+            >
+              <i class="fas fa-paper-plane text-xl"></i>
+            </button>
+          </div>
+        </transition>
+
+      </div>
 
       <slot
         name="after-question"
@@ -135,6 +168,10 @@ export default {
       type: Function,
       default: null,
     },
+    comments: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     isTextareaMode() {
@@ -216,6 +253,42 @@ export default {
         event.preventDefault();
       }
     },
+    toggleComment(index) {
+      this.commentsVisible[index] = !this.commentsVisible[index];
+    },
+
+    updateComment(index, value) {
+      this.commentsLocal[index] = value;
+      this.$emit('comment-change', {
+        questionIndex: index,
+        comment: value,
+        allComments: this.commentsLocal,
+      });
+    },
+      },
+      data() {
+        return {
+          commentsVisible: [],
+          commentsLocal: [],
+        };
+      },
+  mounted() {
+    this.commentsVisible = this.questions.map(() => false);
+
+    // initialize from parent-provided comments
+    this.commentsLocal = this.comments.length
+      ? [...this.comments]
+      : this.questions.map(() => '');
   },
 };
 </script>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+</style>
+
