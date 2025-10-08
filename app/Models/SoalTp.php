@@ -25,4 +25,12 @@ class SoalTp extends Model
     {
         return $this->morphMany(SoalComment::class, 'soal', 'tipe_soal', 'soal_id');
     }
+
+    /**
+     * Get the modul that owns the SoalTp.
+     */
+    public function modul()
+    {
+        return $this->belongsTo(Modul::class);
+    }
 }

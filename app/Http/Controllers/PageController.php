@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Asisten;
 use App\Models\Configuration;
 use App\Models\Feedback;
+use App\Models\JadwalJaga;
 use App\Models\JenisPolling;
 use App\Models\Kelas;
 use App\Models\LaporanPraktikan;
@@ -13,6 +14,12 @@ use App\Models\Nilai;
 use App\Models\Polling;
 use App\Models\Praktikan;
 use App\Models\Role;
+use App\Models\SoalFitb;
+use App\Models\SoalJurnal;
+use App\Models\SoalMandiri;
+use App\Models\SoalTa;
+use App\Models\SoalTk;
+use App\Models\SoalTp;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -74,11 +81,13 @@ class PageController extends Controller
     public function asisten()
     {
         $user = Auth::guard('asisten')->user();
-        $messages = Feedback::where('asisten_id', $user->id)
-            ->leftJoin('kelas', 'feedback.kelas_id', '=', 'kelas.id')
-            ->leftJoin('praktikans', 'feedback.praktikan_id', '=', 'praktikans.id')
-            ->orderBy('feedback.created_at', 'desc')->get();
-        $userRole = Role::where('id', $user->role_id)->first();
+
+        $messages = Feedback::with(['kelas', 'praktikan'])
+            ->where('asisten_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $userRole = Role::find($user->role_id);
 
         return Inertia::render('Asisten', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
@@ -93,16 +102,16 @@ class PageController extends Controller
     public function praktikan()
     {
         $user = Auth::guard('praktikan')->user();
-        $user->kelas = Kelas::where('id', $user->kelas_id)->first()->kelas;
+        $kelas = Kelas::find($user->kelas_id);
+        $user->kelas = $kelas->kelas;
+
         $allAsisten = Asisten::orderBy('kode', 'asc')->get();
         $allAsistenPolling = Asisten::where('kode', '!=', 'BOT')->orderBy('kode', 'asc')->get();
         $isRunmod = Configuration::find(1)->runmod_activation;
         $pollingComplete = Polling::where('praktikan_id', $user->id)->exists();
         $allPolling = JenisPolling::all();
         $allModul = Modul::orderBy('isEnglish', 'asc')->get();
-        $allJurnal = DB::table('soal_jurnals')
-            ->join('moduls', 'soal_jurnals.modul_id', '=', 'moduls.id')
-            ->select('soal_jurnals.*', 'moduls.judul')->get();
+        $allJurnal = SoalJurnal::with('modul:id,judul')->get();
 
         return Inertia::render('Praktikan', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
@@ -122,26 +131,16 @@ class PageController extends Controller
     public function soal()
     {
         $user = Auth::guard('asisten')->user();
-        $userRole = Role::where('id', $user->role_id)->first();
+        $userRole = Role::find($user->role_id);
         $allModul = Modul::orderBy('isEnglish', 'asc')->get();
-        $allTP = DB::table('soal_tps')
-            ->join('moduls', 'soal_tps.modul_id', '=', 'moduls.id')
-            ->select('soal_tps.*', 'moduls.judul')->get();
-        $allTA = DB::table('soal_tas')
-            ->join('moduls', 'soal_tas.modul_id', '=', 'moduls.id')
-            ->select('soal_tas.*', 'moduls.judul')->get();
-        $allTK = DB::table('soal_tks')
-            ->join('moduls', 'soal_tks.modul_id', '=', 'moduls.id')
-            ->select('soal_tks.*', 'moduls.judul')->get();
-        $allJurnal = DB::table('soal_jurnals')
-            ->join('moduls', 'soal_jurnals.modul_id', '=', 'moduls.id')
-            ->select('soal_jurnals.*', 'moduls.judul')->get();
-        $allMandiri = DB::table('soal_mandiris')
-            ->join('moduls', 'soal_mandiris.modul_id', '=', 'moduls.id')
-            ->select('soal_mandiris.*', 'moduls.judul')->get();
-        $allFITB = DB::table('soal_fitbs')
-            ->join('moduls', 'soal_fitbs.modul_id', '=', 'moduls.id')
-            ->select('soal_fitbs.*', 'moduls.judul')->get();
+
+        // Use relationships to get all soal with their modul data
+        $allTP = SoalTp::with('modul:id,judul')->get();
+        $allTA = SoalTa::with('modul:id,judul')->get();
+        $allTK = SoalTk::with('modul:id,judul')->get();
+        $allJurnal = SoalJurnal::with('modul:id,judul')->get();
+        $allMandiri = SoalMandiri::with('modul:id,judul')->get();
+        $allFITB = SoalFitb::with('modul:id,judul')->get();
 
         return Inertia::render('Soal', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
@@ -204,11 +203,13 @@ class PageController extends Controller
     public function plotting()
     {
         $user = Auth::guard('asisten')->user();
-        $userRole = Role::where('id', $user->role_id)->first();
-        $allJaga = DB::table('jadwal_jagas')
-            ->join('asistens', 'jadwal_jagas.asisten_id', '=', 'asistens.id')
-            ->join('kelas', 'jadwal_jagas.kelas_id', '=', 'kelas.id')
-            ->select('jadwal_jagas.*', 'asistens.kode', 'kelas.kelas', 'kelas.hari', 'kelas.shift')->get();
+        $userRole = Role::find($user->role_id);
+
+        $allJaga = JadwalJaga::with([
+            'asisten:id,kode',
+            'kelas:id,kelas,hari,shift',
+        ])->get();
+
         $allKelas = Kelas::all();
         $allAsisten = Asisten::orderBy('kode', 'asc')->get();
         $plottingPrivilege = [1, 2, 4, 5];
@@ -412,29 +413,30 @@ class PageController extends Controller
     public function nilai()
     {
         $user = Auth::guard('asisten')->user();
-        $userRole = Role::where('id', $user->role_id)->first();
-        $allLaporan = LaporanPraktikan::where('laporan_praktikans.asisten_id', $user->id)
-            ->join('praktikans', 'laporan_praktikans.praktikan_id', '=', 'praktikans.id')
-            ->join('kelas', 'praktikans.kelas_id', '=', 'kelas.id')
-            ->select('laporan_praktikans.*', 'praktikans.nama', 'praktikans.nim', 'praktikans.kelas_id', 'kelas', 'kelas.shift', 'kelas.hari')
-            ->latest()
-            ->get();
+        $userRole = Role::find($user->role_id);
 
-        foreach ($allLaporan as $laporan => $value) {
-            if (Nilai::where('praktikan_id', $value->praktikan_id)
-                ->where('modul_id', $value->modul_id)
-                ->where('asisten_id', $value->asisten_id)
-                ->exists()) {
-                $value->nilaiExists = true;
-            } else {
-                $value->nilaiExists = false;
-            }
-        }
+        // Get all laporan with their related models and check if nilai exists
+        $allLaporan = LaporanPraktikan::with([
+            'praktikan:id,nama,nim,kelas_id',
+            'praktikan.kelas:id,kelas,shift,hari',
+        ])
+            ->where('asisten_id', $user->id)
+            ->latest()
+            ->get()
+            ->map(function ($laporan) {
+                $laporan->nilaiExists = Nilai::where([
+                    'praktikan_id' => $laporan->praktikan_id,
+                    'modul_id' => $laporan->modul_id,
+                    'asisten_id' => $laporan->asisten_id,
+                ])->exists();
+
+                return $laporan;
+            });
 
         return Inertia::render('Nilai', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
             'userRole' => $userRole->role,
-            'allLaporan' => $allLaporan ?? [],
+            'allLaporan' => $allLaporan,
         ]));
     }
 

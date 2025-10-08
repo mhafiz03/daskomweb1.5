@@ -27,4 +27,9 @@ class SoalTk extends Model
     {
         return $this->morphMany(SoalComment::class, 'soal', 'tipe_soal', 'soal_id');
     }
+
+    public function modul()
+    {
+        return $this->belongsTo(Modul::class);
+    }
 }
