@@ -46,10 +46,11 @@ class LaporanPraktikan extends Model
     /**
      * Get the nilai for this laporan if it exists.
      */
-    public function nilai(): BelongsTo
+    public function nilai()
     {
-        return $this->belongsTo(Nilai::class, 'praktikan_id', 'praktikan_id')
+        return Nilai::where('praktikan_id', $this->praktikan_id)
             ->where('modul_id', $this->modul_id)
-            ->where('asisten_id', $this->asisten_id);
+            ->where('asisten_id', $this->asisten_id)
+            ->first();
     }
 }
