@@ -225,6 +225,10 @@ Route::middleware('loggedIn:praktikan')->prefix('praktikan')->name('praktikan.')
     Route::post('/jawaban/mandiri', [JawabanMandiriController::class, 'store'])->name('jawaban.mandiri');
     Route::post('/jawaban/jurnal/{praktikan_id}/{modul_id}', PraktikanLihatJawabanController::class)->name('jawaban.jurnal.show');
 
+    // View answers for praktikan
+    Route::get('/jawaban/ta/{praktikan_id}/{modul_id}', [JawabanTaController::class, 'getPraktikanAnswers'])->name('jawaban.ta.show');
+    Route::get('/jawaban/tk/{praktikan_id}/{modul_id}', [JawabanTkController::class, 'getPraktikanAnswers'])->name('jawaban.tk.show');
+
     // Tugas Pendahuluan
     Route::post('/tp/temp-jawaban', [TempJawabantpController::class, 'store'])->name('tp.temp_jawaban');
     Route::post('/tp/save-jawaban', [KumpulTpController::class, 'save'])->name('tp.save_jawaban');

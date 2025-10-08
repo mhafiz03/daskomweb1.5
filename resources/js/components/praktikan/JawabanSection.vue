@@ -113,6 +113,14 @@ export default {
       type: Array,
       default: () => [],
     },
+    taAnswers: {
+      type: Array,
+      default: () => [],
+    },
+    tkAnswers: {
+      type: Array,
+      default: () => [],
+    },
     answersVisible: {
       type: Boolean,
       default: false,

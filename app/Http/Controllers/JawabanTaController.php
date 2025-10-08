@@ -169,6 +169,55 @@ class JawabanTaController extends Controller
     }
 
     /**
+     * Get TA answers for praktikan (simplified view)
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getPraktikanAnswers(int $praktikan_id, int $modul_id)
+    {
+        try {
+            $answers = JawabanTa::where('praktikan_id', $praktikan_id)
+                ->where('modul_id', $modul_id)
+                ->with(['soal' => function ($query) {
+                    $query->select('id', 'pertanyaan', 'jawaban_benar');
+                }])
+                ->get(['id', 'soal_id', 'jawaban', 'created_at']);
+
+            // Transform the data for praktikan view (simplified)
+            $formattedAnswers = $answers->map(function ($answer) {
+                if ($answer->soal) {
+                    return [
+                        'id' => $answer->id,
+                        'soal_id' => $answer->soal_id,
+                        'pertanyaan' => $answer->soal->pertanyaan,
+                        'jawaban_praktikan' => $answer->jawaban,
+                        'is_correct' => $answer->jawaban === $answer->soal->jawaban_benar,
+                        'submitted_at' => $answer->created_at,
+                    ];
+                }
+
+                return null;
+            })->filter();
+
+            return response()->json([
+                'message' => 'success',
+                'data' => $formattedAnswers,
+            ], 200);
+
+        } catch (\Throwable $e) {
+            Log::error('Failed to get TA answers for praktikan', [
+                'praktikan_id' => $praktikan_id,
+                'modul_id' => $modul_id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => 'Failed to retrieve answers',
+            ], 500);
+        }
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @return \Illuminate\Http\Response

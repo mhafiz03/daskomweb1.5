@@ -191,7 +191,8 @@
 
           <!--Jawaban Layout -->
           <JawabanSection v-if="isJawaban" :modules="all_modul" :current-module-id="currentJawabanJurnal"
-            :answers="allJawabanJurnal" :answers-visible="jawabanShown" :answers-refreshing="jawabanChanged"
+            :answers="allJawabanJurnal" :ta-answers="jawabanTaAnswers" :tk-answers="jawabanTkAnswers" 
+            :answers-visible="jawabanShown" :answers-refreshing="jawabanChanged"
             :current-user="currentUser" @select-module="onJawabanModuleSelect" />
 
           <!-- Praktikum Layout -->
@@ -563,6 +564,8 @@ export default {
       jawabanMandiri: [],
       jawabanTP: [],
       jawabanRunmod: [],
+      jawabanTaAnswers: [],
+      jawabanTkAnswers: [],
 
       laporanPraktikan: {
         pesan: '',
@@ -1691,13 +1694,42 @@ export default {
 
           this.jawabanShown = true;
           this.currentJawabanJurnal = id;
+          
+          // Fetch jurnal answers
           this.$axios.post(`/praktikan/jawaban/jurnal/${this.currentUser.id}/${id}`).then(response => {
-
             if (response.data.message === "success") {
               this.allJawabanJurnal = response.data.allJawabanJurnal;
             } else {
               this.toast.error(response.data.message);
             }
+          });
+
+          // Fetch TA answers
+          this.$axios.get(`/praktikan/jawaban/ta/${this.currentUser.id}/${id}`).then(response => {
+            if (response.data.message === "success") {
+              this.jawabanTaAnswers = response.data.data;
+              console.log('TA Answers (Praktikan):', response.data.data);
+            } else {
+              console.log('Failed to fetch TA answers:', response.data.message);
+              this.jawabanTaAnswers = [];
+            }
+          }).catch(error => {
+            console.error('Error fetching TA answers:', error);
+            this.jawabanTaAnswers = [];
+          });
+
+          // Fetch TK answers
+          this.$axios.get(`/praktikan/jawaban/tk/${this.currentUser.id}/${id}`).then(response => {
+            if (response.data.message === "success") {
+              this.jawabanTkAnswers = response.data.data;
+              console.log('TK Answers (Praktikan):', response.data.data);
+            } else {
+              console.log('Failed to fetch TK answers:', response.data.message);
+              this.jawabanTkAnswers = [];
+            }
+          }).catch(error => {
+            console.error('Error fetching TK answers:', error);
+            this.jawabanTkAnswers = [];
           });
         }
       }, 250);
