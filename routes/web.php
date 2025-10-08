@@ -35,7 +35,6 @@ use App\Http\Controllers\SoalTkController;
 use App\Http\Controllers\SoalTpController;
 use App\Http\Controllers\TempJawabantpController;
 use App\Http\Controllers\TugaspendahuluanController;
-use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 
 /*
