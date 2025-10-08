@@ -110,6 +110,65 @@ class JawabanTkController extends Controller
     }
 
     /**
+     * Get TK answers with questions for a specific praktikan and modul
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getAnswersWithQuestions(int $praktikan_id, int $modul_id)
+    {
+        try {
+            $answers = JawabanTk::where('praktikan_id', $praktikan_id)
+                ->where('modul_id', $modul_id)
+                ->with(['soal' => function ($query) {
+                    $query->select('id', 'pertanyaan', 'jawaban_benar', 'jawaban_salah1', 'jawaban_salah2', 'jawaban_salah3');
+                }])
+                ->get(['id', 'soal_id', 'jawaban', 'created_at']);
+
+            // Transform the data to include question details
+            $formattedAnswers = $answers->map(function ($answer) {
+                if ($answer->soal) {
+                    // Create array of all answer options
+                    $options = [
+                        $answer->soal->jawaban_benar,
+                        $answer->soal->jawaban_salah1,
+                        $answer->soal->jawaban_salah2,
+                        $answer->soal->jawaban_salah3,
+                    ];
+
+                    return [
+                        'id' => $answer->id,
+                        'soal_id' => $answer->soal_id,
+                        'pertanyaan' => $answer->soal->pertanyaan,
+                        'jawaban_praktikan' => $answer->jawaban,
+                        'jawaban_benar' => $answer->soal->jawaban_benar,
+                        'is_correct' => $answer->jawaban === $answer->soal->jawaban_benar,
+                        'all_options' => $options,
+                        'submitted_at' => $answer->created_at,
+                    ];
+                }
+
+                return null;
+            })->filter();
+
+            return response()->json([
+                'message' => 'success',
+                'data' => $formattedAnswers,
+            ], 200);
+
+        } catch (\Throwable $e) {
+            Log::error('Failed to get TK answers with questions', [
+                'praktikan_id' => $praktikan_id,
+                'modul_id' => $modul_id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => 'Failed to retrieve answers',
+            ], 500);
+        }
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @return \Illuminate\Http\Response

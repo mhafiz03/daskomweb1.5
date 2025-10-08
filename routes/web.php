@@ -185,6 +185,10 @@ Route::middleware('loggedIn:asisten')->prefix('asisten')->name('asisten.')->grou
     Route::post('/nilai', [NilaiController::class, 'store'])->name('nilai.store');
     Route::post('/nilai/{praktikan_id}/{modul_id}', [NilaiController::class, 'show'])->name('nilai.show');
 
+    // Jawaban Details for Asisten
+    Route::get('/jawaban/ta/{praktikan_id}/{modul_id}', [JawabanTaController::class, 'getAnswersWithQuestions'])->name('jawaban.ta.details');
+    Route::get('/jawaban/tk/{praktikan_id}/{modul_id}', [JawabanTkController::class, 'getAnswersWithQuestions'])->name('jawaban.tk.details');
+
     // Praktikan Management
     Route::delete('/praktikan/alfa', [PraktikanController::class, 'destroy'])->name('praktikan.alfa');
     Route::post('/praktikan/set/{praktikan_nim}/{asisten_id}/{modul_id}', [NilaiController::class, 'edit'])->name('praktikan.set');

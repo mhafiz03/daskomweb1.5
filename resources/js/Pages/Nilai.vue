@@ -636,6 +636,8 @@ export default {
 
       allJawabanTp: [],
       allJawabanJurnal: [],
+      allJawabanTa: [],
+      allJawabanTk: [],
 
       chosenModulID: '',
       chosenKelasID: '',
@@ -861,6 +863,34 @@ export default {
         } else {
           globe.toast.error(response.data.message);
         }
+      });
+
+      // Fetch TA jawaban with questions
+      globe.$axios.get('/asisten/jawaban/ta/'+$praktikan_id+'/'+$modul_id).then(response => {
+        if(response.data.message === "success"){
+          globe.allJawabanTa = response.data.data;
+          console.log('TA Jawaban with Questions:', response.data.data);
+        } else {
+          console.log('Failed to fetch TA jawaban:', response.data.message);
+          globe.allJawabanTa = [];
+        }
+      }).catch(error => {
+        console.error('Error fetching TA jawaban:', error);
+        globe.allJawabanTa = [];
+      });
+
+      // Fetch TK jawaban with questions
+      globe.$axios.get('/asisten/jawaban/tk/'+$praktikan_id+'/'+$modul_id).then(response => {
+        if(response.data.message === "success"){
+          globe.allJawabanTk = response.data.data;
+          console.log('TK Jawaban with Questions:', response.data.data);
+        } else {
+          console.log('Failed to fetch TK jawaban:', response.data.message);
+          globe.allJawabanTk = [];
+        }
+      }).catch(error => {
+        console.error('Error fetching TK jawaban:', error);
+        globe.allJawabanTk = [];
       });
     },
 
