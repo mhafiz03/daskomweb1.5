@@ -944,6 +944,7 @@ export default {
 
         if (response.data.message === "success") {
 
+        if(response.data.message === "success"){
           globe.formNilai.tp = '';
           globe.formNilai.jurnal = '';
           globe.formNilai.skill = '';

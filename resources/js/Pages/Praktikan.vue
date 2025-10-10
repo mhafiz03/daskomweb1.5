@@ -447,6 +447,7 @@
 </style>
 
 <script>
+import debounce from 'lodash.debounce';
 import { useToast } from '@/composables/useToast';
 import QuestionBlock from '@/components/praktikan/QuestionBlock.vue';
 import PraktikumSection from '@/components/praktikan/PraktikumSection.vue';
@@ -914,7 +915,9 @@ export default {
     },
 
     // Autosave functionality
-    async saveAutosave(tipesoal) {
+
+    // Debounced autosave for MCQ (TA/TK)
+    saveAutosave: debounce(async function (tipesoal) {
       if (!this.current_praktikum.modul_id) {
         return;
       }
@@ -945,7 +948,7 @@ export default {
         // Silent fail for autosave to not interrupt user experience
         console.warn('[SAVE] Autosave failed:', error);
       }
-    },
+    }, 500),
 
     async loadAutosave(tipesoal) {
 
@@ -1021,8 +1024,8 @@ export default {
       });
     },
 
-    // Autosave for text-based answers (jurnal, fitb, mandiri)
-    async saveTextAutosave(tipesoal, answersArray) {
+    // Debounced autosave for text-based answers (jurnal, fitb, mandiri)
+    saveTextAutosave: debounce(async function (tipesoal, answersArray) {
       if (!this.current_praktikum.modul_id || !Array.isArray(answersArray)) {
         return;
       }
@@ -1051,7 +1054,7 @@ export default {
         // Silent fail for autosave to not interrupt user experience
         console.warn('Text autosave failed:', error);
       }
-    },
+    }, 500),
 
     // Restore text answers from autosave
     restoreTextAnswersFromAutosave(savedAnswers, answersArray) {
@@ -1753,7 +1756,7 @@ export default {
       this.pageActive = false;
       this.isMenuShown = false;
       setTimeout(() => {
-        this.$inertia.get('/logoutPraktikan', {}, {
+  this.$inertia.get('/auth/praktikan/logout', {}, {
           replace: true,
         });
       }, 1010);

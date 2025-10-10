@@ -254,7 +254,8 @@ export default {
         question.soal_id ??
         question.question_id ??
         question.soalId ??
-        index);
+        index
+      );
     },
     handleSecureEvent(event) {
       if (this.secureText) {
@@ -299,4 +300,3 @@ export default {
   opacity: 0;
 }
 </style>
-

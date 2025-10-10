@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\SoalJurnal;
-use App\Models\SoalMandiri;
 use App\Models\TempSoaljurnal;
 use Illuminate\Http\Request;
 
@@ -142,26 +141,8 @@ class SoalJurnalController extends Controller
      * @param  \App\Models\SoalJurnal  $soal_Jurnal
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(SoalJurnal $soal_Jurnal)
     {
-        try {
-            $soal = SoalJurnal::find($id);
-    
-            if (!$soal) {
-                return response()->json(['message' => 'Soal not found'], 404);
-            }
-    
-            $soal->delete();
-    
-            return response()->json(['message' => 'success']);
-        } catch (\Exception $e) {
-            // Log the error for debugging
-            \Log::error('Failed to delete SoalJurnal: '.$e->getMessage());
-    
-            return response()->json([
-                'message' => 'Failed to delete soal',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        //
     }
 }

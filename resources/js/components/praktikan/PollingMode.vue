@@ -212,7 +212,7 @@ export default {
       this.setPollingSelection(index, assistant.id);
     },
     savePolling() {
-      this.$axios.post('/savePolling', this.pollingSelections).then(response => {
+  this.$axios.post('/praktikan/polling', this.pollingSelections).then(response => {
         if (response.data.message === 'success') {
           this.isComplete = true;
           this.$emit('saved');
