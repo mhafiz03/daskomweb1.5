@@ -104,8 +104,8 @@ export default {
         const calculateValue = (event, index) => {
             const bounding = event.currentTarget.getBoundingClientRect();
             const ratio = (event.clientX - bounding.left) / bounding.width;
-            const value = index + ratio + 1e-6; // prevent 0 when at far left
-            return roundToIncrement(index + ratio + 1);
+            // const value = index + ratio + 1e-6; // prevent 0 when at far left
+            return roundToIncrement(index + ratio );
         };
 
         const filledStyle = (index) => {
