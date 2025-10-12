@@ -105,6 +105,9 @@ class PageController extends Controller
         $kelas = Kelas::find($user->kelas_id);
         $user->kelas = $kelas->kelas;
 
+        // Check if user is from TOT class (for comments feature)
+        $isTotClass = substr($kelas->kelas, 0, 3) === 'TOT';
+
         $allAsisten = Asisten::orderBy('kode', 'asc')->get();
         $allAsistenPolling = Asisten::where('kode', '!=', 'BOT')->orderBy('kode', 'asc')->get();
         $isRunmod = Configuration::find(1)->runmod_activation;
@@ -115,6 +118,7 @@ class PageController extends Controller
 
         return Inertia::render('Praktikan', array_merge($this->getCommonParams(), [
             'currentUser' => $user,
+            'isTotClass' => $isTotClass,
             'allAsisten' => $allAsisten,
             'allAsistenPolling' => $allAsistenPolling,
             'isRunmod' => $isRunmod,

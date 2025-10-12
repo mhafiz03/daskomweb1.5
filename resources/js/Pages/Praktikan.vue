@@ -140,9 +140,11 @@
                       <div class="w-full h-full" v-scrollbar>
                         <div>
                           <QuestionBlock :questions="soalTPEssay" :answers="jawabanTP" :secure-text="true"
+                            :praktikan-id="currentUser.id" :show-comments="isTotClass" tipe-soal="tp"
                             :on-answer-change="payload => onTextAnswerChange('jawabanTP', payload)" />
 
                           <QuestionBlock :questions="soalTPProgram" :answers="jawabanTP" :secure-text="true"
+                            :praktikan-id="currentUser.id" :show-comments="isTotClass" tipe-soal="tp"
                             :numbering-offset="soalTPEssay.length" :answer-index-offset="soalTPEssay.length"
                             :on-answer-change="payload => onTextAnswerChange('jawabanTP', payload)" />
 
@@ -191,21 +193,21 @@
 
           <!--Jawaban Layout -->
           <JawabanSection v-if="isJawaban" :modules="all_modul" :current-module-id="currentJawabanJurnal"
-            :answers="allJawabanJurnal" :ta-answers="jawabanTaAnswers" :tk-answers="jawabanTkAnswers" 
-            :answers-visible="jawabanShown" :answers-refreshing="jawabanChanged"
-            :current-user="currentUser" @select-module="onJawabanModuleSelect" />
+            :answers="allJawabanJurnal" :ta-answers="jawabanTaAnswers" :tk-answers="jawabanTkAnswers"
+            :answers-visible="jawabanShown" :answers-refreshing="jawabanChanged" :current-user="currentUser"
+            @select-module="onJawabanModuleSelect" />
 
           <!-- Praktikum Layout -->
           <PraktikumSection v-if="isPraktikum" :is-polling-enabled="isPollingEnabled"
-            :polling-complete="pollingComplete_mutable" :current-user="currentUser" :all-asisten="allAsisten"
-            :all-asisten-polling="allAsistenPolling" :all-polling="allPolling" :current-praktikum="current_praktikum"
-            :current-modul="current_modul" :programming-quote="programmingQuote" :quote-author="quoteAuthor"
-            :modul-shown="modulShown" :show-nilai-ta="showNilaiTA" :show-nilai-tk="showNilaiTK" :soal-fitb="soalFitb"
-            :jawaban-fitb="jawabanFitb" :soal-jurnal="soalJurnal" :jawaban-jurnal="jawabanJurnal"
-            :soal-runmod="soalRunmod" :jawaban-runmod="jawabanRunmod" :soal-mandiri="soalMandiri"
-            :jawaban-mandiri="jawabanMandiri" :soal-ta="soalTA" :jawaban-ta="jawabanTA" :soal-tk="soalTK"
-            :jawaban-tk="jawabanTK" :laporan-praktikan="laporanPraktikan" :nilai-ta="nilaiTA" :nilai-tk="nilaiTK"
-            :selected-answers="selectedAnswers" :generate-score-text="generateScoreText"
+            :polling-complete="pollingComplete_mutable" :current-user="currentUser" :is-tot-class="isTotClass"
+            :all-asisten="allAsisten" :all-asisten-polling="allAsistenPolling" :all-polling="allPolling"
+            :current-praktikum="current_praktikum" :current-modul="current_modul" :programming-quote="programmingQuote"
+            :quote-author="quoteAuthor" :modul-shown="modulShown" :show-nilai-ta="showNilaiTA"
+            :show-nilai-tk="showNilaiTK" :soal-fitb="soalFitb" :jawaban-fitb="jawabanFitb" :soal-jurnal="soalJurnal"
+            :jawaban-jurnal="jawabanJurnal" :soal-runmod="soalRunmod" :jawaban-runmod="jawabanRunmod"
+            :soal-mandiri="soalMandiri" :jawaban-mandiri="jawabanMandiri" :soal-ta="soalTA" :jawaban-ta="jawabanTA"
+            :soal-tk="soalTK" :jawaban-tk="jawabanTK" :laporan-praktikan="laporanPraktikan" :nilai-ta="nilaiTA"
+            :nilai-tk="nilaiTK" :selected-answers="selectedAnswers" :generate-score-text="generateScoreText"
             @polling-saved="handlePollingSaved" @finish-praktikum="finishPraktikum"
             @text-answer-change="handleTextAnswerChange" @question-option-select="handleQuestionOptionSelect"
             @update:modulShown="value => modulShown = value" @update:showNilaiTa="value => showNilaiTA = value"
@@ -456,6 +458,7 @@ export default {
   props: [
     'comingFrom',
     'currentUser',
+    'isTotClass',
     'allAsisten',
     'allAsistenPolling',
     'isRunmod',
@@ -1697,7 +1700,7 @@ export default {
 
           this.jawabanShown = true;
           this.currentJawabanJurnal = id;
-          
+
           // Fetch jurnal answers
           this.$axios.post(`/praktikan/jawaban/jurnal/${this.currentUser.id}/${id}`).then(response => {
             if (response.data.message === "success") {
@@ -1756,7 +1759,7 @@ export default {
       this.pageActive = false;
       this.isMenuShown = false;
       setTimeout(() => {
-  this.$inertia.get('/auth/praktikan/logout', {}, {
+        this.$inertia.get('/auth/praktikan/logout', {}, {
           replace: true,
         });
       }, 1010);

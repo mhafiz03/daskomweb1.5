@@ -1,10 +1,7 @@
 <template>
   <div>
-    <div
-      v-for="(question, questionIndex) in questions"
-      :key="questionKeyValue(question, questionIndex)"
-      class="w-full flex-row h-auto"
-    >
+    <div v-for="(question, questionIndex) in questions" :key="questionKeyValue(question, questionIndex)"
+      class="w-full flex-row h-auto">
       <div class="w-full h-auto flex my-10">
         <div class="h-full w-12 flex font-merri-bold text-xl">
           <div class="m-auto w-auto h-auto">{{ displayNumber(questionIndex) }}</div>
@@ -18,50 +15,33 @@
       </div>
 
       <div v-if="isTextareaMode" class="w-full h-auto flex px-5">
-        <textarea
-          :value="getAnswerValue(questionIndex)"
-          :cols="cols"
-          :rows="rows"
+        <textarea :value="getAnswerValue(questionIndex)" :cols="cols" :rows="rows"
           class="font-overpass-mono-bold resize-none text-xl bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full h-full py-4 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-teal-500"
-          type="text"
-          :placeholder="placeholder"
-          :autocomplete="secureText ? 'off' : null"
-          @input="updateAnswerValue(questionIndex, $event.target.value)"
-          @selectstart="handleSecureEvent"
-          @paste="handleSecureEvent"
-          @copy="handleSecureEvent"
-          @cut="handleSecureEvent"
-          @drag="handleSecureEvent"
-          @drop="handleSecureEvent"
-        />
+          type="text" :placeholder="placeholder" :autocomplete="secureText ? 'off' : null"
+          @input="updateAnswerValue(questionIndex, $event.target.value)" @selectstart="handleSecureEvent"
+          @paste="handleSecureEvent" @copy="handleSecureEvent" @cut="handleSecureEvent" @drag="handleSecureEvent"
+          @drop="handleSecureEvent" />
       </div>
 
       <div v-else-if="isOptionsMode" class="w-full h-auto flex-row">
-        <div
-          v-for="(option, optionIndex) in resolveOptions(questionIndex)"
-          :key="optionIndex"
+        <div v-for="(option, optionIndex) in resolveOptions(questionIndex)" :key="optionIndex"
           class="w-full px-8 my-2 h-auto cursor-pointer flex"
-          @click="onSelectOption(option, question, questionIndex, optionIndex)"
-        >
-          <div
-            class="w-full px-4 py-2 rounded-large font-overpass-bold break-words whitespace-pre-wrap text-xl"
-            :class="[
-              optionClass(questionIndex, optionIndex),
-              selectedAnswers[`${questionIndex}-${optionIndex}`] 
-                ? 'bg-green-500 text-white' 
-                : 'bg-green-200 hover:bg-green-300'
-            ]"
-          >
+          @click="onSelectOption(option, question, questionIndex, optionIndex)">
+          <div class="w-full px-4 py-2 rounded-large font-overpass-bold break-words whitespace-pre-wrap text-xl" :class="[
+            optionClass(questionIndex, optionIndex),
+            selectedAnswers[`${questionIndex}-${optionIndex}`]
+              ? 'bg-green-500 text-white'
+              : 'bg-green-200 hover:bg-green-300'
+          ]">
             <span>{{ option }}</span>
           </div>
         </div>
       </div>
-      <div class="p-5 mt-3">
+      <div v-if="showComments" class="p-5 mt-3">
         <div class="w-full flex flex-col items-start px-10">
           <button
             class="bg-green-800 font-merri text-white mb-2 px-3 py-1 rounded hover:bg-green-600 focus:outline-none focus:ring-0"
-            @click="toggleComment(questionIndex)"
-          >
+            @click="toggleComment(questionIndex)">
             <i class="fas fa-comment-dots"></i>
           </button>
 
@@ -70,19 +50,13 @@
         <transition name="fade">
           <div v-if="commentsVisible[questionIndex]" class="relative mt-3">
             <!-- Comment textarea -->
-            <textarea
-              :value="commentsLocal[questionIndex]"
-              rows="4"
-              placeholder="Write your comment here..."
+            <textarea :value="commentsLocal[questionIndex]" rows="4" placeholder="Write your comment here..."
               class="w-full p-5 font-merri border rounded-2xl focus:outline-none bg-amber-200"
-              @input="updateComment(questionIndex, $event.target.value)"
-            />
+              @input="updateComment(questionIndex, $event.target.value)" />
 
             <!-- Floating Paper Plane Submit Button -->
-            <button
-              @click="submitComment(questionIndex)"
-              class="absolute bottom-3 right-3  text-black p-3 transition-colors duration-300 focus:outline-none hover:scale-110 active:scale-90 transform  ease-in-out"
-            >
+            <button @click="submitComment(questionIndex)"
+              class="absolute bottom-3 right-3  text-black p-3 transition-colors duration-300 focus:outline-none hover:scale-110 active:scale-90 transform  ease-in-out">
               <i class="fas fa-paper-plane text-xl"></i>
             </button>
           </div>
@@ -90,12 +64,8 @@
 
       </div>
 
-      <slot
-        name="after-question"
-        :question="question"
-        :questionIndex="questionIndex"
-        :displayNumber="displayNumber(questionIndex)"
-      />
+      <slot name="after-question" :question="question" :questionIndex="questionIndex"
+        :displayNumber="displayNumber(questionIndex)" />
     </div>
   </div>
 </template>
@@ -180,6 +150,18 @@ export default {
     comments: {
       type: Array,
       default: () => [],
+    },
+    praktikanId: {
+      type: [String, Number],
+      default: null,
+    },
+    tipeSoal: {
+      type: String,
+      default: '',
+    },
+    showComments: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {
@@ -274,13 +256,56 @@ export default {
         allComments: this.commentsLocal,
       });
     },
-      },
-      data() {
-        return {
-          commentsVisible: [],
-          commentsLocal: [],
-        };
-      },
+
+    async submitComment(questionIndex) {
+      const comment = this.commentsLocal[questionIndex];
+
+      if (!comment || !comment.trim()) {
+        return;
+      }
+
+      if (!this.praktikanId || !this.tipeSoal) {
+        console.error('praktikanId and tipeSoal are required for submitting comments');
+        return;
+      }
+
+      const question = this.questions[questionIndex];
+      const soalId = this.questionKeyValue(question, questionIndex);
+
+      try {
+        const response = await this.$axios.post(`/praktikan/soal-comment/${this.praktikanId}/${this.tipeSoal}/${soalId}`, {
+          comment: comment.trim()
+        });
+
+        if (response.data.success) {
+          // Clear the comment after successful submission
+          this.commentsLocal[questionIndex] = '';
+          this.commentsVisible[questionIndex] = false;
+
+          // Emit success event
+          this.$emit('comment-submitted', {
+            questionIndex,
+            soalId,
+            comment: comment.trim(),
+            response: response.data
+          });
+        }
+      } catch (error) {
+        console.error('Error submitting comment:', error);
+        this.$emit('comment-error', {
+          questionIndex,
+          error,
+          comment: comment.trim()
+        });
+      }
+    },
+  },
+  data() {
+    return {
+      commentsVisible: [],
+      commentsLocal: [],
+    };
+  },
   mounted() {
     this.commentsVisible = this.questions.map(() => false);
 
@@ -293,10 +318,13 @@ export default {
 </script>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.3s;
 }
-.fade-enter-from, .fade-leave-to {
+
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

@@ -33,7 +33,7 @@
       <div class="relative inline-block">
         <button
           class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors duration-200 cursor-pointer text-gray-900 focus:outline-none"
-          @click="$emit('toggle-comments')"
+          @click="$emit('toggle-comments', soal)"
         >
           <i class="fas fa-comment text-3xl"></i>
         </button>

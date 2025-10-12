@@ -54,6 +54,9 @@
                 :questions="soalTa"
                 :options-list="jawabanTa"
                 :selected-answers="selectedAnswers"
+                :praktikan-id="currentUser.id"
+                :show-comments="isTotClass"
+                tipe-soal="ta"
                 question-key="pertanyaan"
                 :on-option-select="payload => emitQuestionOptionSelect('TA', payload)"
               />
@@ -146,11 +149,17 @@
               <QuestionBlock
                 :questions="soalFitb"
                 :answers="jawabanFitb"
+                :praktikan-id="currentUser.id"
+                :show-comments="isTotClass"
+                tipe-soal="fitb"
                 :on-answer-change="payload => emitTextAnswerChange('jawabanFitb', payload)"
               />
               <QuestionBlock
                 :questions="soalJurnal"
                 :answers="jawabanJurnal"
+                :praktikan-id="currentUser.id"
+                :show-comments="isTotClass"
+                tipe-soal="jurnal"
                 :numbering-offset="soalFitb.length"
                 :on-answer-change="payload => emitTextAnswerChange('jawabanJurnal', payload)"
               />
@@ -203,6 +212,9 @@
               <QuestionBlock
                 :questions="soalRunmod"
                 :answers="jawabanRunmod"
+                :praktikan-id="currentUser.id"
+                :show-comments="isTotClass"
+                tipe-soal="jurnal"
                 :on-answer-change="payload => emitTextAnswerChange('jawabanRunmod', payload)"
               />
             </div>
@@ -254,6 +266,9 @@
               <QuestionBlock
                 :questions="soalMandiri"
                 :answers="jawabanMandiri"
+                :praktikan-id="currentUser.id"
+                :show-comments="isTotClass"
+                tipe-soal="mandiri"
                 :on-answer-change="payload => emitTextAnswerChange('jawabanMandiri', payload)"
               />
             </div>
@@ -288,6 +303,9 @@
                 :questions="soalTk"
                 :options-list="jawabanTk"
                 :selected-answers="selectedAnswers"
+                :praktikan-id="currentUser.id"
+                :show-comments="isTotClass"
+                tipe-soal="tk"
                 question-key="pertanyaan"
                 :on-option-select="payload => emitQuestionOptionSelect('TK', payload)"
               />
@@ -445,6 +463,10 @@ export default {
     currentUser: {
       type: Object,
       required: true,
+    },
+    isTotClass: {
+      type: Boolean,
+      default: false,
     },
     allAsisten: {
       type: Array,

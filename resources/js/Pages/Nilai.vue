@@ -941,10 +941,7 @@ export default {
       globe.formNilai.praktikan_id = globe.chosenPraktikanID;
       globe.formNilai.asisten_id = globe.currentUser.id;
       globe.$axios.post('/asisten/nilai', this.formNilai).then(response => {
-
         if (response.data.message === "success") {
-
-        if(response.data.message === "success"){
           globe.formNilai.tp = '';
           globe.formNilai.jurnal = '';
           globe.formNilai.skill = '';
@@ -960,7 +957,7 @@ export default {
           globe.toast.error(response.data.message);
         }
       });
-    }
+    },
   }
 }
 </script>

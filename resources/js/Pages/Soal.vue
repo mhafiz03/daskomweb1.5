@@ -104,7 +104,7 @@
                           :soal="soal" 
                           :editPriviledge="editPriviledge" 
                           :currentUser="currentUser"
-                          :commentCount="3" 
+                          :commentCount="getCommentCount(soal)" 
                           @delete="deleteSoal" 
                           @edit="editSoal" 
                           @toggle-comments="toggleComments" 
@@ -153,7 +153,7 @@
                           </div>
                         </div>
                         <SoalAction :soal="soal" :editPriviledge="editPriviledge" :currentUser="currentUser"
-                          :commentCount="3" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
+                          :commentCount="getCommentCount(soal)" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
 
                       </div>
                     </div>
@@ -194,7 +194,7 @@
                           </div>
                         </div>
                         <SoalAction :soal="soal" :editPriviledge="editPriviledge" :currentUser="currentUser"
-                          :commentCount="3" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
+                          :commentCount="getCommentCount(soal)" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
                       </div>
                     </div>
                   </transition-group>
@@ -221,7 +221,7 @@
                             </div>
                           </div>
                           <SoalAction :soal="soal" :editPriviledge="editPriviledge" :currentUser="currentUser"
-                            :commentCount="3" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
+                            :commentCount="getCommentCount(soal)" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
                         </div>
                       </div>
                     </div>
@@ -248,7 +248,7 @@
                             </div>
                           </div>
                           <SoalAction :soal="soal" :editPriviledge="editPriviledge" :currentUser="currentUser"
-                            :commentCount="3" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
+                            :commentCount="getCommentCount(soal)" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
                         </div>
                       </div>
                     </div>
@@ -274,7 +274,7 @@
                             </div>
                           </div>
                           <SoalAction :soal="soal" :editPriviledge="editPriviledge" :currentUser="currentUser"
-                            :commentCount="3" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
+                            :commentCount="getCommentCount(soal)" @delete="deleteSoal" @edit="editSoal" @toggle-comments="toggleComments" />
                         </div>
                       </div>
                     </div>
@@ -296,7 +296,7 @@
             <div class="relative w-full px-5 py-4 bg-white rounded-t-2xl shadow-sm border-b border-gray-200">
               <p class="text-sm font-semibold text-gray-500 mb-1 text-start">Pertanyaan:</p>
               <p class="text-lg font-medium text-gray-800 text-start">
-                Siapakah penemu bahasa C?
+                {{ currentSoal ? (currentSoal.pertanyaan || currentSoal.soal || 'No question available') : 'No question selected' }}
               </p>
 
               <!-- Close Button -->
@@ -308,51 +308,34 @@
 
             <!-- Comment List -->
             <div class="flex-grow overflow-y-auto p-6 space-y-6">
-              <!-- Comment 1 -->
-              <div class="flex items-start">
-                <div class="ml-4">
-                  <div class="flex items-center">
-                    <i class="fas fa-comment text-2xl text-gray-600 mr-3"></i>
-                    <p class="font-semibold text-2xl text-gray-900">ATC 1</p>
-                  </div>
-                  <div class="px-5 py-3 bg-white border-4 border-gray-700 rounded-2xl mt-3">
-                    <p class="text-gray-700 mt-1 text-start text-lg">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam
-                      perferendis dolores, odio sit officia deserunt error magni expedita
-                      mollitia amet.
-                    </p>
-                  </div>
-                </div>
+              <!-- Loading State -->
+              <div v-if="loadingComments" class="flex items-center justify-center py-8">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+                <span class="ml-3 text-gray-600">Loading comments...</span>
               </div>
 
-              <!-- Comment 2 -->
-              <div class="flex items-start">
-                <div class="ml-4">
-                  <div class="flex items-center">
-                    <i class="fas fa-comment text-2xl text-gray-600 mr-3"></i>
-                    <p class="font-semibold text-2xl text-gray-900">RDC 2</p>
-                  </div>
-                  <div class="px-5 py-3 bg-white border-4 border-gray-700 rounded-2xl mt-3">
-                    <p class="text-gray-700 mt-1 text-start text-lg">
-                      Aliquam perferendis dolores, odio sit officia deserunt error magni
-                      expedita mollitia amet porro illum cumque.
-                    </p>
-                  </div>
-                </div>
+              <!-- No Comments State -->
+              <div v-else-if="comments.length === 0" class="text-center py-8">
+                <i class="fas fa-comment text-4xl text-gray-400 mb-4"></i>
+                <p class="text-gray-500 text-lg">No comments yet for this question.</p>
               </div>
 
-              <!-- Comment 3 -->
-              <div class="flex items-start">
-                <div class="ml-4">
+              <!-- Comments -->
+              <div v-else v-for="comment in comments" :key="comment.id" class="flex items-start">
+                <div class="ml-4 w-full">
                   <div class="flex items-center">
                     <i class="fas fa-comment text-2xl text-gray-600 mr-3"></i>
-                    <p class="font-semibold text-2xl text-gray-900">CMD 4</p>
+                    <p class="font-semibold text-2xl text-gray-900">
+                      {{ comment.praktikan ? comment.praktikan.nama : 'Anonymous' }}
+                    </p>
                   </div>
                   <div class="px-5 py-3 bg-white border-4 border-gray-700 rounded-2xl mt-3">
                     <p class="text-gray-700 mt-1 text-start text-lg">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita
-                      mollitia amet porro illum cumque commodi asperiores reiciendis.
+                      {{ comment.comment }}
                     </p>
+                    <div class="text-xs text-gray-500 mt-2 text-right">
+                      {{ new Date(comment.created_at).toLocaleString() }}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -806,6 +789,9 @@ export default {
         isProgram: false,
       },
       commentsVisible: false,
+      currentSoal: null, // Store the current soal being commented on
+      comments: [], // Store fetched comments
+      loadingComments: false,
 
     }
   },
@@ -881,11 +867,81 @@ export default {
         this.currentPage = true;
       }, 10);
     }
+
+    // Load initial comment counts
+    this.refreshCommentCounts();
+  },
+
+  watch: {
+    chosenModulID: {
+      handler() {
+        this.refreshCommentCounts();
+      },
+      immediate: false
+    },
+    activeSoalType: {
+      handler() {
+        this.refreshCommentCounts();
+      },
+      immediate: false
+    }
   },
 
   methods: {
-    toggleComments() {
+    async toggleComments(soal = null) {
       this.commentsVisible = !this.commentsVisible;
+      
+      if (this.commentsVisible && soal) {
+        this.currentSoal = soal;
+        await this.fetchComments(soal);
+      } else if (!this.commentsVisible) {
+        this.currentSoal = null;
+        this.comments = [];
+      }
+    },
+
+    async fetchComments(soal) {
+      if (!soal || !soal.modul_id) {
+        return;
+      }
+
+      this.loadingComments = true;
+      try {
+        const response = await this.$axios.get(`/asisten/soal-comment/${this.activeSoalType.toLowerCase()}/${soal.modul_id}`);
+        
+        if (response.data.success) {
+          // Filter comments for the specific soal
+          this.comments = response.data.data.filter(comment => comment.soal_id == soal.id);
+        }
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+        this.toast.error('Failed to load comments');
+      } finally {
+        this.loadingComments = false;
+      }
+    },
+
+    getCommentCount(soal) {
+      // Return the count of comments for this specific soal from the comments array
+      // This assumes we have loaded all comments for the current module
+      return this.comments.filter(comment => comment.soal_id == soal.id).length;
+    },
+
+    async refreshCommentCounts() {
+      // Refresh comment counts for the current module
+      if (!this.chosenModulID) {
+        return;
+      }
+
+      try {
+        const response = await this.$axios.get(`/asisten/soal-comment/${this.activeSoalType.toLowerCase()}/${this.chosenModulID}`);
+        
+        if (response.data.success) {
+          this.comments = response.data.data;
+        }
+      } catch (error) {
+        console.error('Error fetching comment counts:', error);
+      }
     },
     handleMenuSelect(target) {
       this.setActiveMenu(target);
