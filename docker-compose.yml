@@ -1,0 +1,66 @@
+services:
+  lms1_redis:
+    image: redis:7-alpine
+    container_name: lms1_redis
+    command: ["redis-server", "--appendonly", "no"]
+    restart: always
+    expose:
+      - "6379"
+    networks:
+      - lms1_network
+
+  lms1_phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: lms1_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: ${DB_USERNAME:-root}
+      PMA_PASSWORD: ${DB_PASSWORD:-password}
+    ports:
+      - "8081:80"
+    depends_on:
+      - lms1_mysql
+    networks:
+      - lms1_network
+  
+  lms1_mysql:
+    image: mysql:8.0
+    container_name: lms1_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-dasdaskom}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-password}
+    expose:
+      - "3306"
+    volumes:
+      - ./dbdata:/var/lib/mysql
+    networks:
+      - lms1_network
+
+
+  frontend:
+    image: oven/bun:1.2-alpine
+    command: sh -c "[ ! -d /home/bun/app/node_modules ] && bun run build || echo 'Node modules exists, skipping...'"
+    volumes:
+      - ./:/home/bun/app
+    restart: "no"
+    user: "1000:1000"
+
+  lms1_web:
+    container_name: lms1_web
+    build:
+      context: docker
+    command: sh -c "supervisord -c /etc/supervisord.conf"
+    volumes:
+      - ./:/app
+    ports:
+      - "8000:80"
+      - "8090:8090"
+    networks:
+      - lms1_network
+
+networks:
+  lms1_network:
+    driver: bridge
