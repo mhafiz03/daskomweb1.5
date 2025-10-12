@@ -42,7 +42,7 @@ services:
 
   frontend:
     image: oven/bun:1.2-alpine
-    command: sh -c "bun i && [ ! -d /home/bun/app/node_modules ] && bun run build || echo 'Node modules exists, skipping...'"
+    command: sh -c "[ ! -d /home/bun/app/node_modules ] && bun install && bun run build || echo 'Node modules exists, skipping...'"
     volumes:
       - ./:/home/bun/app
     restart: "no"
