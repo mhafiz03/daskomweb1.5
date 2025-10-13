@@ -12,6 +12,7 @@ use App\Http\Controllers\JadwalJagaController;
 use App\Http\Controllers\JawabanFitbController;
 use App\Http\Controllers\JawabanJurnalController;
 use App\Http\Controllers\JawabanMandiriController;
+use App\Http\Controllers\JawabanSnapshotController;
 use App\Http\Controllers\JawabanTaController;
 use App\Http\Controllers\JawabanTkController;
 use App\Http\Controllers\JawabanTpController;
@@ -248,9 +249,9 @@ Route::middleware('loggedIn:praktikan')->prefix('praktikan')->name('praktikan.')
 
     // Autosave jawaban
     Route::prefix('autosave')->name('autosave.')->group(function () {
-        Route::post('/', [\App\Http\Controllers\JawabanSnapshotController::class, 'store'])->name('store');
-        Route::get('/', [\App\Http\Controllers\JawabanSnapshotController::class, 'index'])->name('index');
-        Route::delete('/clear', [\App\Http\Controllers\JawabanSnapshotController::class, 'clearPraktikanAnswers'])->name('clear');
+        Route::post('/', [JawabanSnapshotController::class, 'store'])->name('store');
+        Route::get('/', [JawabanSnapshotController::class, 'index'])->name('index');
+        Route::delete('/clear', [JawabanSnapshotController::class, 'clearPraktikanAnswers'])->name('clear');
     });
 });
 
