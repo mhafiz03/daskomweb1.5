@@ -1073,20 +1073,91 @@ export default {
       });
     },
 
+    // Question ID management to prevent refresh exploitation
+    async storeQuestionIds(tipesoal, questionIds) {
+      if (!this.current_praktikum.modul_id || this.isTotClass) {
+        return; // Don't store for TOT classes
+      }
+
+      try {
+        await this.$axios.post('/praktikan/autosave/questions', {
+          praktikan_id: this.currentUser.id,
+          modul_id: this.current_praktikum.modul_id,
+          tipe_soal: tipesoal,
+          question_ids: questionIds,
+        });
+      } catch (error) {
+        console.warn('[QUESTION_IDS] Failed to store question IDs:', error);
+      }
+    },
+
+    async getStoredQuestionIds(tipesoal) {
+      if (!this.current_praktikum.modul_id || this.isTotClass) {
+        return { has_stored_questions: false, question_ids: [] };
+      }
+
+      try {
+        const { data } = await this.$axios.get('/praktikan/autosave/questions', {
+          params: {
+            praktikan_id: this.currentUser.id,
+            modul_id: this.current_praktikum.modul_id,
+            tipe_soal: tipesoal,
+          }
+        });
+
+        return {
+          has_stored_questions: data.has_stored_questions || false,
+          question_ids: data.question_ids || [],
+          created_at: data.created_at,
+        };
+      } catch (error) {
+        console.warn('[QUESTION_IDS] Failed to get stored question IDs:', error);
+        return { has_stored_questions: false, question_ids: [] };
+      }
+    },
+
     async loadSoalTa() {
       this.soalTA = [];
       this.jawabanTA = [];
       this.chosenJawaban = [];
       this.selectedAnswers = {}; // Clear selected answers
+      
       try {
-        const { data } = await this.$axios.get(`/api/soal/ta/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
+        let questions = [];
+        
+        // Check if we already have stored question IDs (to prevent refresh exploitation)
+        const storedQuestions = await this.getStoredQuestionIds('ta');
+        
+        if (storedQuestions.has_stored_questions && storedQuestions.question_ids.length > 0) {
+          // Use stored question IDs
+          const { data } = await this.$axios.post('/api/soal/ta/by-ids', {
+            question_ids: storedQuestions.question_ids,
+            modul_id: this.current_praktikum.modul_id,
+          });
+          
+          if (data.message === 'success') {
+            questions = Array.isArray(data.all_soal) ? data.all_soal : [];
+          }
+        } else {
+          // First visit - get random questions and store their IDs
+          const { data } = await this.$axios.get(`/api/soal/ta/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
 
-        if (data.message !== 'success') {
-          this.toast.error(data.message);
+          if (data.message === 'success') {
+            questions = Array.isArray(data.all_soal) ? data.all_soal : [];
+            
+            // Store question IDs for future visits (only for non-TOT classes)
+            if (questions.length > 0 && !this.isTotClass) {
+              const questionIds = questions.map(q => q.id);
+              await this.storeQuestionIds('ta', questionIds);
+            }
+          }
+        }
+
+        if (questions.length === 0) {
+          this.toast.error(storedQuestions.has_stored_questions ? 'Stored questions not found' : 'No TA questions available');
           return;
         }
 
-        const questions = Array.isArray(data.all_soal) ? data.all_soal : [];
         this.soalTA = questions;
 
         if (questions.length === 0) {
@@ -1191,17 +1262,45 @@ export default {
     async loadSoalMandiri() {
       this.soalMandiri = [];
       this.jawabanMandiri = [];
+      
       try {
-        const { data } = await this.$axios.get(`/api/soal/mandiri/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
+        let questions = [];
+        
+        // Check if we already have stored question IDs (to prevent refresh exploitation)
+        const storedQuestions = await this.getStoredQuestionIds('mandiri');
+        
+        if (storedQuestions.has_stored_questions && storedQuestions.question_ids.length > 0) {
+          // Use stored question IDs
+          const { data } = await this.$axios.post('/api/soal/mandiri/by-ids', {
+            question_ids: storedQuestions.question_ids,
+            modul_id: this.current_praktikum.modul_id,
+          });
+          
+          if (data.message === 'success') {
+            questions = Array.isArray(data.all_soal) ? data.all_soal : [];
+          }
+        } else {
+          // First visit - get random questions and store their IDs
+          const { data } = await this.$axios.get(`/api/soal/mandiri/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
 
-        if (data.message !== 'success') {
-          this.toast.error(data.message);
+          if (data.message === 'success') {
+            questions = Array.isArray(data.all_soal) ? data.all_soal : [];
+            
+            // Store question IDs for future visits (only for non-TOT classes)
+            if (questions.length > 0 && !this.isTotClass) {
+              const questionIds = questions.map(q => q.id);
+              await this.storeQuestionIds('mandiri', questionIds);
+            }
+          }
+        }
+
+        if (questions.length === 0) {
+          this.toast.error(storedQuestions.has_stored_questions ? 'Stored questions not found' : 'No Mandiri questions available');
           return;
         }
 
-        const list = data.all_soal || [];
-        this.soalMandiri = list;
-        this.jawabanMandiri = list.map((soal) => ({
+        this.soalMandiri = questions;
+        this.jawabanMandiri = questions.map((soal) => ({
           soal_id: soal.id,
           modul_id: soal.modul_id,
           praktikan_id: this.currentUser.id,
@@ -1209,7 +1308,7 @@ export default {
         }));
 
         // Load autosaved answers
-        if (list.length > 0) {
+        if (questions.length > 0) {
           const savedAnswers = await this.loadAutosave('mandiri');
           this.restoreTextAnswersFromAutosave(savedAnswers, this.jawabanMandiri);
         }
@@ -1223,15 +1322,43 @@ export default {
       this.chosenJawaban = [];
       this.jawabanTK = [];
       this.selectedAnswers = {}; // Clear selected answers
+      
       try {
-        const { data } = await this.$axios.get(`/api/soal/tk/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
+        let questions = [];
+        
+        // Check if we already have stored question IDs (to prevent refresh exploitation)
+        const storedQuestions = await this.getStoredQuestionIds('tk');
+        
+        if (storedQuestions.has_stored_questions && storedQuestions.question_ids.length > 0) {
+          // Use stored question IDs
+          const { data } = await this.$axios.post('/api/soal/tk/by-ids', {
+            question_ids: storedQuestions.question_ids,
+            modul_id: this.current_praktikum.modul_id,
+          });
+          
+          if (data.message === 'success') {
+            questions = Array.isArray(data.all_soal) ? data.all_soal : [];
+          }
+        } else {
+          // First visit - get random questions and store their IDs
+          const { data } = await this.$axios.get(`/api/soal/tk/${this.current_praktikum.modul_id}/${this.current_praktikum.kelas_id}`);
 
-        if (data.message !== 'success') {
-          this.toast.error(data.message);
+          if (data.message === 'success') {
+            questions = Array.isArray(data.all_soal) ? data.all_soal : [];
+            
+            // Store question IDs for future visits (only for non-TOT classes)
+            if (questions.length > 0 && !this.isTotClass) {
+              const questionIds = questions.map(q => q.id);
+              await this.storeQuestionIds('tk', questionIds);
+            }
+          }
+        }
+
+        if (questions.length === 0) {
+          this.toast.error(storedQuestions.has_stored_questions ? 'Stored questions not found' : 'No TK questions available');
           return;
         }
 
-        const questions = data.all_soal || [];
         this.soalTK = questions;
 
         // Always ensure chosenJawaban has at least basic info for submission

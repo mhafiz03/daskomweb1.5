@@ -252,6 +252,10 @@ Route::middleware('loggedIn:praktikan')->prefix('praktikan')->name('praktikan.')
         Route::post('/', [JawabanSnapshotController::class, 'store'])->name('store');
         Route::get('/', [JawabanSnapshotController::class, 'index'])->name('index');
         Route::delete('/clear', [JawabanSnapshotController::class, 'clearPraktikanAnswers'])->name('clear');
+
+        // Question ID management to prevent refresh exploitation
+        Route::post('/questions', [JawabanSnapshotController::class, 'storeQuestionIds'])->name('questions.store');
+        Route::get('/questions', [JawabanSnapshotController::class, 'getQuestionIds'])->name('questions.get');
     });
 });
 
@@ -272,6 +276,11 @@ Route::prefix('api')->name('api.')->group(function () {
     Route::get('/soal/runmod', [SoalJurnalController::class, 'showRunmod'])->name('soal.runmod');
     Route::get('/soal/mandiri/{modul_id}/{kelas_id}', [SoalMandiriController::class, 'show'])->name('soal.mandiri');
     Route::post('/get-tp/{praktikan_nim}/{modul_id}', [JawabanTpController::class, 'show'])->name('get-tp');
+
+    // Routes for fetching questions by IDs (to prevent refresh exploitation)
+    Route::post('/soal/ta/by-ids', [SoalTaController::class, 'getByIds'])->name('soal.ta.by_ids');
+    Route::post('/soal/tk/by-ids', [SoalTkController::class, 'getByIds'])->name('soal.tk.by_ids');
+    Route::post('/soal/mandiri/by-ids', [SoalMandiriController::class, 'getByIds'])->name('soal.mandiri.by_ids');
 });
 
 // Special Routes (No middleware)

@@ -45,15 +45,15 @@ class JawabanSnapshotController extends Controller
         try {
             $redis = Redis::connection('cache');
             $keys = $redis->keys($pattern);
-            
+
             // Handle the prefix if it exists
             $prefix = config('database.redis.options.prefix', '');
-            if ($prefix && !empty($keys)) {
-                $keys = array_map(function($key) use ($prefix) {
+            if ($prefix && ! empty($keys)) {
+                $keys = array_map(function ($key) use ($prefix) {
                     return str_starts_with($key, $prefix) ? substr($key, strlen($prefix)) : $key;
                 }, $keys);
             }
-            
+
             return $keys;
         } catch (\Exception $e) {
             // Fallback: return empty array if Redis search fails
@@ -221,7 +221,7 @@ class JawabanSnapshotController extends Controller
                 $validated['modul_id'],
                 $validated['tipe_soal']
             );
-            
+
             if ($cache->forget($key)) {
                 $deletedCount = 1;
             }
@@ -233,7 +233,7 @@ class JawabanSnapshotController extends Controller
                     $validated['modul_id'],
                     $tipe->value
                 );
-                
+
                 if ($cache->forget($key)) {
                     $deletedCount++;
                 }
@@ -243,6 +243,99 @@ class JawabanSnapshotController extends Controller
         return response()->json([
             'success' => true,
             'deleted_count' => $deletedCount,
+        ]);
+    }
+
+    /**
+     * Store question IDs for a specific praktikan, modul, and soal type
+     * This prevents refresh exploitation by locking in the questions on first visit
+     */
+    public function storeQuestionIds(Request $request)
+    {
+        $validated = $request->validate([
+            'praktikan_id' => ['required', 'integer', 'exists:praktikans,id'],
+            'modul_id' => ['required', 'integer', 'exists:moduls,id'],
+            'tipe_soal' => ['required', Rule::in(['ta', 'tk', 'mandiri'])],
+            'question_ids' => ['required', 'array', 'min:1'],
+            'question_ids.*' => ['integer', 'min:1'],
+        ]);
+
+        $cache = Cache::store($this->cacheStore);
+        $tipeSoalQuestions = $validated['tipe_soal'].'_questions';
+
+        $key = $this->getCacheKey(
+            $validated['praktikan_id'],
+            $validated['modul_id'],
+            $tipeSoalQuestions
+        );
+
+        // Only store if not already exists (first visit only)
+        if (! $cache->has($key)) {
+            $snapshot = [
+                'praktikan_id' => $validated['praktikan_id'],
+                'modul_id' => $validated['modul_id'],
+                'tipe_soal' => $tipeSoalQuestions,
+                'question_ids' => $validated['question_ids'],
+                'created_at' => now()->toISOString(),
+                'updated_at' => now()->toISOString(),
+            ];
+
+            // Store with TTL (Time To Live) - questions persist for the duration of praktikum
+            $ttl = config('cache.ttl_jawaban_snapshot', 60 * 60 * 24); // 24 hours default
+            $cache->put($key, $snapshot, $ttl);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Question IDs stored successfully',
+                'question_ids' => $validated['question_ids'],
+            ]);
+        }
+
+        // Return existing question IDs if already stored
+        $existingSnapshot = $cache->get($key);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Question IDs already exist',
+            'question_ids' => $existingSnapshot['question_ids'] ?? [],
+        ]);
+    }
+
+    /**
+     * Get stored question IDs for a specific praktikan, modul, and soal type
+     */
+    public function getQuestionIds(Request $request)
+    {
+        $validated = $request->validate([
+            'praktikan_id' => ['required', 'integer', 'exists:praktikans,id'],
+            'modul_id' => ['required', 'integer', 'exists:moduls,id'],
+            'tipe_soal' => ['required', Rule::in(['ta', 'tk', 'mandiri'])],
+        ]);
+
+        $cache = Cache::store($this->cacheStore);
+        $tipeSoalQuestions = $validated['tipe_soal'].'_questions';
+
+        $key = $this->getCacheKey(
+            $validated['praktikan_id'],
+            $validated['modul_id'],
+            $tipeSoalQuestions
+        );
+
+        $snapshot = $cache->get($key);
+
+        if (! $snapshot) {
+            return response()->json([
+                'success' => true,
+                'question_ids' => [],
+                'has_stored_questions' => false,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'question_ids' => $snapshot['question_ids'] ?? [],
+            'has_stored_questions' => true,
+            'created_at' => $snapshot['created_at'] ?? null,
         ]);
     }
 }
