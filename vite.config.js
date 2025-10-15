@@ -12,4 +12,17 @@ export default defineConfig({
         vue(),
         tailwindcss(),
     ],
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        strictPort: true,
+        cors: true,
+        hmr: {
+            host: '127.0.0.1',
+            port: 5173,
+            protocol: 'ws',
+            // If your app is HTTPS, use protocol: 'wss' and also enable https below
+        },
+        // https: true, // uncomment if your app runs over https to avoid mixed content
+    },
 });

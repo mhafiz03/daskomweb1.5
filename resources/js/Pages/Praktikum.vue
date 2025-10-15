@@ -825,7 +825,7 @@ export default {
           }
 
           if (sumAllPraktikan_Alfa.length === 0 && globe.formPraktikan_Alfa.allpraktikan_nim !== "*") {
-            globe.toast.error("Ketikkan '*' pada praktikan alfa <br> jika tidak ada praktikan yang alfa");
+            globe.toast.error("Ketikkan '*' pada praktikan alfa jika tidak ada praktikan yang alfa");
             return;
           } else if (globe.formPraktikan_Alfa.allpraktikan_nim !== "*") {
 
@@ -1127,7 +1127,7 @@ export default {
 
       if (!isKodeExist) {
 
-        globe.toast.error("Anda tidak ada dalam praktikum kelas ini<br>Hanya asisten dalam praktikum ini yang bisa mengaktivasinya");
+        globe.toast.error("Anda tidak ada dalam praktikum kelas ini. Hanya asisten dalam praktikum ini yang bisa mengaktivasinya");
         return;
       }
 

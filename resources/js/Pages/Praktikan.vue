@@ -1580,7 +1580,7 @@ export default {
     async finishPraktikum() {
 
       if (this.laporanPraktikan.asisten_id === '') {
-        this.toast.error('Pilih asisten yang mengajar anda terlebih dahulu <br> (dibagian paling atas samping kiri rating)');
+        this.toast.error('Pilih asisten yang mengajar anda terlebih dahulu (dibagian paling atas samping kiri rating)');
         return;
       }
 

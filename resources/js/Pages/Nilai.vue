@@ -932,7 +932,7 @@ export default {
       }
 
       if (this.formNilai.diskon === '') {
-        globe.toast.error("Input diskon terlebih dahulu <br> Inputkan 0 jika tidak ada diskon");
+        globe.toast.error("Input diskon terlebih dahulu Inputkan 0 jika tidak ada diskon");
         return;
       }
 

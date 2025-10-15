@@ -531,7 +531,7 @@ export default {
             const element = globe.listAllTP[index];
             if(element.modul_id === globe.formTP.modul_id){
               element.pembahasan = globe.formTP.pembahasan;
-              globe.toast.success('Pembahasan TP modul "'+ element.judul +'"<br>berhasil diperbaharui');
+              globe.toast.success('Pembahasan TP modul "'+ element.judul +'" berhasil diperbaharui');
               return;
             }
           }
