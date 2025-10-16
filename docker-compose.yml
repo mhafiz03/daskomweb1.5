@@ -43,7 +43,7 @@ services:
   frontend:
     image: oven/bun:1.2-alpine
     # command: sh -c "[ ! -d /home/bun/app/node_modules ] && bun install && bun run build || echo 'Node modules exists, skipping...'"
-    command: sh -c "bun run dev --host"
+    command: sh -c "bun install && bun run dev --host"
     expose:
       - "5173"
     ports:
