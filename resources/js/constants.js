@@ -10,6 +10,7 @@ export const PRIVILEGES = {
   jawaban: [1, 2, 7, 11, 15],
   soal: 'all',
   edit: [1, 2, 15, 11, 7],
+  lihat_tp: 'all', // Add this line to make it accessible to all asisten roles
 };
 
 export const MENU_ITEMS = [
@@ -42,6 +43,12 @@ export const MENU_ITEMS = [
     id: 'setpraktikan',
     label: 'Set Praktikan',
     icon: 'fas fa-users',
+  },
+  {
+    id: 'lihat_tp',
+    label: 'Lihat TP',
+    icon: 'fas fa-eye',
+    privilege: 'lihat_tp',
   },
   {
     id: 'kelas',

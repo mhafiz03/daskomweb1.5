@@ -882,9 +882,9 @@ export default {
 
     async loadRandomQuote() {
       try {
-        const { data } = await this.$axios.get('http://api.quotable.io/random');
-        if (data?.content && data?.author) {
-          this.programmingQuote = data.content;
+        const { data } = await this.$axios.get('https://zenquotes.io/api/random');
+        if (data?.quote && data?.author) {
+          this.programmingQuote = data.quote;
           this.quoteAuthor = data.author;
         }
       } catch (error) {

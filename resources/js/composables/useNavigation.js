@@ -15,6 +15,7 @@ export function useNavigation(config = {}) {
   const { userType = 'asisten', menuRef = null, currentPage = '' } = config;
 
   // Menu state management
+  // Add to menuState object
   const menuState = reactive({
     menuPraktikum: false,
     menuSoal: false,
@@ -32,6 +33,7 @@ export function useNavigation(config = {}) {
     menuRanking: false,
     menuAllLaporan: false,
     menuJawaban: false,
+    menuLihatTp: false,
   });
 
   // Page transition state
@@ -43,6 +45,7 @@ export function useNavigation(config = {}) {
   /**
    * Route mapping for navigation
    */
+  // Add to routeMap object
   const routeMap = {
     // Asisten routes
     asisten: { route: '', menu: 'menuProfil' },
@@ -62,6 +65,7 @@ export function useNavigation(config = {}) {
     laporan: { route: 'laporan', menu: 'menuAllLaporan' },
     allLaporan: { route: 'laporan', menu: 'menuAllLaporan' }, // Alias for laporan
     jawaban: { route: 'jawaban', menu: 'menuJawaban' },
+    lihat_tp: { route: 'lihat_tp', menu: 'menuLihatTp' },
     
     // Praktikan routes
     'contact-asisten': { route: 'contact-asisten', menu: null },

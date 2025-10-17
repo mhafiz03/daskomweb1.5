@@ -94,6 +94,7 @@ Route::middleware('loggedIn:asisten')->prefix('asisten')->name('asisten.')->grou
     Route::get('/rating', [PageController::class, 'rating'])->name('rating');
     Route::get('/allLaporan', [PageController::class, 'allLaporan'])->name('legacy.laporan');
     Route::get('/laporan', [PageController::class, 'allLaporan'])->name('laporan');
+    Route::get('/lihat_tp', [PageController::class, 'lihatTp'])->name('lihat_tp');
 
     // Profile
     Route::get('/profil/{asisten_id}', [AsistenController::class, 'show'])->name('profil');
@@ -284,7 +285,7 @@ Route::prefix('api')->name('api.')->group(function () {
 });
 
 // Special Routes (No middleware)
-Route::get('/lihat_tp', [PageController::class, 'lihatTp'])->name('lihat_tp');
+// Route::get('/lihat_tp', [PageController::class, 'lihatTp'])->name('lihat_tp');
 
 // Legacy Routes - For Backward Compatibility (TODO: Update frontend to use new routes)
 Route::post('/loginAsisten', [AsistenLoginController::class, 'login'])->name('loginAsisten');

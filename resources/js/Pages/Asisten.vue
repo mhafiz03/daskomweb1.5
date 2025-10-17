@@ -368,6 +368,7 @@ export default {
               this.comingFrom === 'setpraktikan' ||
               this.comingFrom === 'rating' ||
               this.comingFrom === 'allLaporan' ||
+              this.comingFrom === 'lihat_tp' ||
               this.comingFrom === 'jawaban'){
 
       this.animate = false;
