@@ -205,6 +205,7 @@ export default {
         this.comingFrom === 'history'||
         this.comingFrom === 'rating' ||
         this.comingFrom === 'allLaporan' ||
+        this.commingFrom === 'lihat_tp' ||
         this.comingFrom === 'jawaban'){
 
       setTimeout(
