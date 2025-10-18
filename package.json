@@ -3,9 +3,9 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "bunx --bun vite build",
-        "dev": "bunx --bun vite",
-        "preview": "bunx --bun vite preview"
+        "build": "npx vite build",
+        "dev": "npx vite",
+        "preview": "npx vite preview"
     },
     "dependencies": {
         "@fortawesome/fontawesome-svg-core": "^6.7.2",
@@ -31,11 +31,11 @@
         "vue3-toastify": "^0.2.8"
     },
     "devDependencies": {
-        "@tailwindcss/vite": "^4.0.0",
-        "@vitejs/plugin-vue": "^5.1.4",
+        "@tailwindcss/vite": "^4",
+        "@vitejs/plugin-vue": "^6",
         "concurrently": "^9.0.1",
-        "laravel-vite-plugin": "^2.0.0",
-        "tailwindcss": "^4.0.0",
-        "vite": "^7.0.7"
+        "laravel-vite-plugin": "^2",
+        "tailwindcss": "^4",
+        "vite": "^7"
     }
 }

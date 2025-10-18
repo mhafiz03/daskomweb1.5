@@ -57,6 +57,9 @@ services:
     container_name: lms1_web
     build:
       context: docker
+    environment:
+      - CADDY_DISABLE_HTTP=true
+      - CADDY_DISABLE_HTTPS=true
     command: sh -c "supervisord -c /etc/supervisord.conf"
     volumes:
       - ./:/app
